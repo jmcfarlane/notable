@@ -1,8 +1,8 @@
 <html>
-    <head>
+  <head>
     <script type="text/javascript" src="/static/app.js"></script>
-    </head>
-    <body>
-Homepage
-    </body>
+  </head>
+  <body>
+    homepage
+  </body>
 </html>

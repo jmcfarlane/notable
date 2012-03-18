@@ -7,6 +7,12 @@ import sqlite3
 path = os.path.expanduser('~/.notes/notes.sqlite3')
 log = logging.getLogger(__name__)
 
+def add_sample_notes(c):
+    sql = 'INSERT INTO notes VALUES (?, ?, ?, ?, ?);'
+    note = ('today', 'now', 'food water', 'subject', None)
+    c.execute(sql, note)
+    c.commit()
+
 def conn():
     d = os.path.dirname(path)
     _ = os.makedirs(d) if not os.path.exists(d) else None
@@ -20,13 +26,17 @@ def create_schema(c):
         tags text,
         subject text,
         password text
-    );
-    """
+    );"""
     try:
         c.execute(sql)
     except sqlite3.OperationalError, ex:
         log.warning(ex)
 
+def fetch_by_tags(tags):
+    sql = 'SELECT * FROM notes;'
+    return list(conn().cursor().execute(sql))
+
 def prepare():
     c = conn()
     create_schema(c)
+    add_sample_notes(c)
