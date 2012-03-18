@@ -5,30 +5,29 @@ import random
 # Third party imports
 from Crypto.Cipher import AES
 
-BLOCK_SIZE = 32
+BLOCKS = 16
 MODE = AES.MODE_CBC
-PADDING = '{'
+PAD = chr(0)
 
-iv = ''.join(chr(random.randint(0, 0xFF)) for i in range(16))
-iv = ''.join(chr(0) for i in range(16))
-pad = lambda s: s + (BLOCK_SIZE - len(s) % BLOCK_SIZE) * PADDING
+def pad(string):
+    return string + (BLOCKS - len(string) % BLOCKS) * PAD
 
-def encrypt(string, password):
-    aes = AES.new(key(password), MODE, iv)
-    return aes.encrypt(pad(string))
+def encrypt(string, pwd):
+    iv = ''.join(chr(random.randint(0, 255)) for i in range(BLOCKS))
+    return iv + AES.new(key(pwd), MODE, iv).encrypt(pad(string))
 
-def key(password):
-    return hashlib.sha256(password).digest()
+def key(pwd):
+    return hashlib.sha256(pwd).digest()
 
-def decrypt(ciphertext, password):
-    aes = AES.new(key(password), MODE, iv)
-    return aes.decrypt(ciphertext).rstrip(PADDING)
+def decrypt(cipher, pwd):
+    iv = cipher[:BLOCKS]
+    return AES.new(key(pwd), MODE, iv).decrypt(cipher[BLOCKS:]).rstrip(PAD)
 
 def main():
-    password = 'my secret password'
+    pwd = 'my secret password'
     s = 'I love }apples{'
-    encrypted = encrypt(s, password)
-    print decrypt(encrypted, password)
+    encrypted = encrypt(s, pwd)
+    print decrypt(encrypted, pwd)
 
 if __name__ == '__main__':
     main()
