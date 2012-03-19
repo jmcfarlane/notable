@@ -24,8 +24,8 @@ def conn():
     _ = os.makedirs(d) if not os.path.exists(d) else None
     return sqlite3.connect(path)
 
-def columns():
-    for k, v in note().items():
+def columns(note):
+    for k, v in note.items():
         yield dict(id=k, label=k.capitalize(), type=v)
 
 def rows(rs):
@@ -41,8 +41,9 @@ def create_schema(c):
         log.warning(ex)
 
 def fetch_by_tags(tags):
-    sql = 'SELECT %s FROM notes;' % ','.join(note(['password']).keys())
-    return dict(cols=list(columns()),
+    n = note(exclude=['password'])
+    sql = 'SELECT %s FROM notes;' % ','.join(n.keys())
+    return dict(cols=list(columns(n)),
                 rows=list(rows(conn().cursor().execute(sql))))
 
 def prepare():
