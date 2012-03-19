@@ -22,7 +22,7 @@ def static(filename):
 
 @route('/api/list/<tags:re:.*>')
 def api_list(tags=None):
-    return dict(data=db.fetch_by_tags(tags))
+    return db.fetch_by_tags(tags)
 
 if __name__ == '__main__':
     logging.basicConfig()

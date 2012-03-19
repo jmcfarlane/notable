@@ -1,4 +1,5 @@
 # Python imports
+from collections import OrderedDict
 import logging
 import os
 import sqlite3
@@ -7,10 +8,15 @@ import sqlite3
 path = os.path.expanduser('~/.notes/notes.sqlite3')
 log = logging.getLogger(__name__)
 
+def note(exclude=None):
+    exclude = exclude or []
+    fields = ['created', 'updated', 'tags', 'subject', 'content', 'password']
+    return OrderedDict((k,'string') for k in fields if not k in exclude)
+
 def add_sample_notes(c):
-    sql = 'INSERT INTO notes VALUES (?, ?, ?, ?, ?);'
-    note = ('today', 'now', 'food water', 'subject', None)
-    c.execute(sql, note)
+    d = ('today', 'now', 'food water', 'subject', None, 'Content of note')
+    sql = 'INSERT INTO notes VALUES (%s);' % ','.join('?' for _ in d)
+    c.execute(sql, d)
     c.commit()
 
 def conn():
@@ -18,23 +24,26 @@ def conn():
     _ = os.makedirs(d) if not os.path.exists(d) else None
     return sqlite3.connect(path)
 
+def columns():
+    for k, v in note().items():
+        yield dict(id=k, label=k.capitalize(), type=v)
+
+def rows(rs):
+    for row in rs:
+        yield dict(c=[ dict(v=d) for d in row ])
+
 def create_schema(c):
-    sql = """
-    CREATE TABLE notes (
-        created text,
-        updated text,
-        tags text,
-        subject text,
-        password text
-    );"""
+    pairs = [' '.join(pair) for pair in note().items()]
+    sql ='CREATE TABLE notes (%s);' % ','.join(pairs)
     try:
         c.execute(sql)
     except sqlite3.OperationalError, ex:
         log.warning(ex)
 
 def fetch_by_tags(tags):
-    sql = 'SELECT * FROM notes;'
-    return list(conn().cursor().execute(sql))
+    sql = 'SELECT %s FROM notes;' % ','.join(note(['password']).keys())
+    return dict(cols=list(columns()),
+                rows=list(rows(conn().cursor().execute(sql))))
 
 def prepare():
     c = conn()
