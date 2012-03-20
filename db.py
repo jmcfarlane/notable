@@ -82,7 +82,8 @@ def create_schema(c):
 def search(s):
     terms = s.split() if s else []
     n = note(exclude=['password'])
-    where = ['1=1'] + ["content LIKE '%{0}%'".format(t) for t in terms]
+    naive = "(content LIKE '%{0}%' OR tags LIKE '%{0}%')"
+    where = ['1=1'] + [naive.format(t) for t in terms]
     sql = 'SELECT %s FROM notes WHERE %s;'
     sql = sql % (','.join(k for k, v in n.items() if v), ' AND '.join(where))
     log.warn(sql)
