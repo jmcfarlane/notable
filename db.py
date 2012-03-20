@@ -1,5 +1,6 @@
 # Python imports
 from collections import OrderedDict
+import datetime
 import logging
 import os
 import sqlite3
@@ -8,24 +9,29 @@ import sqlite3
 path = os.path.expanduser('~/.notes/notes.sqlite3')
 log = logging.getLogger(__name__)
 
-def note(exclude=None):
+def note(exclude=None, actual=False):
     exclude = exclude or []
     fields = ['created', 'updated', 'tags', 'subject', 'content', 'password']
-    return OrderedDict((k,'string') for k in fields if not k in exclude)
+    n = OrderedDict((k,'string') for k in fields if not k in exclude)
+    if actual:
+        now = datetime.datetime.now()
+        n.update(created=now, updated=now)
+    return n
 
-def add_sample_notes(c):
-    d = ('today', 'now', 'food water', 'subject', None, 'Content of note')
-    sql = 'INSERT INTO notes VALUES (%s);' % ','.join('?' for _ in d)
-    c.execute(sql, d)
+def create_note(n):
+    c = conn()
+    sql = 'INSERT INTO notes VALUES (%s);' % ','.join('?' for _ in n.keys())
+    c.execute(sql, n.values())
     c.commit()
+    return True
 
 def conn():
     d = os.path.dirname(path)
     _ = os.makedirs(d) if not os.path.exists(d) else None
     return sqlite3.connect(path)
 
-def columns(note):
-    for k, v in note.items():
+def columns(n):
+    for k, v in n.items():
         yield dict(id=k, label=k.capitalize(), type=v)
 
 def rows(rs):
@@ -41,7 +47,7 @@ def create_schema(c):
         log.warning(ex)
 
 def fetch_by_tags(tags):
-    n = note(exclude=['password'])
+    n = note(exclude=['created', 'password'])
     sql = 'SELECT %s FROM notes;' % ','.join(n.keys())
     return dict(cols=list(columns(n)),
                 rows=list(rows(conn().cursor().execute(sql))))
@@ -49,4 +55,4 @@ def fetch_by_tags(tags):
 def prepare():
     c = conn()
     create_schema(c)
-    add_sample_notes(c)
+    #create_note(note(actual=True))

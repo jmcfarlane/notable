@@ -1,0 +1,23 @@
+/* Note listings */
+#listing-container {
+  margin-bottom: 10px;
+}
+
+/* Note content and form */
+#content TEXTAREA {
+  border: 1px solid #dddddd;
+  height: 300px;
+  width: 100%;
+}
+
+/* Note buttons */
+#buttons DIV {
+
+}
+
+/* Generic classes */
+.hidden {
+  display: none;
+}
+
+
