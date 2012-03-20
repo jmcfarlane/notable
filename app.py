@@ -42,5 +42,5 @@ def persist():
 if __name__ == '__main__':
     logging.basicConfig()
     db.prepare()
-    run(host='localhost', port=8082)
+    run(host='localhost', port=8082, reloader=True)
 
