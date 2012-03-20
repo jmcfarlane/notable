@@ -4,7 +4,7 @@ notes.search = {};
 var calculate_content = function (data, i) {
   var content = data.getValue(i, data.getColumnIndex('content')).split('\n');
   content.shift();
-  return content.join('\n');
+  return content.join('\n').substr(0, 100);
 }
 
 notes.render_notes = function(notes) {
