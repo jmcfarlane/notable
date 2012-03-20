@@ -4,15 +4,23 @@ import datetime
 import logging
 import os
 import sqlite3
+import sys
 
 # Constants
-path = os.path.expanduser('~/.notes/notes.sqlite3')
 log = logging.getLogger(__name__)
+mod = sys.modules.get(__name__)
+path = os.path.expanduser('~/.notes/notes.sqlite3')
 
 def note(exclude=None, actual=False):
     exclude = exclude or []
-    fields = ['created', 'updated', 'tags', 'subject', 'content', 'password']
-    n = OrderedDict((k,'string') for k in fields if not k in exclude)
+    model = [('created', 'string'),
+             ('updated', 'string'),
+             ('subject', None),
+             ('tags', 'string'),
+             ('content', 'string'),
+             ('password', 'string'),
+            ]
+    n = OrderedDict((k, v) for k, v in model if not k in exclude)
     if actual:
         now = datetime.datetime.now()
         n.update(created=now, updated=now)
@@ -20,26 +28,36 @@ def note(exclude=None, actual=False):
 
 def create_note(n):
     c = conn()
-    sql = 'INSERT INTO notes VALUES (%s);' % ','.join('?' for _ in n.keys())
-    c.execute(sql, n.values())
-    c.commit()
-    return True
+    sql = 'INSERT INTO notes VALUES (%s);'
+    sql = sql % ','.join('?' for k, t in n.items() if t)
+    c.execute(sql, [v for v in n.values() if not v is None])
+    return c.commit()
 
 def conn():
     d = os.path.dirname(path)
     _ = os.makedirs(d) if not os.path.exists(d) else None
     return sqlite3.connect(path)
 
-def columns(n):
+def calculate_subject(row):
+    return row.get('content').split('\n')[0]
+
+def columns(n, row):
+    for k, _ in n.items():
+        yield dict(v=row.get(k, getattr(mod, 'calculate_subject')(row)))
+
+def dict_factory(c, row):
+    return dict((col[0], row[i]) for i, col in enumerate(c.description))
+
+def fields(n):
     for k, v in n.items():
         yield dict(id=k, label=k.capitalize(), type=v)
 
-def rows(rs):
+def rows(n, rs):
     for row in rs:
-        yield dict(c=[ dict(v=d) for d in row ])
+        yield dict(c=list(columns(n, row)))
 
 def create_schema(c):
-    pairs = [' '.join(pair) for pair in note().items()]
+    pairs = [' '.join(pair) for pair in note().items() if pair[1]]
     sql ='CREATE TABLE notes (%s);' % ','.join(pairs)
     try:
         c.execute(sql)
@@ -48,15 +66,16 @@ def create_schema(c):
 
 def search(s):
     terms = s.split() if s else []
-    n = note(exclude=['created', 'password'])
+    n = note(exclude=['password'])
     where = ['1=1'] + ["content LIKE '%{0}%'".format(t) for t in terms]
     sql = 'SELECT %s FROM notes WHERE %s;'
-    sql = sql % (','.join(n.keys()), ' AND '.join(where))
+    sql = sql % (','.join(k for k, v in n.items() if v), ' AND '.join(where))
     log.warn(sql)
-    return dict(cols=list(columns(n)),
-                rows=list(rows(conn().cursor().execute(sql))))
+    c = conn()
+    c.row_factory = dict_factory
+    _cols = list(fields(n))
+    _rows = list(rows(n, c.cursor().execute(sql)))
+    return dict(cols=_cols, rows=_rows)
 
 def prepare():
-    c = conn()
-    create_schema(c)
-    #create_note(note(actual=True))
+    create_schema(conn())

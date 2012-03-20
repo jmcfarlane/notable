@@ -1,10 +1,23 @@
 var notes = {};
 notes.search = {};
 
+var calculate_content = function (data, i) {
+  var content = data.getValue(i, data.getColumnIndex('content')).split('\n');
+  content.shift();
+  return content.join('\n');
+}
+
 notes.render_notes = function(notes) {
   var div = document.getElementById('listing')
   var data = new google.visualization.DataTable(notes);
   var table = new google.visualization.Table(div);
+  var view = new google.visualization.DataView(data);
+  var columns = [
+    data.getColumnIndex('updated'),
+    data.getColumnIndex('subject'),
+    {calc: calculate_content, type:'string', label:'Body'},
+    data.getColumnIndex('tags'),
+  ]
   var options = {
     height: '200px',
     showRowNumber: true,
@@ -12,7 +25,9 @@ notes.render_notes = function(notes) {
     sortColumn: 0,
     width: '100%',
   };
-  table.draw(data, options);
+
+  view.setColumns(columns);
+  table.draw(view, options);
 }
 
 notes.create = function () {
