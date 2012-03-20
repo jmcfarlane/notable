@@ -27,6 +27,12 @@ notes.render_notes = function(notes) {
 
   view.setColumns(columns);
   table.draw(view, options);
+
+  // Add navigation listener
+  google.visualization.events.addListener(table, 'select',
+    function(e) {
+      edit(data, table.getSelection()[0].row);
+  });
 }
 
 notes.create = function () {
@@ -40,6 +46,13 @@ notes.create = function () {
   }
 }
 
+edit = function (data, row) {
+  notes.create();
+  $('#content textarea').val(data.getValue(row, data.getColumnIndex('content')))
+  $('#content #uid').val(data.getValue(row, data.getColumnIndex('uid')))
+  $('#content #tags').val(data.getValue(row, data.getColumnIndex('tags')))
+}
+
 notes.search = function () {
   var q = {s: $('#search input').val()};
   $.get('/api/list', q, function (response) {
@@ -48,10 +61,12 @@ notes.search = function () {
 }
 
 notes.persist = function () {
-  var content = $('#content textarea').val();
-  var tags = $('#content input').val();
-  var note = {content: content, tags: tags};
-  $.post('/api/persist', note, function (response) {
+  var post = {
+    content: $('#content textarea').val(),
+    tags: $('#content #tags').val(),
+    uid: $('#content #uid').val(),
+  }
+  $.post('/api/persist', post, function (response) {
     notes.reset();
     notes.search();
   });
@@ -63,7 +78,9 @@ notes.reset = function () {
   $('#persist').hide();
   $('#create').show();
   $('#refresh').show();
+  $('#content #tags').val('');
   $('#content textarea').val('');
+  $('#content #uid').val('');
 }
 
 notes.search.reset = function () {

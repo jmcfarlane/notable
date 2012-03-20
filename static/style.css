@@ -10,6 +10,15 @@
   width: 100%;
 }
 
+#content LABEL {
+  font-weight: bold;
+}
+
+#tags {
+  margin-top: 6px;
+  width: 50%;
+}
+
 /* Search */
 #search {
   opacity: 0.5;

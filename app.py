@@ -30,8 +30,14 @@ def api_list():
 def persist():
     n = db.note(actual=True)
     form = dict((k, v) for k, v in request.forms.items() if k in n)
+    if form.get('uid') == '':
+        fcn = db.create_note
+        form.pop('uid')
+    else:
+        fcn = db.update_note
+
     n.update(form)
-    return dict(success=db.create_note(n))
+    return dict(success=fcn(n))
 
 if __name__ == '__main__':
     logging.basicConfig()

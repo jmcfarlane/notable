@@ -12,6 +12,9 @@
     <div id="content" name="content" class="hidden">
       <form method="post" target="/api/create">
         <textarea></textarea>
+        <input type="text" id="tags" name="tags" />
+        <label for="tags">Tags</label>
+        <input type="hidden" id="uid" />
       </form>
     </div>
 

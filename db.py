@@ -32,10 +32,20 @@ def note(exclude=None, actual=False):
 def create_note(n):
     c = conn()
     sql = 'INSERT INTO notes (%s) VALUES (%s);'
-    cols = ','.join(k for k, t in n.items() if t)
-    values = ','.join('?' for k, t in n.items() if t)
+    cols = ','.join(k for k, t in n.items() if not t is None)
+    values = ','.join('?' for k, t in n.items() if not t is None)
     sql = sql % (cols, values)
-    c.execute(sql, [v for v in n.values() if not v is None])
+    values = [v for v in n.values() if not v is None]
+    log.warn('%s, %s' % (sql, values))
+    c.execute(sql, values)
+    return c.commit()
+
+def update_note(n):
+    c = conn()
+    sql = 'UPDATE notes SET tags = ?, content = ? WHERE uid = ?'
+    values = [n.get('tags'), n.get('content'), n.get('uid')]
+    log.warn('%s, %s' % (sql, values))
+    c.execute(sql, values)
     return c.commit()
 
 def conn():
