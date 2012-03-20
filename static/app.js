@@ -1,4 +1,5 @@
-notes = {};
+var notes = {};
+notes.search = {};
 
 notes.render_notes = function(notes) {
   var div = document.getElementById('listing')
@@ -15,25 +16,30 @@ notes.render_notes = function(notes) {
 }
 
 notes.create = function () {
-  $('#create').hide();
-  $('#refresh').hide();
-  $('#content').show();
-  $('#reset').show();
-  $('#persist').show();
-  setTimeout("$('#content textarea').focus()", 100);
+  if (! $('#search input').is(":visible")) {
+    $('#create').hide();
+    $('#refresh').hide();
+    $('#content').show();
+    $('#reset').show();
+    $('#persist').show();
+    setTimeout("$('#content textarea').focus()", 100);
+  }
 }
 
-notes.fetch_by_tags = function () {
-  $.ajax({url: '/api/list/', success: notes.render_notes });
+notes.search = function () {
+  var q = {s: $('#search input').val()};
+  $.get('/api/list', q, function (response) {
+    notes.render_notes(response);
+  });
 }
 
 notes.persist = function () {
   var content = $('#content textarea').val();
-  var subject = content.split('\n')[0];
-  var note = {content: content, subject: subject};
+  var tags = $('#content input').val();
+  var note = {content: content, tags: tags};
   $.post('/api/persist', note, function (response) {
     notes.reset();
-    notes.fetch_by_tags();
+    notes.search();
   });
 }
 
@@ -44,4 +50,16 @@ notes.reset = function () {
   $('#create').show();
   $('#refresh').show();
   $('#content textarea').val('');
+}
+
+notes.search.reset = function () {
+  $('#search').hide();
+  $('#search input').val('');
+}
+
+notes.search.perform = function () {
+  if (! $('#content textarea').is(":visible")) {
+    $('#search').show();
+    setTimeout("$('#search input').focus()", 100);
+  }
 }

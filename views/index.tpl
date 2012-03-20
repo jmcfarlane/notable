@@ -22,6 +22,10 @@
       <input id="reset" type="button" value="Cancel" class="hidden" />
     </div>
 
+    <div id="search" class="hidden">
+      <input type="text" id="q" />
+    </div>
+
     <script type="text/javascript" src="/static/app.js"></script>
     <script type="text/javascript" src="{{jq}}/{{jqv}}/jquery.min.js"></script>
     <script type="text/javascript" src="http://www.google.com/jsapi"></script>
@@ -29,22 +33,27 @@
       // Load the gviz table
       var pkgs = ['corechart', 'table'];
       google.load('visualization', '1.0', {'packages':pkgs});
-      google.setOnLoadCallback(notes.fetch_by_tags);
+      google.setOnLoadCallback(notes.search);
 
       // Add event handlers
       $('#create').on('click', notes.create);
       $('#persist').on('click', notes.persist);
-      $('#refresh').on('click', notes.fetch_by_tags);
+      $('#refresh').on('click', notes.search);
       $('#reset').on('click', notes.reset);
+      $('#search input').on('keypress', notes.search);
 
       // Key bindings
       $(document).keydown(function(e){
-        switch (e.keyCode) {
+        switch (e.which) {
           case 27:
             notes.reset();
+            notes.search.reset();
             break;
           case 78:
             notes.create();
+            break;
+          case 83:
+            notes.search.perform();
             break;
         }
       });

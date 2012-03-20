@@ -1,9 +1,11 @@
+#! /usr/bin/env python
+
 # Python imports
 import logging
 import os
 
 # Third party imports
-from bottle import post, request, route, run, static_file, view
+from bottle import get, post, request, route, run, static_file, view
 
 # Project imports
 import db
@@ -20,12 +22,12 @@ def homepage():
 def static(filename):
     return static_file(filename, root=root)
 
-@route('/api/list/<tags:re:.*>')
-def api_list(tags=None):
-    return db.fetch_by_tags(tags)
+@get('/api/list')
+def api_list():
+    return db.search(request.query.get('s'))
 
 @post('/api/persist')
-def persist(tags=None):
+def persist():
     n = db.note(actual=True)
     form = dict((k, v) for k, v in request.forms.items() if k in n)
     n.update(form)

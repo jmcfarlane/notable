@@ -46,9 +46,13 @@ def create_schema(c):
     except sqlite3.OperationalError, ex:
         log.warning(ex)
 
-def fetch_by_tags(tags):
+def search(s):
+    terms = s.split() if s else []
     n = note(exclude=['created', 'password'])
-    sql = 'SELECT %s FROM notes;' % ','.join(n.keys())
+    where = ['1=1'] + ["content LIKE '%{0}%'".format(t) for t in terms]
+    sql = 'SELECT %s FROM notes WHERE %s;'
+    sql = sql % (','.join(n.keys()), ' AND '.join(where))
+    log.warn(sql)
     return dict(cols=list(columns(n)),
                 rows=list(rows(conn().cursor().execute(sql))))
 

@@ -10,9 +10,26 @@
   width: 100%;
 }
 
-/* Note buttons */
-#buttons DIV {
+/* Search */
+#search {
+  opacity: 0.5;
+  margin-right: 35px;
+  margin-top: 15px;
+  padding: 2px;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  -moz-box-shadow: 0 0 5px 5px #888;
+  -webkit-box-shadow: 0 0 5px 5px#888;
+  box-shadow: 0 0 5px 5px #888;
+}
 
+#search INPUT {
+  border: none;
+  outline: none;
+  padding: 1px;
+  width: 350px;
+  font-size: 110%;
 }
 
 /* Generic classes */
