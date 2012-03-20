@@ -20,7 +20,6 @@ notes.render_notes = function(notes) {
   ]
   var options = {
     height: '200px',
-    showRowNumber: true,
     sortAscending: false,
     sortColumn: 0,
     width: '100%',

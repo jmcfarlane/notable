@@ -5,6 +5,7 @@ import logging
 import os
 import sqlite3
 import sys
+import uuid
 
 # Constants
 log = logging.getLogger(__name__)
@@ -13,7 +14,8 @@ path = os.path.expanduser('~/.notes/notes.sqlite3')
 
 def note(exclude=None, actual=False):
     exclude = exclude or []
-    model = [('created', 'string'),
+    model = [('uid', 'string'),
+             ('created', 'string'),
              ('updated', 'string'),
              ('subject', None),
              ('tags', 'string'),
@@ -23,13 +25,16 @@ def note(exclude=None, actual=False):
     n = OrderedDict((k, v) for k, v in model if not k in exclude)
     if actual:
         now = datetime.datetime.now()
-        n.update(created=now, updated=now)
+        uid = uuid.uuid4().hex
+        n.update(uid=uid, created=now, updated=now)
     return n
 
 def create_note(n):
     c = conn()
-    sql = 'INSERT INTO notes VALUES (%s);'
-    sql = sql % ','.join('?' for k, t in n.items() if t)
+    sql = 'INSERT INTO notes (%s) VALUES (%s);'
+    cols = ','.join(k for k, t in n.items() if t)
+    values = ','.join('?' for k, t in n.items() if t)
+    sql = sql % (cols, values)
     c.execute(sql, [v for v in n.values() if not v is None])
     return c.commit()
 
