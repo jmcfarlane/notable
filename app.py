@@ -3,6 +3,9 @@
 # Python imports
 import logging
 import os
+import threading
+import time
+import webbrowser
 
 # Third party imports
 from bottle import get, post, request, route, run, static_file, view
@@ -62,8 +65,13 @@ def persist():
     n.update(form)
     return dict(success=fcn(n, password=password))
 
+def launcher():
+    time.sleep(1)
+    webbrowser.open_new_tab('http://localhost:8082')
+
 if __name__ == '__main__':
     logging.basicConfig()
     db.prepare()
+    threading.Thread(target=launcher).start()
     run(host='localhost', port=8082)
 
