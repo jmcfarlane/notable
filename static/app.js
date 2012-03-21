@@ -49,8 +49,29 @@ notes.create = function () {
     $('#content').show();
     $('#reset').show();
     $('#persist').show();
+    $('#editor').show();
     setTimeout("$('#content textarea').focus()", 100);
   }
+}
+
+notes.launch_editor = function () {
+  var post = {
+    content: $('#content textarea').val(),
+    uid: $('#content #uid').val(),
+  }
+  $.post('/api/launch_editor', post, function (response) {
+    //notes.poll_disk(post.uid);
+    notes.poll_disk(response);
+  });
+}
+
+notes.poll_disk = function (uid) {
+  $.get('/api/from_disk/' + uid, function (response) {
+    if (response != 'missing') {
+      $('#content textarea').val(response);
+      setTimeout('notes.poll_disk("'+ uid +'")', 1000)
+    }
+  });
 }
 
 notes.pwd_prompt = function () {
@@ -108,6 +129,7 @@ notes.reset = function () {
   $('#content').hide();
   $('#reset').hide();
   $('#persist').hide();
+  $('#editor').hide();
   $('#create').show();
   $('#refresh').show();
   $('#content #tags').val('');

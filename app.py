@@ -8,7 +8,7 @@ import os
 from bottle import get, post, request, route, run, static_file, view
 
 # Project imports
-import db
+import db, editor
 
 # Constants, and help with template lookup
 root = os.path.abspath(os.path.dirname(__file__))
@@ -29,6 +29,20 @@ def decrypt():
     password = request.forms.get('password')
     uid = request.forms.get('uid')
     return db.get_content(uid, password)
+
+@post('/api/launch_editor')
+def launch_editor():
+    uid = request.forms.get('uid')
+    content = request.forms.get('content')
+    return editor.launch(uid, content)
+
+@get('/api/from_disk/<uid>')
+def from_disk(uid=None):
+    path = os.path.join('/tmp', uid)
+    if os.path.exists(path):
+        return open(path).read()
+    else:
+        return 'missing'
 
 @get('/api/list')
 def api_list():

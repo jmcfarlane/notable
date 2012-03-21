@@ -24,6 +24,7 @@
     <div id="buttons">
       <input id="refresh" type="button" value="Refresh" />
       <input id="create" type="button" value="New" />
+      <input id="editor" type="button" value="Editor" class="hidden" />
       <input id="persist" type="button" value="Save" class="hidden" />
       <input id="reset" type="button" value="Cancel" class="hidden" />
     </div>
@@ -54,6 +55,7 @@
       $('#reset').on('click', notes.reset);
       $('#search input').on('keypress', notes.search);
       $('#password-dialog form').on('submit', notes.pwd_submit);
+      $('#editor').on('click', notes.launch_editor);
 
       // Key bindings
       $(document).keydown(function(e){
