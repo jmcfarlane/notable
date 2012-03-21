@@ -42,7 +42,8 @@ notes.render_notes = function(notes) {
 }
 
 notes.create = function () {
-  if (! $('#search input').is(":visible")) {
+  var found = notes.any_visible(['#search input', '#content textarea']);
+  if (! found) {
     $('#create').hide();
     $('#refresh').hide();
     $('#content').show();
@@ -65,8 +66,8 @@ notes.pwd_submit = function () {
   $.post('/api/decrypt', post, function (response) {
     if (! notes.RE_ENCRYPTED.test(response)) {
       $('#content textarea').val(response);
-    }
-    $('#password-dialog').hide();
+    };
+    notes.password_reset();
   });
   return false;
 }
@@ -112,16 +113,32 @@ notes.reset = function () {
   $('#content #tags').val('');
   $('#content textarea').val('');
   $('#content #uid').val('');
-  $('#content #password').val('');
 }
 
-notes.search.reset = function () {
+notes.search_reset = function () {
   $('#search').hide();
   $('#search input').val('');
 }
 
-notes.search.perform = function () {
-  if (! $('#content textarea').is(":visible")) {
+notes.password_reset = function () {
+  $('#password-dialog').hide();
+  $('#password-dialog input').val('');
+}
+
+notes.any_visible = function (selectors) {
+  var guilty = false
+  $.each(selectors, function (idx, value) {
+    if ($(value).is(":visible")) {
+      guilty = true;
+      return false;
+    };
+  });
+  return guilty;
+}
+
+notes.search_perform = function () {
+  var found = notes.any_visible(['#content textarea']);
+  if (! found) {
     $('#search').show();
     setTimeout("$('#search input').focus()", 100);
   }

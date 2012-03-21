@@ -60,13 +60,14 @@
         switch (e.which) {
           case 27:
             notes.reset();
-            notes.search.reset();
+            notes.search_reset();
+            notes.password_reset();
             break;
           case 78:
             notes.create();
             break;
           case 83:
-            notes.search.perform();
+            notes.search_perform();
             break;
         }
       });
