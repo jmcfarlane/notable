@@ -24,9 +24,9 @@
     <div id="buttons">
       <input id="refresh" type="button" value="Refresh" />
       <input id="create" type="button" value="New" />
-      <input id="editor" type="button" value="Editor" class="hidden" />
       <input id="persist" type="button" value="Save" class="hidden" />
       <input id="reset" type="button" value="Cancel" class="hidden" />
+      <input id="editor" type="button" value="Editor" class="hidden" />
     </div>
 
     <div id="search" class="hidden">
