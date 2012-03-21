@@ -10,8 +10,10 @@ from bottle import get, post, request, route, run, static_file, view
 # Project imports
 import db
 
-# Constants
-root = os.path.join(os.path.dirname(__file__), 'static')
+# Constants, and help with template lookup
+root = os.path.abspath(os.path.dirname(__file__))
+static = os.path.join(root, 'static')
+os.chdir(root)
 
 @route('/')
 @view('index')
@@ -19,8 +21,8 @@ def homepage():
     return dict()
 
 @route('/static/<filename>')
-def static(filename):
-    return static_file(filename, root=root)
+def htdocs(filename):
+    return static_file(filename, root=static)
 
 @post('/api/decrypt')
 def decrypt():
@@ -49,5 +51,5 @@ def persist():
 if __name__ == '__main__':
     logging.basicConfig()
     db.prepare()
-    run(host='localhost', port=8082, reloader=True)
+    run(host='localhost', port=8082)
 
