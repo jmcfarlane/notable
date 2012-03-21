@@ -1,5 +1,4 @@
 var notes = {};
-notes.search = {};
 notes.RE_ENCRYPTED = new RegExp(/[^=]{12,}==$/);
 notes.encrypted = '<ENCRYPTED>';
 
@@ -60,7 +59,6 @@ notes.launch_editor = function () {
     uid: $('#content #uid').val(),
   }
   $.post('/api/launch_editor', post, function (response) {
-    //notes.poll_disk(post.uid);
     notes.poll_disk(response);
   });
 }
@@ -135,6 +133,8 @@ notes.reset = function () {
   $('#content #tags').val('');
   $('#content textarea').val('');
   $('#content #uid').val('');
+  $('#content #password').val('');
+  notes.password_reset();
 }
 
 notes.search_reset = function () {
