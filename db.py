@@ -7,6 +7,9 @@ import sqlite3
 import sys
 import uuid
 
+# Project imports
+import crypt
+
 # Constants
 log = logging.getLogger(__name__)
 mod = sys.modules.get(__name__)
@@ -20,7 +23,6 @@ def note(exclude=None, actual=False):
              ('subject', None),
              ('tags', 'string'),
              ('content', 'string'),
-             ('password', 'string'),
             ]
     n = OrderedDict((k, v) for k, v in model if not k in exclude)
     if actual:
@@ -29,8 +31,9 @@ def note(exclude=None, actual=False):
         n.update(uid=uid, created=now, updated=now)
     return n
 
-def create_note(n):
+def create_note(n, password=None):
     c = conn()
+    n = encrypt(n, password)
     sql = 'INSERT INTO notes (%s) VALUES (%s);'
     cols = ','.join(k for k, t in n.items() if not t is None)
     values = ','.join('?' for k, t in n.items() if not t is None)
@@ -40,8 +43,16 @@ def create_note(n):
     c.execute(sql, values)
     return c.commit()
 
-def update_note(n):
+def encrypt(n, password):
+    if password:
+        subject = n['content'].split('\n')[0]
+        n['content'] = '\n'.join((subject,
+                                  crypt.encrypt(n['content'], password)))
+    return n
+
+def update_note(n, password=None):
     c = conn()
+    n = encrypt(n, password)
     sql = 'UPDATE notes SET tags = ?, content = ? WHERE uid = ?'
     values = [n.get('tags'), n.get('content'), n.get('uid')]
     log.warn('%s, %s' % (sql, values))
@@ -79,9 +90,16 @@ def create_schema(c):
     except sqlite3.OperationalError, ex:
         log.warning(ex)
 
+def get_content(uid, password):
+    c = conn()
+    c.row_factory = dict_factory
+    sql = 'SELECT content FROM notes WHERE uid = ?'
+    content = c.cursor().execute(sql, [uid]).next().get('content')
+    return crypt.decrypt(content.split('\n', 1)[1], password)
+
 def search(s):
     terms = s.split() if s else []
-    n = note(exclude=['password'])
+    n = note()
     naive = "(content LIKE '%{0}%' OR tags LIKE '%{0}%')"
     where = ['1=1'] + [naive.format(t) for t in terms]
     sql = 'SELECT %s FROM notes WHERE %s;'

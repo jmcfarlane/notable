@@ -41,6 +41,27 @@
   font-size: 110%;
 }
 
+/* Password dialog */
+#password-dialog {
+  left: 200px;
+  position: absolute;
+  height: 40px;
+  top: 290px;
+  width: 300px;
+  -moz-box-shadow: 0 0 5px 5px #888;
+  -webkit-box-shadow: 0 0 5px 5px#888;
+  box-shadow: 0 0 5px 5px #888;
+}
+
+#password-dialog INPUT {
+  border: none;
+  color: red;
+  font-size: 150%;
+  outline: none;
+  padding: 4px;
+  width: 300px;
+}
+
 /* Generic classes */
 .hidden {
   display: none;

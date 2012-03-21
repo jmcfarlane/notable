@@ -1,10 +1,16 @@
 var notes = {};
 notes.search = {};
+notes.RE_ENCRYPTED = new RegExp(/[^=]{12,}==$/);
+notes.encrypted = '<ENCRYPTED>';
 
 var calculate_content = function (data, i) {
   var content = data.getValue(i, data.getColumnIndex('content')).split('\n');
   content.shift();
-  return content.join('\n').substr(0, 100);
+  if (notes.RE_ENCRYPTED.test(content)) {
+    return notes.encrypted;
+  } else {
+    return content.join('\n').substr(0, 100);
+  }
 }
 
 notes.render_notes = function(notes) {
@@ -15,7 +21,7 @@ notes.render_notes = function(notes) {
   var columns = [
     data.getColumnIndex('updated'),
     data.getColumnIndex('subject'),
-    {calc: calculate_content, type:'string', label:'Body'},
+    {calc: calculate_content, id:'body', type:'string', label:'Body'},
     data.getColumnIndex('tags'),
   ]
   var options = {
@@ -46,11 +52,35 @@ notes.create = function () {
   }
 }
 
+notes.pwd_prompt = function () {
+  $('#password-dialog').show();
+  setTimeout("$('#password-dialog input').focus()", 100);
+}
+
+notes.pwd_submit = function () {
+  var post = {
+    password: $('#password-dialog input').val(),
+    uid: $('#content #uid').val(),
+  }
+  $.post('/api/decrypt', post, function (response) {
+    if (! notes.RE_ENCRYPTED.test(response)) {
+      $('#content textarea').val(response);
+    }
+    $('#password-dialog').hide();
+  });
+  return false;
+}
+
 edit = function (data, row) {
   notes.create();
   $('#content textarea').val(data.getValue(row, data.getColumnIndex('content')))
   $('#content #uid').val(data.getValue(row, data.getColumnIndex('uid')))
   $('#content #tags').val(data.getValue(row, data.getColumnIndex('tags')))
+
+  var b = data.getValue(row, data.getColumnIndex('content')).split('\n')[1];
+  if (notes.RE_ENCRYPTED.test(b)) {
+    notes.pwd_prompt();
+  }
 }
 
 notes.search = function () {
@@ -63,6 +93,7 @@ notes.search = function () {
 notes.persist = function () {
   var post = {
     content: $('#content textarea').val(),
+    password: $('#content #password').val(),
     tags: $('#content #tags').val(),
     uid: $('#content #uid').val(),
   }
@@ -81,6 +112,7 @@ notes.reset = function () {
   $('#content #tags').val('');
   $('#content textarea').val('');
   $('#content #uid').val('');
+  $('#content #password').val('');
 }
 
 notes.search.reset = function () {

@@ -14,6 +14,9 @@
         <textarea></textarea>
         <input type="text" id="tags" name="tags" />
         <label for="tags">Tags</label>
+        <br/>
+        <input type="text" id="password" name="password" />
+        <label for="tags">Password</label>
         <input type="hidden" id="uid" />
       </form>
     </div>
@@ -27,6 +30,12 @@
 
     <div id="search" class="hidden">
       <input type="text" id="q" />
+    </div>
+
+    <div id="password-dialog" class="hidden">
+      <form>
+        <input type="password" />
+      </form>
     </div>
 
     <script type="text/javascript" src="/static/app.js"></script>
@@ -44,6 +53,7 @@
       $('#refresh').on('click', notes.search);
       $('#reset').on('click', notes.reset);
       $('#search input').on('keypress', notes.search);
+      $('#password-dialog form').on('submit', notes.pwd_submit);
 
       // Key bindings
       $(document).keydown(function(e){
@@ -59,6 +69,14 @@
             notes.search.perform();
             break;
         }
+      });
+
+      // Dynamic placements
+      var pwd = $('#password-dialog');
+      pwd.css({
+        position: 'absolute',
+        left: '50%',
+        'margin-left': 0 - (pwd.width() / 2)
       });
     </script>
   </body>

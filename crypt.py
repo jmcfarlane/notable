@@ -1,4 +1,5 @@
 # Python imports
+import base64
 import hashlib
 import random
 
@@ -14,12 +15,14 @@ def pad(string):
 
 def encrypt(string, pwd):
     iv = ''.join(chr(random.randint(0, 255)) for i in range(BLOCKS))
-    return iv + AES.new(key(pwd), MODE, iv).encrypt(pad(string))
+    cipher = iv + AES.new(key(pwd), MODE, iv).encrypt(pad(string))
+    return base64.b64encode(cipher)
 
 def key(pwd):
     return hashlib.sha256(pwd).digest()
 
 def decrypt(cipher, pwd):
+    cipher = base64.b64decode(cipher)
     iv = cipher[:BLOCKS]
     return AES.new(key(pwd), MODE, iv).decrypt(cipher[BLOCKS:]).rstrip(PAD)
 

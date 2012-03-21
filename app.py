@@ -22,6 +22,12 @@ def homepage():
 def static(filename):
     return static_file(filename, root=root)
 
+@post('/api/decrypt')
+def decrypt():
+    password = request.forms.get('password')
+    uid = request.forms.get('uid')
+    return db.get_content(uid, password)
+
 @get('/api/list')
 def api_list():
     return db.search(request.query.get('s'))
@@ -29,6 +35,7 @@ def api_list():
 @post('/api/persist')
 def persist():
     n = db.note(actual=True)
+    password = request.forms.get('password')
     form = dict((k, v) for k, v in request.forms.items() if k in n)
     if form.get('uid') == '':
         fcn = db.create_note
@@ -37,7 +44,7 @@ def persist():
         fcn = db.update_note
 
     n.update(form)
-    return dict(success=fcn(n))
+    return dict(success=fcn(n, password=password))
 
 if __name__ == '__main__':
     logging.basicConfig()
