@@ -72,6 +72,6 @@ def launcher():
 if __name__ == '__main__':
     logging.basicConfig()
     db.prepare()
-    threading.Thread(target=launcher).start()
+    #threading.Thread(target=launcher).start()
     run(host='localhost', port=8082)
 

@@ -39,48 +39,12 @@
       </form>
     </div>
 
-    <script type="text/javascript" src="/static/app.js"></script>
     <script type="text/javascript" src="{{jq}}/{{jqv}}/jquery.min.js"></script>
     <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="/static/app.js"></script>
     <script type="text/javascript">
-      // Load the gviz table
-      var pkgs = ['corechart', 'table'];
-      google.load('visualization', '1.0', {'packages':pkgs});
-      google.setOnLoadCallback(notes.search);
-
-      // Add event handlers
-      $('#create').on('click', notes.create);
-      $('#persist').on('click', notes.persist);
-      $('#refresh').on('click', notes.search);
-      $('#reset').on('click', notes.reset);
-      $('#search input').on('keypress', notes.search);
-      $('#password-dialog form').on('submit', notes.pwd_submit);
-      $('#editor').on('click', notes.launch_editor);
-
-      // Key bindings
-      $(document).keydown(function(e){
-        switch (e.which) {
-          case 27:
-            notes.reset();
-            notes.search_reset();
-            notes.password_reset();
-            break;
-          case 78:
-            notes.create();
-            break;
-          case 83:
-            notes.search_perform();
-            break;
-        }
-      });
-
-      // Dynamic placements
-      var pwd = $('#password-dialog');
-      pwd.css({
-        position: 'absolute',
-        left: '50%',
-        'margin-left': 0 - (pwd.width() / 2)
-      });
+      // Load the application
+      var notable = (new NOTABLE.Application('abc')).init();
     </script>
   </body>
 </html>
