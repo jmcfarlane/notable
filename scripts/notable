@@ -1,0 +1,5 @@
+#! /usr/bin/python
+
+from notable import app
+app.main()
+
