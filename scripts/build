@@ -1,0 +1,43 @@
+#! /bin/bash
+
+SRC=$(dirname $(which $0))
+UPLOAD=false
+
+function usage {
+    THIS=$(basename $0)
+
+    echo "Usage: $THIS [-u]"
+    echo
+    echo "Arguments available:
+    -u  Upload to pypi
+    "
+
+    exit 1
+}
+
+# Fetch any passed in arguments:
+while getopts "uh" options; do
+    case $options in
+        u ) UPLOAD=true;;
+        * ) usage
+        ;;
+    esac
+done
+
+# Should we upoad to pypi or not?
+if [ "$UPLOAD" == true ] && [ -f ~/.pypirc ]; then
+    UPLOAD='upload'
+else
+    UPLOAD=''
+fi
+
+# Source tarball
+python setup.py -q sdist $UPLOAD
+
+# Cleaup
+rm -f MANIFEST
+
+echo "Generated:"
+for file in $(ls dist); do
+    echo " >> $file"
+done

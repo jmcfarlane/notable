@@ -13,7 +13,7 @@ import crypt
 # Constants
 log = logging.getLogger(__name__)
 mod = sys.modules.get(__name__)
-path = os.path.expanduser('~/.notes/notes.sqlite3')
+path = os.path.expanduser('~/.notable/notes.sqlite3')
 
 def note(exclude=None, actual=False):
     exclude = exclude or []
