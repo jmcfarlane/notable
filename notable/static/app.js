@@ -203,6 +203,8 @@
         if (response != 'missing') {
           $('#content textarea').val(response);
           setTimeout(function(){that.poll_disk(uid)}, 200);
+        } else {
+          that.persist();
         }
       });
     }
