@@ -21,8 +21,13 @@ INPUT[type="password"]:focus {
 
 /* Note content and form */
 #content TEXTAREA {
-  height: 300px;
-  width: 100%;
+  height: 85%;
+  left: 0;
+  margin: 6px;
+  overflow: auto;
+  position: absolute;
+  top: 0;
+  width: 99%;
 }
 
 #content LABEL {
@@ -32,6 +37,14 @@ INPUT[type="password"]:focus {
 #tags {
   margin-top: 6px;
   width: 50%;
+}
+
+/* Buttons */
+#buttons {
+  bottom: 0;
+  left: 0;
+  margin: 4px;
+  position: absolute;
 }
 
 /* Search */
