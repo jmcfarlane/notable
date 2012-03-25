@@ -8,7 +8,7 @@
 
   // Constants
   var ENCRYPTED = '<ENCRYPTED>';
-  var RE_ENCRYPTED = new RegExp(/[^=]{12,}==$/);
+  var RE_ENCRYPTED = new RegExp(/[^ ]{32,}$/);
 
   /**
    * Main application

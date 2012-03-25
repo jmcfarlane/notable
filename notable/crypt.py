@@ -6,12 +6,13 @@ import random
 # Third party imports
 from Crypto.Cipher import AES
 
-BLOCKS = 16
+BLOCKS = 16 # 16bit IV and 32bit AES padding
 MODE = AES.MODE_CBC
 PAD = chr(0)
 
 def pad(string):
-    return string + (BLOCKS - len(string) % BLOCKS) * PAD
+    _b32 = BLOCKS * 2
+    return string + (_b32 - len(string) % _b32) * PAD
 
 def encrypt(string, pwd):
     iv = ''.join(chr(random.randint(0, 255)) for i in range(BLOCKS))
