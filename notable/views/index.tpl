@@ -15,7 +15,7 @@
         <input type="text" id="tags" name="tags" />
         <label for="tags">Tags</label>
         <br/>
-        <input type="text" id="password" name="password" />
+        <input type="password" id="password" name="password" />
         <label for="tags">Password</label>
         <input type="hidden" id="uid" />
       </form>
