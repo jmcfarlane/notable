@@ -1,11 +1,17 @@
 /* Common elements */
-TEXTAREA, INPUT[type="text"] {
+TEXTAREA, INPUT[type="password"], INPUT[type="text"] {
   border: 1px solid #dddddd;
 }
 
-TEXTAREA:focus, INPUT[type="text"]:focus {
+TEXTAREA:focus, INPUT[type="password"]:focus, INPUT[type="text"]:focus {
   border: 1px solid lightblue;
   outline: 1px;
+}
+
+INPUT[type="password"]:focus {
+  background-color: pink;
+  border-color: black;
+  color: red;
 }
 
 /* Note listings */
