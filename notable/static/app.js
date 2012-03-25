@@ -110,6 +110,7 @@
           $('#content textarea').val(response);
           that.reset_password();
           $('#delete').show();
+          $('#password').val(post.password);
         } else {
           $('#password-dialog input').val('');
         };
