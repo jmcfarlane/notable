@@ -27,6 +27,7 @@
       <input id="persist" type="button" value="Save" class="hidden" />
       <input id="reset" type="button" value="Cancel" class="hidden" />
       <input id="editor" type="button" value="Editor" class="hidden" />
+      <input id="delete" type="button" value="Delete" class="hidden" />
     </div>
 
     <div id="search" class="hidden">

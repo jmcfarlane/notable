@@ -43,6 +43,13 @@ def create_note(n, password=None):
     c.execute(sql, values)
     return c.commit()
 
+def delete_note(uid, password=None):
+    c = conn()
+    sql = 'DELETE FROM notes WHERE uid = ?'
+    log.warn('%s, %s' % (sql, uid))
+    c.execute(sql, (uid,))
+    return c.commit()
+
 def encrypt(n, password):
     if password:
         subject = n['content'].split('\n')[0]

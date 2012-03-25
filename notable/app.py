@@ -32,6 +32,12 @@ def decrypt():
     uid = bottle.request.forms.get('uid')
     return db.get_content(uid, password)
 
+@bottle.post('/api/delete')
+def delete():
+    password = bottle.request.forms.get('password')
+    uid = bottle.request.forms.get('uid')
+    return dict(success=db.delete_note(uid, password=password))
+
 @bottle.post('/api/launch_editor')
 def launch_editor():
     uid = bottle.request.forms.get('uid')

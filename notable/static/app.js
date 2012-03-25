@@ -9,6 +9,7 @@
   // Constants
   var ENCRYPTED = '<ENCRYPTED>';
   var RE_ENCRYPTED = new RegExp(/[^ ]{32,}$/);
+  var RE_DECRYPTED = new RegExp(/^[\000-\177]*$/);
 
   /**
    * Main application
@@ -33,6 +34,7 @@
       $('#search input').on('keypress', that.perform_search);
       $('#password-dialog form').on('submit', that.decrypt);
       $('#editor').on('click', that.launch_editor);
+      $('#delete').on('click', that.delete);
 
       // Key bindings
       $(document).keydown(function(e) {
@@ -89,6 +91,7 @@
         $('#content').show();
         $('#reset').show();
         $('#persist').show();
+        $('#delete').show();
         $('#editor').show();
         setTimeout("$('#content textarea').focus()", 100);
       }
@@ -103,14 +106,29 @@
         uid: $('#content #uid').val(),
       }
       $.post('/api/decrypt', post, function (response) {
-        if (! RE_ENCRYPTED.test(response)) {
+        if (RE_DECRYPTED.test(response)) {
           $('#content textarea').val(response);
           that.reset_password();
+          $('#delete').show();
         } else {
           $('#password-dialog input').val('');
         };
       });
       return false;
+    }
+
+    /**
+     * Delete a note
+     */
+    this.delete = function() {
+      var post = {
+        password: $('#content #password').val(),
+        uid: $('#content #uid').val(),
+      }
+      $.post('/api/delete', post, function (response) {
+        that.reset_all();
+        that.perform_search();
+      });
     }
 
     /**
@@ -125,6 +143,7 @@
       var b = data.getValue(row, data.getColumnIndex('content')).split('\n')[1];
       if (RE_ENCRYPTED.test(b)) {
         that.password_dialog();
+        $('#delete').hide();
       }
     }
 
@@ -225,6 +244,7 @@
       $('#content').hide();
       $('#reset').hide();
       $('#persist').hide();
+      $('#delete').hide();
       $('#editor').hide();
       $('#create').show();
       $('#refresh').show();
