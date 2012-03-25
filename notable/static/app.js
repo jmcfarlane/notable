@@ -49,15 +49,20 @@
         }
       });
 
-      // Dynamic placements
-      var pwd = $('#password-dialog');
-      pwd.css({
+      return this;
+    };
+
+    /**
+     * Center an element
+     */
+    this.center = function(el) {
+      el = $(el);
+      el.css({
         position: 'absolute',
         left: '50%',
-        'margin-left': 0 - (pwd.width() / 2)
+        'margin-left': 0 - (el.width() / 2)
       });
-
-      return this;
+      return el;
     };
 
     /**
@@ -100,8 +105,10 @@
       $.post('/api/decrypt', post, function (response) {
         if (! RE_ENCRYPTED.test(response)) {
           $('#content textarea').val(response);
+          that.reset_password();
+        } else {
+          $('#password-dialog input').val('');
         };
-        that.reset_password();
       });
       return false;
     }
@@ -138,7 +145,7 @@
      * Spawn password entry dialog for an encrypted note
      */
     this.password_dialog = function() {
-      $('#password-dialog').show();
+      this.center('#password-dialog').show();
       setTimeout("$('#password-dialog input').focus()", 100);
     }
 
@@ -233,7 +240,6 @@
      * Reset password dialog
      */
     this.reset_password = function() {
-      console.log('got here');
       $('#password-dialog').hide();
       $('#password-dialog input').val('');
     }
