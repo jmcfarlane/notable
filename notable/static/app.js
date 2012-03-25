@@ -8,7 +8,7 @@
 
   // Constants
   var ENCRYPTED = '<ENCRYPTED>';
-  var RE_ENCRYPTED = new RegExp(/[^ ]{32,}$/);
+  var RE_ENCRYPTED = new RegExp(/^[^ ]{32,}$/);
   var RE_DECRYPTED = new RegExp(/^[\000-\177]*$/);
 
   /**
