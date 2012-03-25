@@ -202,7 +202,7 @@
       $.get('/api/from_disk/' + uid, function (response) {
         if (response != 'missing') {
           $('#content textarea').val(response);
-          setTimeout(that.poll_disk(uid), 1000)
+          setTimeout(function(){that.poll_disk(uid)}, 200);
         }
       });
     }
