@@ -122,14 +122,16 @@
      * Delete a note
      */
     this.delete = function() {
-      var post = {
-        password: $('#content #password').val(),
-        uid: $('#content #uid').val(),
+      if (confirm('Are you sure you want to delete this note?')) {
+        var post = {
+          password: $('#content #password').val(),
+          uid: $('#content #uid').val(),
+        }
+        $.post('/api/delete', post, function (response) {
+          that.reset_all();
+          that.perform_search();
+        });
       }
-      $.post('/api/delete', post, function (response) {
-        that.reset_all();
-        that.perform_search();
-      });
     }
 
     /**
