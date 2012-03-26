@@ -20,14 +20,20 @@ INPUT[type="password"]:focus {
 }
 
 /* Note content and form */
-#content TEXTAREA {
-  height: 85%;
+#content {
+  height: 90%;
   left: 0;
   margin: 6px;
   overflow: auto;
   position: absolute;
   top: 0;
   width: 99%;
+}
+
+#content TEXTAREA {
+  height: 85%;
+  overflow: auto;
+  width: 100%;
 }
 
 #content LABEL {
@@ -92,5 +98,3 @@ INPUT[type="password"]:focus {
 .hidden {
   display: none;
 }
-
-

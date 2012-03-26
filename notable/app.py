@@ -13,7 +13,7 @@ sys.path = [os.path.join(root, '..')] + sys.path
 from notable import bottle, db, editor
 
 # Constants, and help with template lookup
-version = '0.0.2'
+version = '0.0.2a'
 static = os.path.join(root, 'static')
 bottle.TEMPLATE_PATH.insert(0, os.path.join(root, 'views'))
 
