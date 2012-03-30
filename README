@@ -1,5 +1,14 @@
-=======
 Notable
 =======
 
-A very simple note taking application
+A __very__ simple note taking application
+
+Installation
+------------
+
+    pip install notable
+
+Usage
+-----
+
+    notable -b

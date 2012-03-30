@@ -18,7 +18,7 @@ from notable import bottle, db, editor
 
 # Constants, and help with template lookup
 host = 'localhost'
-version = '0.0.2a'
+version = '0.0.3'
 static = os.path.join(root, 'static')
 bottle.TEMPLATE_PATH.insert(0, os.path.join(root, 'views'))
 log = logging.getLogger(__name__)
