@@ -1,20 +1,23 @@
+=======
 Notable
 =======
 
-A __very__ simple note taking application
+A **very** simple note taking application
 
 Dependencies
 ------------
 
-* python
-* pycrypto
+1. python
+#. pycrypto
 
 Installation
 ------------
 
+::
     pip install notable
 
 Usage
 -----
 
+::
     notable -b
