@@ -1,5 +1,8 @@
+"""Notable - a simple not taking application"""
+
 # Python imports
 import logging
+import optparse
 import os
 import sys
 import threading
@@ -70,15 +73,25 @@ def persist():
     n.update(form)
     return dict(success=fcn(n, password=password))
 
-def main():
-    logging.basicConfig()
-    db.prepare()
-    #threading.Thread(target=launcher).start()
-    bottle.run(host='localhost', port=8082)
-
-def launcher():
+def browser():
     time.sleep(1)
     webbrowser.open_new_tab('http://localhost:8082')
+
+def getopts():
+    parser = optparse.OptionParser(__doc__.strip())
+    parser.add_option('-b', '--browser',
+                      action='store_true',
+                      default=False,
+                      dest='browser',
+                      help='Launch a browser')
+    return parser.parse_args(), parser
+
+def main():
+    logging.basicConfig()
+    (opts, _), _ = getopts()
+    db.prepare()
+    _ = threading.Thread(target=browser).start() if opts.browser else False
+    bottle.run(host='localhost', port=8082)
 
 if __name__ == '__main__':
     main()
