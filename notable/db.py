@@ -94,7 +94,7 @@ def create_schema(c):
     sql ='CREATE TABLE notes (%s);' % ','.join(pairs)
     try:
         c.execute(sql)
-    except sqlite3.OperationalError, ex:
+    except sqlite3.OperationalError as ex:
         log.warning(ex)
 
 def get_content(uid, password):

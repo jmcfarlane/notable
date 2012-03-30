@@ -3,8 +3,15 @@ import base64
 import hashlib
 import random
 
+# Stub in the event pycrypto isn't available
+class NoEncryption(object):
+    MODE_CBC = None
+
 # Third party imports
-from Crypto.Cipher import AES
+try:
+    from Crypto.Cipher import AES
+except (ImportError, NameError):
+    AES = NoEncryption()
 
 BLOCKS = 16 # 16bit IV and 32bit AES padding
 MODE = AES.MODE_CBC
@@ -31,7 +38,7 @@ def main():
     pwd = 'my secret password'
     s = 'I love }apples{'
     encrypted = encrypt(s, pwd)
-    print decrypt(encrypted, pwd)
+    print(decrypt(encrypted, pwd))
 
 if __name__ == '__main__':
     main()

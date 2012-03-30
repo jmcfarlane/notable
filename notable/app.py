@@ -7,8 +7,11 @@ import os
 import sys
 import threading
 import time
-import urllib2
 import webbrowser
+try:
+    import urllib2
+except ImportError:
+    from urllib import request as urllib2
 
 root = os.path.abspath(os.path.dirname(__file__))
 sys.path = [os.path.join(root, '..')] + sys.path
