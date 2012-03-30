@@ -69,8 +69,7 @@ def persist():
     password = bottle.request.forms.get('password')
     form = dict((k, v) for k, v in bottle.request.forms.items() if k in n)
     if form.get('uid') == '':
-        fcn = db.create_note
-        form.pop('uid')
+        fcn, _ = db.create_note, form.pop('uid')
     else:
         fcn = db.update_note
 
@@ -89,9 +88,12 @@ def getopts():
     parser = optparse.OptionParser(__doc__.strip())
     parser.add_option('-b', '--browser',
                       action='store_true',
-                      default=False,
                       dest='browser',
                       help='Launch a browser')
+    parser.add_option('-d', '--debug',
+                      action='store_true',
+                      dest='debug',
+                      help='Debug using a debug db')
     parser.add_option('-p', '--port',
                       default=8082,
                       dest='port',
@@ -107,6 +109,7 @@ def running(opts):
     return _running
 
 def run(opts):
+    db.path = db.path + '.debug' if opts.debug else db.path
     db.prepare()
     bottle.run(host=host, port=int(opts.port))
 
