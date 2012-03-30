@@ -7,6 +7,7 @@ import os
 import sys
 import threading
 import time
+import urllib2
 import webbrowser
 
 root = os.path.abspath(os.path.dirname(__file__))
@@ -16,9 +17,12 @@ sys.path = [os.path.join(root, '..')] + sys.path
 from notable import bottle, db, editor
 
 # Constants, and help with template lookup
+host = 'localhost'
 version = '0.0.2a'
 static = os.path.join(root, 'static')
 bottle.TEMPLATE_PATH.insert(0, os.path.join(root, 'views'))
+log = logging.getLogger(__name__)
+up = 'up'
 
 @bottle.route('/')
 @bottle.view('index')
@@ -73,6 +77,10 @@ def persist():
     n.update(form)
     return dict(success=fcn(n, password=password))
 
+@bottle.get('/word')
+def word():
+    return up
+
 def browser():
     time.sleep(1)
     webbrowser.open_new_tab('http://localhost:8082')
@@ -84,14 +92,29 @@ def getopts():
                       default=False,
                       dest='browser',
                       help='Launch a browser')
+    parser.add_option('-p', '--port',
+                      default=8082,
+                      dest='port',
+                      help='TCP port to start the server on')
     return parser.parse_args(), parser
+
+def running(opts):
+    url = 'http://%s:%s/word' % (host, opts.port)
+    try:
+        _running = urllib2.urlopen(url).read() == up
+    except urllib2.URLError:
+        _running = False
+    return _running
+
+def run(opts):
+    db.prepare()
+    bottle.run(host=host, port=int(opts.port))
 
 def main():
     logging.basicConfig()
     (opts, _), _ = getopts()
-    db.prepare()
     _ = threading.Thread(target=browser).start() if opts.browser else False
-    bottle.run(host='localhost', port=8082)
+    _ = run(opts) if not running(opts) else False
 
 if __name__ == '__main__':
     main()
