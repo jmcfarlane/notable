@@ -1,4 +1,3 @@
-=======
 Notable
 =======
 
@@ -8,16 +7,16 @@ Dependencies
 ------------
 
 1. python
-#. pycrypto
+2. pycrypto
 
 Installation
 ------------
 
-::
-    pip install notable
+Ideally you're using a virtualenv...
+
+``pip install notable``
 
 Usage
 -----
 
-::
-    notable -b
+``notable -b``
