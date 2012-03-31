@@ -122,11 +122,10 @@ def running(opts):
 
 def run(opts):
     pid = running(opts)
-    if pid:
-        if opts.restart:
-            os.kill(pid, signal.SIGTERM)
-        else:
-            return
+    if pid and opts.restart:
+        os.kill(pid, signal.SIGTERM)
+    elif pid:
+        return
 
     bg = ['-f', '--fork', '-b', '--browser']
     if opts.fork:
