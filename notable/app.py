@@ -85,9 +85,9 @@ def persist():
 def pid():
     return str(os.getpid())
 
-def browser():
+def browser(opts):
     time.sleep(1)
-    webbrowser.open_new_tab('http://localhost:8082')
+    webbrowser.open_new_tab('http://localhost:%s' % opts.port)
 
 def getopts():
     parser = optparse.OptionParser(__doc__.strip())
@@ -136,12 +136,14 @@ def run(opts):
 
     db.path = db.path + '.debug' if opts.debug else db.path
     db.prepare()
-    bottle.run(host=host, port=int(opts.port))
+    bottle.run(host=host, port=opts.port)
 
 def main():
     logging.basicConfig(level=logging.DEBUG)
     (opts, _), _ = getopts()
-    _ = threading.Thread(target=browser).start() if opts.browser else False
+    opts.port = int(opts.port) + 1 if opts.debug else int(opts.port)
+    if opts.browser:
+        threading.Thread(target=browser, args=[opts]).start()
     run(opts)
 
 if __name__ == '__main__':
