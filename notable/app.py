@@ -128,7 +128,7 @@ def run(opts):
     bottle.run(host=host, port=int(opts.port))
 
 def main():
-    logging.basicConfig()
+    logging.basicConfig(level=logging.DEBUG)
     (opts, _), _ = getopts()
     _ = threading.Thread(target=browser).start() if opts.browser else False
     _ = run(opts) if not running(opts) else False

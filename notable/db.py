@@ -39,14 +39,14 @@ def create_note(n, password=None):
     values = ','.join('?' for k, t in n.items() if not t is None)
     sql = sql % (cols, values)
     values = [v for v in n.values() if not v is None]
-    log.warn('%s, %s' % (sql, values))
+    log.debug('%s, %s' % (sql, values))
     c.execute(sql, values)
     return c.commit()
 
 def delete_note(uid, password=None):
     c = conn()
     sql = 'DELETE FROM notes WHERE uid = ?'
-    log.warn('%s, %s' % (sql, uid))
+    log.debug('%s, %s' % (sql, uid))
     c.execute(sql, (uid,))
     return c.commit()
 
@@ -62,7 +62,7 @@ def update_note(n, password=None):
     n = encrypt(n, password)
     sql = 'UPDATE notes SET tags = ?, content = ?, updated = ? WHERE uid = ?'
     values = [n.get('tags'), n.get('content'), n.get('updated'), n.get('uid')]
-    log.warn('%s, %s' % (sql, values))
+    log.debug('%s, %s' % (sql, values))
     c.execute(sql, values)
     return c.commit()
 
@@ -95,7 +95,7 @@ def create_schema(c):
     try:
         c.execute(sql)
     except sqlite3.OperationalError as ex:
-        log.warning(ex)
+        log.debug(ex)
 
 def get_content(uid, password):
     c = conn()
@@ -111,7 +111,7 @@ def search(s):
     where = ['1=1'] + [naive.format(t) for t in terms]
     sql = 'SELECT %s FROM notes WHERE %s;'
     sql = sql % (','.join(k for k, v in n.items() if v), ' AND '.join(where))
-    log.warn(sql)
+    log.debug(sql)
     c = conn()
     c.row_factory = dict_factory
     _cols = list(fields(n))
