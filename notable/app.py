@@ -5,6 +5,7 @@ import httplib
 import logging
 import optparse
 import os
+import signal
 import subprocess
 import sys
 import threading
@@ -106,16 +107,27 @@ def getopts():
                       default=8082,
                       dest='port',
                       help='TCP port to start the server on')
+    parser.add_option('-r', '--restart',
+                      action='store_true',
+                      dest='restart',
+                      help='Restart if already running')
     return parser.parse_args(), parser
 
 def running(opts):
     url = 'http://%s:%s/pid' % (host, opts.port)
     try:
-        return urllib2.urlopen(url).read()
-    except (httplib.BadStatusLine, urllib2.URLError):
+        return int(urllib2.urlopen(url).read())
+    except (httplib.BadStatusLine, urllib2.URLError, ValueError):
         return False
 
 def run(opts):
+    pid = running(opts)
+    if pid:
+        if opts.restart:
+            os.kill(pid, signal.SIGTERM)
+        else:
+            return
+
     bg = ['-f', '--fork', '-b', '--browser']
     if opts.fork:
         map(sys.argv.remove, (o for o in bg if o in sys.argv))
@@ -131,7 +143,7 @@ def main():
     logging.basicConfig(level=logging.DEBUG)
     (opts, _), _ = getopts()
     _ = threading.Thread(target=browser).start() if opts.browser else False
-    _ = run(opts) if not running(opts) else False
+    run(opts)
 
 if __name__ == '__main__':
     main()
