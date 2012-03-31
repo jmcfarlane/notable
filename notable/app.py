@@ -6,7 +6,6 @@ import logging
 import optparse
 import os
 import signal
-import subprocess
 import sys
 import threading
 import time
@@ -82,12 +81,24 @@ def persist():
     return dict(success=fcn(n, password=password))
 
 @bottle.get('/pid')
-def pid():
+def getpid():
     return str(os.getpid())
 
 def browser(opts):
     time.sleep(1)
     webbrowser.open_new_tab('http://localhost:%s' % opts.port)
+
+def fork_and_exit():
+    pid = os.fork()
+    if pid > 0:
+        sys.exit(0)
+    return pid
+
+def fork():
+    fork_and_exit()
+    os.setsid()
+    os.umask(0)
+    fork_and_exit()
 
 def getopts():
     parser = optparse.OptionParser(__doc__.strip())
@@ -127,13 +138,6 @@ def run(opts):
     elif pid:
         return
 
-    bg = ['-f', '--fork', '-b', '--browser']
-    if opts.fork:
-        map(sys.argv.remove, (o for o in bg if o in sys.argv))
-        cmd = ['nohup', 'python', os.path.join(root, 'app.py')] + sys.argv[1:]
-        subprocess.Popen(cmd + ['&'])
-        return
-
     db.path = db.path + '.debug' if opts.debug else db.path
     db.prepare()
     bottle.run(host=host, port=opts.port)
@@ -144,6 +148,8 @@ def main():
     opts.port = int(opts.port) + 1 if opts.debug else int(opts.port)
     if opts.browser:
         threading.Thread(target=browser, args=[opts]).start()
+    if opts.fork:
+        fork()
     run(opts)
 
 if __name__ == '__main__':
