@@ -1,9 +1,11 @@
 """Notable - a simple not taking application"""
 
 # Python imports
+import httplib
 import logging
 import optparse
 import os
+import subprocess
 import sys
 import threading
 import time
@@ -25,7 +27,6 @@ version = '0.0.3'
 static = os.path.join(root, 'static')
 bottle.TEMPLATE_PATH.insert(0, os.path.join(root, 'views'))
 log = logging.getLogger(__name__)
-up = 'up'
 
 @bottle.route('/')
 @bottle.view('index')
@@ -79,9 +80,9 @@ def persist():
     n.update(form)
     return dict(success=fcn(n, password=password))
 
-@bottle.get('/word')
-def word():
-    return up
+@bottle.get('/pid')
+def pid():
+    return str(os.getpid())
 
 def browser():
     time.sleep(1)
@@ -97,6 +98,10 @@ def getopts():
                       action='store_true',
                       dest='debug',
                       help='Debug using a debug db')
+    parser.add_option('-f', '--fork',
+                      action='store_true',
+                      dest='fork',
+                      help='Start the server in the background (fork)')
     parser.add_option('-p', '--port',
                       default=8082,
                       dest='port',
@@ -104,14 +109,20 @@ def getopts():
     return parser.parse_args(), parser
 
 def running(opts):
-    url = 'http://%s:%s/word' % (host, opts.port)
+    url = 'http://%s:%s/pid' % (host, opts.port)
     try:
-        _running = urllib2.urlopen(url).read() == up
-    except urllib2.URLError:
-        _running = False
-    return _running
+        return urllib2.urlopen(url).read()
+    except (httplib.BadStatusLine, urllib2.URLError):
+        return False
 
 def run(opts):
+    bg = ['-f', '--fork', '-b', '--browser']
+    if opts.fork:
+        map(sys.argv.remove, (o for o in bg if o in sys.argv))
+        cmd = ['nohup', 'python', os.path.join(root, 'app.py')] + sys.argv[1:]
+        subprocess.Popen(cmd + ['&'])
+        return
+
     db.path = db.path + '.debug' if opts.debug else db.path
     db.prepare()
     bottle.run(host=host, port=int(opts.port))
