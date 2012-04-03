@@ -93,6 +93,7 @@
         $('#persist').show();
         $('#delete').show();
         $('#editor').show();
+        $('#listing').hide();
         setTimeout("$('#content textarea').focus()", 100);
       }
     }
@@ -233,6 +234,7 @@
       };
 
       view.setColumns(columns);
+      $(div).height($(window).height() - $('#buttons').height() - 30);
       table.draw(view, options);
 
       // Add navigation listener
@@ -240,6 +242,9 @@
         function(e) {
           that.edit(data, table.getSelection()[0].row);
       });
+
+      // Redraw if the window size changes
+      $(window).resize(this.perform_search);
     }
 
     /**
@@ -251,6 +256,7 @@
       $('#persist').hide();
       $('#delete').hide();
       $('#editor').hide();
+      $('#listing').show();
       $('#create').show();
       $('#refresh').show();
       $('#content #tags').val('');
