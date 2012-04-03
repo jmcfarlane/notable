@@ -19,6 +19,10 @@ INPUT[type="password"]:focus {
   margin-bottom: 10px;
 }
 
+#listing {
+  border-bottom: 1px solid #dddddd;
+}
+
 /* Note content and form */
 #content {
   height: 90%;
