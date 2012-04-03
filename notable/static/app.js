@@ -281,6 +281,7 @@
     this.reset_search = function() {
       $('#search').hide();
       $('#search input').val('');
+      this.perform_search();
     }
 
     /**
