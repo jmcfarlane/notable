@@ -84,16 +84,17 @@
      * Create a new note
      */
     this.create = function() {
-      var found = NOTABLE.any_visible(['#search input', '#content textarea']);
-      if (! found) {
-        $('#create').hide();
-        $('#refresh').hide();
-        $('#content').show();
-        $('#reset').show();
-        $('#persist').show();
-        $('#delete').show();
-        $('#editor').show();
-        $('#listing').hide();
+      $('#create').hide();
+      $('#listing').hide();
+      $('#refresh').hide();
+      $('#content').show();
+      $('#delete').show();
+      $('#editor').show();
+      $('#persist').show();
+      $('#reset').show();
+      this.reset_search();
+
+      if (! NOTABLE.any_visible(['#search input'])) {
         setTimeout("$('#content textarea').focus()", 100);
       }
     }
