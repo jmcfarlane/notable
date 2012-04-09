@@ -84,6 +84,9 @@
      * Create a new note
      */
     this.create = function() {
+      if (NOTABLE.any_visible(['#content textarea'])) {
+        return;
+      }
       $('#create').hide();
       $('#listing').hide();
       $('#refresh').hide();
@@ -92,11 +95,12 @@
       $('#editor').show();
       $('#persist').show();
       $('#reset').show();
-      this.reset_search();
 
-      if (! NOTABLE.any_visible(['#search input'])) {
-        setTimeout("$('#content textarea').focus()", 100);
-      }
+      setTimeout(foo = function() {
+        if (! NOTABLE.any_visible(['#search input', '#password-dialog'])) {
+          $('#content textarea').focus()
+        }}, 100);
+      this.reset_search();
     }
 
     /**
