@@ -229,7 +229,6 @@
         data.getColumnIndex('updated'),
         data.getColumnIndex('subject'),
         {calc: that.content, id:'body', type:'string', label:'Body'},
-        data.getColumnIndex('tags'),
       ]
       var options = {
         height: '200px',
