@@ -244,6 +244,7 @@
       // Add navigation listener
       google.visualization.events.addListener(table, 'select',
         function(e) {
+          that.reset_search();
           that.edit(data, table.getSelection()[0].row);
       });
 
