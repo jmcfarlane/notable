@@ -84,7 +84,7 @@
      * Create a new note
      */
     this.create = function() {
-      if (NOTABLE.any_visible(['#content textarea'])) {
+      if (NOTABLE.any_visible(['#content textarea', '#search input'])) {
         return;
       }
       $('#create').hide();
