@@ -104,23 +104,18 @@ def getopts():
     parser = optparse.OptionParser(__doc__.strip())
     parser.add_option('-b', '--browser',
                       action='store_true',
-                      dest='browser',
                       help='Launch a browser')
     parser.add_option('-d', '--debug',
                       action='store_true',
-                      dest='debug',
                       help='Debug using a debug db')
     parser.add_option('-f', '--fork',
                       action='store_true',
-                      dest='fork',
                       help='Start the server in the background (fork)')
     parser.add_option('-p', '--port',
                       default=8082,
-                      dest='port',
                       help='TCP port to start the server on')
     parser.add_option('-r', '--restart',
                       action='store_true',
-                      dest='restart',
                       help='Restart if already running')
     parser.add_option('-v', '--version',
                       action='store_true',
