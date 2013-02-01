@@ -139,6 +139,7 @@ def run(opts):
     db.path = db.path + '.debug' if opts.debug else db.path
     db.prepare()
     bottle.run(host=host, port=opts.port)
+    return 0
 
 def main():
     logging.basicConfig(level=logging.DEBUG)
@@ -146,12 +147,12 @@ def main():
     opts.port = int(opts.port) + 1 if opts.debug else int(opts.port)
     if opts.version:
         print('Notable version %s' % version)
-        return
+        return 0
     if opts.browser:
         threading.Thread(target=browser, args=[opts]).start()
     if opts.fork:
         fork()
-    run(opts)
+    return run(opts)
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())
