@@ -122,6 +122,9 @@ def getopts():
                       action='store_true',
                       dest='restart',
                       help='Restart if already running')
+    parser.add_option('-v', '--version',
+                      action='store_true',
+                      help='Print version number')
     return parser.parse_args(), parser
 
 def running(opts):
@@ -146,6 +149,9 @@ def main():
     logging.basicConfig(level=logging.DEBUG)
     (opts, _), _ = getopts()
     opts.port = int(opts.port) + 1 if opts.debug else int(opts.port)
+    if opts.version:
+        print('Notable version %s' % version)
+        return
     if opts.browser:
         threading.Thread(target=browser, args=[opts]).start()
     if opts.fork:
