@@ -2,6 +2,7 @@
 
 # Python imports
 import httplib
+import json
 import logging
 import optparse
 import os
@@ -33,7 +34,7 @@ log = logging.getLogger(__name__)
 def homepage():
     return dict()
 
-@bottle.route('/static/<filename>')
+@bottle.route('/static/<filename:re:.*>')
 def htdocs(filename):
     return bottle.static_file(filename, root=static)
 
@@ -63,9 +64,9 @@ def from_disk(uid=None):
     else:
         return 'missing'
 
-@bottle.get('/api/list')
+@bottle.get('/api/notes/list')
 def api_list():
-    return db.search(bottle.request.query.get('s'))
+    return json.dumps(list(db.search(bottle.request.query.get('s'))), indent=2)
 
 @bottle.post('/api/persist')
 def persist():
@@ -136,9 +137,10 @@ def run(opts):
     elif pid:
         return
 
+    reloader = opts.debug
     db.path = db.path + '.debug' if opts.debug else db.path
     db.prepare()
-    bottle.run(host=host, port=opts.port)
+    bottle.run(host=host, port=opts.port, reloader=reloader)
     return 0
 
 def main():
