@@ -13,9 +13,10 @@ require.config({
 	paths: {
     backbone: '../lib/backbone',
     jquery: '../lib/jquery',
+    lib: '../lib',
     templates: '../templates',
-    text: '../lib/text',
-    underscore: '../lib/underscore'
+    underscore: '../lib/underscore',
+    text: '../lib/plugins/require/text'
 	}
 });
 
@@ -25,7 +26,8 @@ require(
    'collections/notes',
    'views/notesTable',
    'underscore',
-   'backbone'
+   'backbone',
+   'lib/plugins/bootstrap/tab'
   ],
 	function(NotesCollection, NotesTableView) {
     var notesView = new NotesTableView({
