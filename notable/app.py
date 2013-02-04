@@ -38,6 +38,11 @@ def homepage():
 def htdocs(filename):
     return bottle.static_file(filename, root=static)
 
+@bottle.post('/api/note/content/<uid>')
+def content(uid):
+    password = bottle.request.forms.get('password')
+    return db.get_content(uid, password)
+
 @bottle.post('/api/decrypt')
 def decrypt():
     password = bottle.request.forms.get('password')
@@ -65,7 +70,7 @@ def from_disk(uid=None):
         return 'missing'
 
 @bottle.get('/api/notes/list')
-def api_list():
+def listing():
     exclude = ['content']
     notes = db.search(bottle.request.query.get('s'), exclude=exclude)
     return json.dumps(list(notes), indent=2)

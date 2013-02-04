@@ -53,11 +53,9 @@ def delete_note(uid, password=None):
     return c.commit()
 
 def encrypt(n, password):
-    if password:
-        subject = n['content'].split('\n')[0]
-        n['content'] = '\n'.join((subject,
-                                  crypt.encrypt(n['content'], password)))
-    return n
+    content = n['content']
+    content = crypt.encrypt(content, password) if password else content
+    return n.extend(dict(content=content))
 
 def update_note(n, password=None):
     c = conn()
@@ -102,7 +100,7 @@ def get_content(uid, password):
     c.row_factory = dict_factory
     sql = 'SELECT content FROM notes WHERE uid = ?'
     content = c.cursor().execute(sql, [uid]).next().get('content')
-    return crypt.decrypt(content.split('\n', 1)[1], password)
+    return crypt.decrypt(content, password) if password else content
 
 def migrate_data(c):
     # Migrate 1 encrypted contents to column + dedicated content block

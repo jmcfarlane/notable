@@ -17,6 +17,17 @@ function(Backbone, notesTemplate) {
       this.$el.html(_.template(notesTemplate)({
         notes: this.collection.toJSON()
       }));
+    },
+
+    content: function(uid, password) {
+      $.ajax({
+        url: '/api/note/content/' + uid,
+        type: 'POST',
+        data: {password: password},
+        success: function(response, textStatus, xhr) {
+          console.log(response);
+        }
+      });
     }
 
   });
