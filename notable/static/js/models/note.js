@@ -11,10 +11,13 @@ function(Backbone) {
         url: '/api/note/content/' + this.get('uid'),
         type: 'POST',
         data: {password: password},
-        success: function(response, textStatus, xhr) {
+        success: _.bind(function(response, textStatus, xhr) {
+          this.set('content', response, {
+            silent: true
+          });
           callback(response);
-        }
-      }, this);
+        }, this)
+      });
     }
 
   });

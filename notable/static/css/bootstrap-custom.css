@@ -1,0 +1,5 @@
+/* Tab close buttons */
+.nav-tabs > li .close {
+  margin: -2px 0 0 10px;
+  font-size: 18px;
+}

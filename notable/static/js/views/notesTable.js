@@ -18,7 +18,9 @@ function(Backbone, notesTableRowView, notesTableTemplate) {
       this.$el.html(_.template(notesTableTemplate)());
       this.collection.each(function(note) {
         var row = new notesTableRowView({
-          model: note
+          model: note,
+          tabs: $('.nav-tabs'),
+          tabContent: $('.tab-content')
         });
         this.$('tbody').append(row.render().el);
       });

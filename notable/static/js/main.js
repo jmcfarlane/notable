@@ -25,8 +25,10 @@ require(
 	[
    'collections/notes',
    'views/notesTable',
+   'jquery',
    'underscore',
    'backbone',
+   'lib/bootstrap/js/bootstrap.min',
    'lib/plugins/bootstrap/tab'
   ],
 	function(NotesCollection, NotesTableView) {

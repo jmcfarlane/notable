@@ -2,11 +2,12 @@
  * @fileoverview Describes a table row view for a note
  */
 define([
+  'views/noteTab',
   'text!templates/notesTableRow.html',
   'backbone',
   'underscore'
 ],
-function(notesTableRowTemplate) {
+function(noteTab, notesTableRowTemplate) {
   return Backbone.View.extend({
     events: {
       'click': 'getContent'
@@ -34,7 +35,11 @@ function(notesTableRowTemplate) {
      * Display the details of a particular note
      */
     displayContent: function(content) {
-      console.log(content);
+      var tab = new noteTab({
+        tabs: this.options.tabs,
+        tabContent: this.options.tabContent,
+        model: this.model
+      }).render();
     }
 
   });
