@@ -75,22 +75,23 @@ def listing():
     notes = db.search(bottle.request.query.get('s'), exclude=exclude)
     return json.dumps(list(notes), indent=2)
 
-@bottle.post('/api/persist')
-def persist():
-    n = db.note(actual=True)
-    password = bottle.request.forms.get('password')
-    form = dict((k, v) for k, v in bottle.request.forms.items() if k in n)
-    if form.get('uid') == '':
-        fcn, _ = db.create_note, form.pop('uid')
-    else:
-        fcn = db.update_note
+@bottle.put('/api/note/<uid>')
+def update_note(uid):
+    return _persist(db.update_note)
 
-    n.update(form)
-    return dict(success=fcn(n, password=password))
+@bottle.post('/api/note')
+def create_note(uid):
+    return _persist(db.create_note)
 
 @bottle.get('/pid')
 def getpid():
     return str(os.getpid())
+
+def _persist(func):
+    n = db.note(actual=True)
+    password = bottle.request.forms.pop('password')
+    n.update(dict((k, v) for k, v in bottle.request.forms.items() if k in n))
+    return dict(success=func(n, password=password))
 
 def browser(opts):
     time.sleep(1)

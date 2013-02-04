@@ -23,12 +23,12 @@ require.config({
 require(
 	[
    'collections/notes',
-   'views/notes',
+   'views/notesTable',
    'underscore',
    'backbone'
   ],
-	function(NotesCollection, NotesView) {
-    var notesView = new NotesView({
+	function(NotesCollection, NotesTableView) {
+    var notesView = new NotesTableView({
       collection: new NotesCollection(),
       el: $('#notes')
     });
