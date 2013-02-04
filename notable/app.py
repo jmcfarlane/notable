@@ -66,7 +66,9 @@ def from_disk(uid=None):
 
 @bottle.get('/api/notes/list')
 def api_list():
-    return json.dumps(list(db.search(bottle.request.query.get('s'))), indent=2)
+    exclude = ['content']
+    notes = db.search(bottle.request.query.get('s'), exclude=exclude)
+    return json.dumps(list(notes), indent=2)
 
 @bottle.post('/api/persist')
 def persist():

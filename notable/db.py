@@ -121,7 +121,9 @@ def migrate_data(c):
         content = n['content'].split('\n')
         if len(content) > 1 and re.search(r'([^ ]{32,})', content[1]):
             encrypted = 1
-        c.execute(sql, (content.pop(0), '\n'.join(content), encrypted, n['uid']))
+        values = (content.pop(0), '\n'.join(content), encrypted, n['uid'])
+        c.execute(sql, values)
+        log.debug('Migrated: %s', values[0])
     c.commit()
 
 def migrate_schema(c):
@@ -133,9 +135,9 @@ def migrate_schema(c):
     except sqlite3.OperationalError as ex:
         log.debug('schema migration: %s', ex)
 
-def search(s):
+def search(s, exclude=None):
     terms = s.split() if s else []
-    n = note()
+    n = note(exclude=exclude)
     naive = "(content LIKE '%{0}%' OR tags LIKE '%{0}%')"
     where = ['1=1'] + [naive.format(t) for t in terms]
     sql = 'SELECT %s FROM notes WHERE %s ORDER BY updated DESC;'
