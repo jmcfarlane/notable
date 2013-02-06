@@ -6,6 +6,7 @@ import json
 import logging
 import optparse
 import os
+import re
 import signal
 import sys
 import threading
@@ -41,7 +42,11 @@ def htdocs(filename):
 @bottle.post('/api/note/content/<uid>')
 def content(uid):
     password = bottle.request.forms.get('password')
-    return db.get_content(uid, password)
+    content = db.get_content(uid, password)
+    if smells_encrypted(content):
+        bottle.response.status = 403
+        return 'Nope, try again'
+    return content
 
 @bottle.post('/api/decrypt')
 def decrypt():
@@ -150,6 +155,9 @@ def run(opts):
     db.prepare()
     bottle.run(host=host, port=opts.port, reloader=reloader)
     return 0
+
+def smells_encrypted(content):
+    return len(re.findall(r'[^\x00-\x80]', content)) > 25
 
 def main():
     logging.basicConfig(level=logging.DEBUG)
