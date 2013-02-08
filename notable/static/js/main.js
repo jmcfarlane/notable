@@ -26,17 +26,19 @@ require(
    'collections/notes',
    'views/notesTable',
    'views/passwordModal',
+   'views/searchModal',
    'jquery',
    'underscore',
    'backbone',
    'lib/bootstrap/js/bootstrap.min',
    'lib/plugins/bootstrap/tab'
   ],
-	function(NotesCollection, NotesTableView, PasswordModalView) {
+	function(NotesCollection, NotesTableView, PasswordModalView, SearchModalView) {
     var notesView = new NotesTableView({
       collection: new NotesCollection(),
       el: $('#notes'),
-      passwordModal: new PasswordModalView()
+      passwordModal: new PasswordModalView(),
+      searchModal: new SearchModalView()
     });
 	}
 );

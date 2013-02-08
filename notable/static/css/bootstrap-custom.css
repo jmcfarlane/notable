@@ -3,3 +3,13 @@
   margin: -2px 0 0 10px;
   font-size: 18px;
 }
+
+/* Space above the tabbed table */
+.container-fluid {
+  margin-top: 10px;
+}
+
+/* Make the tabs appear part of the table */
+.tab-content {
+  margin-top: -21px;
+}

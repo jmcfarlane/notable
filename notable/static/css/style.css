@@ -1,0 +1,10 @@
+.form-search input {
+  position: absolute;
+  right: -450px;
+  top: 3px;
+  width: 400px;
+}
+
+body {
+  overflow-x: hidden;
+}

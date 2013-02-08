@@ -13,6 +13,7 @@ function(Backbone, notesTableRowView, notesTableTemplate) {
       this.collection.on('reset', this.render, this);
       this.collection.fetch();
       $('body').append(this.options.passwordModal.render().el);
+      $('body').append(this.options.searchModal.render().el);
     },
 
     addRow: function(note) {
@@ -20,7 +21,8 @@ function(Backbone, notesTableRowView, notesTableTemplate) {
         model: note,
         tabs: $('.nav-tabs'),
         tabContent: $('.tab-content'),
-        passwordModal: this.options.passwordModal
+        passwordModal: this.options.passwordModal,
+        searchModal: this.options.searchModal
       });
       this.$('tbody').append(row.render().el);
     },

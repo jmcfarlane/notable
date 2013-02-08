@@ -17,8 +17,16 @@ function(noteTab, notesTableRowTemplate) {
 
     initialize: function(options) {
       var modal = this.options.passwordModal;
-      this.model.on('decryption:error', modal.renderError, modal);
+      this._index = {};
+      this.index();
       this.model.on('change', this.displayContent, this);
+      this.model.on('change', this.index, this);
+      this.model.on('decryption:error', modal.renderError, modal);
+      this.options.searchModal.on('search', this.search, this);
+    },
+
+    index: function() {
+      this._index.tags = this.model.get('tags').split(' ');
     },
 
     render: function(collection) {
@@ -53,6 +61,31 @@ function(noteTab, notesTableRowTemplate) {
         model: this.model
       }).render();
       this.options.passwordModal.hide();
+    },
+
+    hide: function() {
+      this.$el.hide();
+    },
+
+    show: function() {
+      this.$el.show();
+    },
+
+    search: function(q) {
+      var subject = this.model.get('subject').toLowerCase(),
+        match = _.find(this._index.tags, function(tag) {
+        return this.startsWith(tag, q);
+      }, this);
+
+      if (this.startsWith(subject, q) || match || _.isEmpty(q)) {
+        this.show();
+      } else {
+        this.hide();
+      }
+    },
+
+    startsWith: function(haystack, needle) {
+      return haystack.indexOf(needle) == 0;
     }
 
   });
