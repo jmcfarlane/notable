@@ -6,6 +6,11 @@ define([
 ],
 function(Backbone) {
   return Backbone.Model.extend({
+
+    url: function(atts, options) {
+      return '/api/note/' + this.get('uid');
+    },
+
     fetchContent: function(password) {
       $.ajax({
         url: '/api/note/content/' + this.get('uid'),

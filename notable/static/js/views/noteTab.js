@@ -5,10 +5,18 @@ define([
   'text!templates/noteDetail.html',
   'text!templates/tab.html',
   'backbone',
-  'underscore'
+  'underscore',
+  'lib/jquery.hotkeys',
+  'codemirror',
+  'lib/codemirror/mode/rst/rst'
 ],
 function(noteDetailTemplate, tabTemplate) {
   return Backbone.View.extend({
+
+    initialize: function() {
+      $(document).bind('keydown', 'ctrl+s', _.bind(this.save, this));
+      this._editor = null;
+    },
 
     render: function(collection) {
       var note = this.model.toJSON(),
@@ -23,6 +31,14 @@ function(noteDetailTemplate, tabTemplate) {
         note: note
       }));
 
+      // Use codemirror for the content
+      this.el = $(tabContent).find('.editor').last().parent();
+      this.$el = $(this.el);
+      this._editor = CodeMirror(_.first(this.$el.find('.editor')), {
+        mode: 'rst',
+        value: note.content
+      });
+
       // Add a new tab
       tabs.append(_.template(tabTemplate, {
         note: note
@@ -35,6 +51,17 @@ function(noteDetailTemplate, tabTemplate) {
         .on('click', _.bind(this.close, this));
 
       return this;
+    },
+
+    save: function() {
+      if (!this.$el.is(":visible")) {
+        return;
+      }
+      this.model.set('content', this._editor.getValue());
+      this.model.set('subject', this.$el.find('.subject').val());
+      this.model.set('password', '');
+      this.model.save();
+      return false;
     },
 
     selector: function() {

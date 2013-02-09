@@ -80,7 +80,7 @@ def listing():
     notes = db.search(bottle.request.query.get('s'), exclude=exclude)
     return json.dumps(list(notes), indent=2)
 
-@bottle.put('/api/note/<uid>')
+@bottle.post('/api/note/<uid>')
 def update_note(uid):
     return _persist(db.update_note)
 
@@ -94,8 +94,9 @@ def getpid():
 
 def _persist(func):
     n = db.note(actual=True)
-    password = bottle.request.forms.pop('password')
-    n.update(dict((k, v) for k, v in bottle.request.forms.items() if k in n))
+    note = json.loads(bottle.request.body.getvalue())
+    password = note.pop('password')
+    n.update(dict((k, v) for k, v in note.items() if k in n))
     return dict(success=func(n, password=password))
 
 def browser(opts):

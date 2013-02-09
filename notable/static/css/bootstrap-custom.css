@@ -13,3 +13,9 @@
 .tab-content {
   margin-top: -21px;
 }
+
+/* Tighten up h3's a bit */
+.tab-pane .input-xxlarge {
+  margin-top: 20px;
+  font-size: 150%;
+}

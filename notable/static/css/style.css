@@ -1,3 +1,7 @@
+body {
+  overflow-x: hidden;
+}
+
 .form-search input {
   position: absolute;
   right: -450px;
@@ -5,6 +9,15 @@
   width: 400px;
 }
 
-body {
-  overflow-x: hidden;
+.CodeMirror {
+  border: 0;
+  height: auto;
+  margin-bottom: 10px;
+  position: relative;
+  left: -2px;
+}
+
+.CodeMirror-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
 }

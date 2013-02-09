@@ -43,19 +43,22 @@ def create_note(n, password=None):
     values = [v for v in n.values() if not v is None]
     log.debug('%s, %s' % (sql, values))
     c.execute(sql, values)
-    return c.commit()
+    c.commit()
+    return True
 
 def delete_note(uid, password=None):
     c = conn()
     sql = 'DELETE FROM notes WHERE uid = ?'
     log.debug('%s, %s' % (sql, uid))
     c.execute(sql, (uid,))
-    return c.commit()
+    c.commit()
+    return True
 
 def encrypt(n, password):
     content = n['content']
     content = crypt.encrypt(content, password) if password else content
-    return n.extend(dict(content=content))
+    n.update(dict(content=content))
+    return n
 
 def update_note(n, password=None):
     c = conn()
@@ -64,7 +67,8 @@ def update_note(n, password=None):
     values = [n.get('tags'), n.get('content'), n.get('updated'), n.get('uid')]
     log.debug('%s, %s' % (sql, values))
     c.execute(sql, values)
-    return c.commit()
+    c.commit()
+    return True
 
 def conn():
     d = os.path.dirname(path)

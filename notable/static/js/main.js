@@ -8,15 +8,21 @@ require.config({
     backbone: {
       deps: ['underscore', 'jquery'],
       exports: 'Backbone'
+    },
+    'lib/codemirror/mode/rst/rst': {
+      deps: ['codemirror', 'vim'],
+      exports: 'CodeMirror'
     }
   },
 	paths: {
     backbone: '../lib/backbone',
+    codemirror: '../lib/codemirror/lib/codemirror',
     jquery: '../lib/jquery',
     lib: '../lib',
     templates: '../templates',
+    text: '../lib/plugins/require/text',
     underscore: '../lib/underscore',
-    text: '../lib/plugins/require/text'
+    vim: '../lib/codemirror/keymap/vim'
 	}
 });
 
