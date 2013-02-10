@@ -52,6 +52,7 @@ function(passwordModalTemplate) {
     submit: function() {
       this.callback();
       this.$('input').val('');
+      return false;
     }
 
   });

@@ -20,6 +20,9 @@ function(Backbone) {
         },
         success: _.bind(function(response, textStatus, xhr) {
           this.set('content', response);
+          this.set('password', password, {
+            silent: true
+          });
         }, this),
         error: _.bind(function(xhr, response) {
           this.trigger('decryption:error', xhr.responseText);

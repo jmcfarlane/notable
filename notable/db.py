@@ -63,8 +63,19 @@ def encrypt(n, password):
 def update_note(n, password=None):
     c = conn()
     n = encrypt(n, password)
-    sql = 'UPDATE notes SET tags = ?, content = ?, updated = ? WHERE uid = ?'
-    values = [n.get('tags'), n.get('content'), n.get('updated'), n.get('uid')]
+    sql = """
+      UPDATE notes SET
+        tags = ?,
+        subject = ?,
+        content = ?,
+        updated = ?
+      WHERE uid = ?
+      """
+    values = [n.get('tags'),
+              n.get('subject'),
+              n.get('content'),
+              n.get('updated'),
+              n.get('uid')]
     log.debug('%s, %s' % (sql, values))
     c.execute(sql, values)
     c.commit()

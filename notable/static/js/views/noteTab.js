@@ -57,10 +57,14 @@ function(noteDetailTemplate, tabTemplate) {
       if (!this.$el.is(":visible")) {
         return;
       }
-      this.model.set('content', this._editor.getValue());
-      this.model.set('subject', this.$el.find('.subject').val());
-      this.model.set('password', '');
-      this.model.save();
+      var options = {
+        silent: true
+      }
+      this.model.set({
+        content: this._editor.getValue(),
+        subject: this.$el.find('.subject').val()
+      }, options);
+      this.model.save(undefined, options);
       return false;
     },
 
