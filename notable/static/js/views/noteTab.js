@@ -36,7 +36,10 @@ function(noteDetailTemplate, tabTemplate) {
       this.$el = $(this.el);
       this._editor = CodeMirror(_.first(this.$el.find('.editor')), {
         mode: 'rst',
-        value: note.content
+        value: note.content,
+        extraKeys: {
+          'Ctrl-S': _.bind(this.save, this)
+        }
       });
 
       // Add a new tab
@@ -53,18 +56,23 @@ function(noteDetailTemplate, tabTemplate) {
       return this;
     },
 
+    saved: function() {
+      $('.saved').fadeIn();
+      setTimeout(function() {
+        $('.saved').fadeOut();
+      }, 2000);
+    },
+
     save: function() {
       if (!this.$el.is(":visible")) {
         return;
       }
-      var options = {
-        silent: true
-      }
-      this.model.set({
+      this.model.save({
         content: this._editor.getValue(),
         subject: this.$el.find('.subject').val()
-      }, options);
-      this.model.save(undefined, options);
+      }, {
+        success: this.saved
+      });
       return false;
     },
 

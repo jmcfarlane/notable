@@ -19,7 +19,9 @@ function(Backbone) {
           password: password
         },
         success: _.bind(function(response, textStatus, xhr) {
-          this.set('content', response);
+          this.set({
+            'content': response
+          });
           this.set('password', password, {
             silent: true
           });

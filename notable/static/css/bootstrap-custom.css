@@ -19,3 +19,10 @@
   margin-top: 20px;
   font-size: 150%;
 }
+
+/* Alerts to be in the top right */
+.alert.top-right {
+  position: absolute;
+  right: 0;
+  top: 0;
+}

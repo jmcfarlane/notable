@@ -19,7 +19,7 @@ function(noteTab, notesTableRowTemplate) {
       var modal = this.options.passwordModal;
       this._index = {};
       this.index();
-      this.model.on('change', this.displayContent, this);
+      this.model.on('change:content', this.displayContent, this);
       this.model.on('change', this.index, this);
       this.model.on('decryption:error', modal.renderError, modal);
       this.options.searchModal.on('search', this.search, this);

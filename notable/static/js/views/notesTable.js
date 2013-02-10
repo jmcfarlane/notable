@@ -4,9 +4,10 @@
 define([
   'backbone',
   'views/notesTableRow',
+  'text!templates/saved.html',
   'text!templates/notesTable.html'
 ],
-function(Backbone, notesTableRowView, notesTableTemplate) {
+function(Backbone, notesTableRowView, savedTemplate, notesTableTemplate) {
   return Backbone.View.extend({
 
     initialize: function(options) {
@@ -28,6 +29,7 @@ function(Backbone, notesTableRowView, notesTableTemplate) {
     },
 
     render: function(collection) {
+      $('body').prepend(_.template(savedTemplate));
       this.$el.append(_.template(notesTableTemplate)());
       this.collection.each(this.addRow, this);
     }
