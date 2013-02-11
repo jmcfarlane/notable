@@ -52,10 +52,17 @@ function(noteDetailTemplate, tabTemplate) {
       }));
 
       // Activate the new tab
-      tabs.find(this.selector())
-        .tab('show')
-        .find('button')
-        .on('click', _.bind(this.close, this));
+      this.show().find('button').on('click', _.bind(this.close, this));
+
+      // Set focus on the right thing (giving bootstrap time to
+      // animate, must find the right way to handle this *sigh*.
+      setTimeout(_.bind(function() {
+        if (this.model.get('subject')) {
+          this._editor.focus();
+        } else {
+          this.$('.subject input').focus();
+        }
+      }, this), 800);
 
       return this;
     },
@@ -82,6 +89,10 @@ function(noteDetailTemplate, tabTemplate) {
       return false;
     },
 
+    show: function() {
+      return this.options.tabs.find(this.selector()).tab('show');
+    },
+
     selector: function() {
       return 'a[href=#'+ this.model.get('uid') +']';
     },
@@ -96,11 +107,13 @@ function(noteDetailTemplate, tabTemplate) {
         .parent()
         .next()
         .remove();
-
       // Remove the tab content (after the ^ animation is finished) (ick)
       setTimeout(_.bind(function() {
         $('#' + this.model.get('uid')).detach().remove();
       }, this), 300);
+
+      // Let parents deal with me
+      this.trigger('destroy');
     }
 
   });

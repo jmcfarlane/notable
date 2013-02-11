@@ -19,9 +19,10 @@ function(noteTab, notesTableRowTemplate) {
     initialize: function(options) {
       var modal = this.options.passwordModal;
       this._index = {};
+      this._tab = null;
       this.index();
-      this.model.on('change:content', this.displayContent, this);
       this.model.on('change:uid', this.displayContent, this);
+      this.model.on('content:fetched', this.displayContent, this);
       this.model.on('change', this.index, this);
       this.model.on('decryption:error', modal.renderError, modal);
       this.options.searchModal.on('search', this.search, this);
@@ -45,6 +46,11 @@ function(noteTab, notesTableRowTemplate) {
      * successfully fetched.
      */
     onRowClick: function() {
+      if (this._tab) {
+        this._tab.show();
+        return;
+      }
+
       var modal = this.options.passwordModal,
         password = modal.getPassword().val();
       if (this.model.get('encrypted') && !password) {
@@ -57,13 +63,21 @@ function(noteTab, notesTableRowTemplate) {
      * Display the details of a particular note
      */
     displayContent: function() {
-      var tab = new noteTab({
+      this._tab = new noteTab({
         tabs: this.options.tabs,
         tabContent: this.options.tabContent,
         model: this.model
       }).render();
       this.options.passwordModal.hide();
-      return tab;
+      this._tab.on('destroy', this.onTabClose, this);
+      return this._tab;
+    },
+
+    onTabClose: function() {
+      delete this._tab;
+      this.model.set('content', null, {
+        silent: true
+      });
     },
 
     hide: function() {

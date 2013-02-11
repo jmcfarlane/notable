@@ -23,6 +23,7 @@ function(Backbone) {
             content: response,
             password: password
           });
+          this.trigger('content:fetched');
         }, this),
         error: _.bind(function(xhr, response) {
           this.trigger('decryption:error', xhr.responseText);

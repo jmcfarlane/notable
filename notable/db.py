@@ -141,7 +141,7 @@ def migrate_data(c):
         content = n['content'].split('\n')
         if len(content) > 1 and re.search(r'([^ ]{32,})', content[1]):
             encrypted = True
-        values = (content.pop(0), '\n'.join(content), encrypted, n['uid'])
+        values = (content.pop(0), '\n'.join(content).strip(), encrypted, n['uid'])
         c.execute(sql, values)
         log.debug('Migrated: %s', values[0])
     c.commit()
