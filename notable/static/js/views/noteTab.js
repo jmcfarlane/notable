@@ -14,7 +14,6 @@ function(noteDetailTemplate, tabTemplate) {
   return Backbone.View.extend({
 
     initialize: function() {
-      $(document).bind('keydown', 'ctrl+s', _.bind(this.save, this));
       this._editor = null;
     },
 
@@ -41,6 +40,11 @@ function(noteDetailTemplate, tabTemplate) {
           'Ctrl-S': _.bind(this.save, this)
         }
       });
+      this.$('input').bind('keydown', 'ctrl+s', _.bind(this.save, this));
+
+      // Somehow this seems to result in the right tab saving, but
+      // seemms like a defect waiting to happen.
+      $(document).bind('keydown', 'ctrl+s', _.bind(this.save, this));
 
       // Add a new tab
       tabs.append(_.template(tabTemplate, {
