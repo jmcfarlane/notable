@@ -39,6 +39,7 @@ function(searchTemplate) {
     },
 
     show: function() {
+      $('.nav-tabs a:first').tab('show');
       this.$('input').animate({
         right: '10px'
       }, 'fast', function() {
