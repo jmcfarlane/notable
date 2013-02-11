@@ -1,7 +1,21 @@
 <div class="tab-pane fade active in" id="<%= note.uid %>">
-  <input class="input-xxlarge subject"
-         type="text"
-         placeholder=+"Subject..."
-         value="<%= note.subject %>" />
-  <div class="editor"></div>
+  <div class="control-group"></div>
+  <form class="form-inline">
+    <div class="input-prepend subject">
+      <span class="add-on">Subject</span>
+      <input class="span6" type="text" placeholder="Subject"
+             value="<%= note.subject %>" />
+    </div>
+    <div class="input-prepend tags">
+      <span class="add-on">Tags</span>
+      <input class="span4" type="text" placeholder="Tags"
+             value="<%= note.tags %>" />
+    </div>
+    <div class="input-append password">
+      <input class="span2" type="password" placeholder="Password"
+             value="<%= note.password %>" />
+      <span class="add-on">Password</span>
+    </div>
+    <div class="editor"></div>
+  </form>
 </div>

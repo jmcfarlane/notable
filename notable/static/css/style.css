@@ -21,3 +21,7 @@ body {
   overflow-x: auto;
   overflow-y: hidden;
 }
+
+.editor {
+  margin-top: 12px;
+}

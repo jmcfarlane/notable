@@ -20,10 +20,8 @@ function(Backbone) {
         },
         success: _.bind(function(response, textStatus, xhr) {
           this.set({
-            'content': response
-          });
-          this.set('password', password, {
-            silent: true
+            content: response,
+            password: password
           });
         }, this),
         error: _.bind(function(xhr, response) {
