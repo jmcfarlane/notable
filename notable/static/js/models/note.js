@@ -8,7 +8,7 @@ function(Backbone) {
   return Backbone.Model.extend({
 
     url: function(atts, options) {
-      return '/api/note/' + this.get('uid');
+      return '/api/note/' + (this.get('uid') || 'create');
     },
 
     fetchContent: function(password) {

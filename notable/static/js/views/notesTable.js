@@ -3,11 +3,13 @@
  */
 define([
   'backbone',
+  'models/note',
   'views/notesTableRow',
   'text!templates/saved.html',
-  'text!templates/notesTable.html'
+  'text!templates/notesTable.html',
+  'lib/jquery.hotkeys'
 ],
-function(Backbone, notesTableRowView, savedTemplate, notesTableTemplate) {
+function(Backbone, NoteModel, notesTableRowView, savedTemplate, notesTableTemplate) {
   return Backbone.View.extend({
 
     initialize: function(options) {
@@ -15,6 +17,7 @@ function(Backbone, notesTableRowView, savedTemplate, notesTableTemplate) {
       this.collection.fetch();
       $('body').append(this.options.passwordModal.render().el);
       $('body').append(this.options.searchModal.render().el);
+      $(document).bind('keydown', 'ctrl+c', _.bind(this.createNote, this));
     },
 
     addRow: function(note) {
@@ -26,6 +29,18 @@ function(Backbone, notesTableRowView, savedTemplate, notesTableTemplate) {
         searchModal: this.options.searchModal
       });
       this.$('tbody').append(row.render().el);
+      return row;
+    },
+
+    createNote: function() {
+      var note = new NoteModel({
+        content: '',
+        subject: '',
+        tags: ''
+      });
+      this.addRow(note);
+      note.save();
+      return false;
     },
 
     render: function(collection) {

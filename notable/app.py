@@ -84,8 +84,8 @@ def listing():
 def update_note(uid):
     return _persist(db.update_note)
 
-@bottle.post('/api/note')
-def create_note(uid):
+@bottle.post('/api/note/create')
+def create_note():
     return _persist(db.create_note)
 
 @bottle.get('/pid')
@@ -95,9 +95,9 @@ def getpid():
 def _persist(func):
     n = db.note(actual=True)
     note = json.loads(bottle.request.body.getvalue())
-    password = note.pop('password')
+    password = note.pop('password') if 'password' in note else ''
     n.update(dict((k, v) for k, v in note.items() if k in n))
-    return dict(success=func(n, password=password))
+    return func(n, password=password)
 
 def browser(opts):
     time.sleep(1)

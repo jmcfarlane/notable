@@ -21,13 +21,14 @@ function(noteTab, notesTableRowTemplate) {
       this._index = {};
       this.index();
       this.model.on('change:content', this.displayContent, this);
+      this.model.on('change:uid', this.displayContent, this);
       this.model.on('change', this.index, this);
       this.model.on('decryption:error', modal.renderError, modal);
       this.options.searchModal.on('search', this.search, this);
     },
 
     index: function() {
-      this._index.tags = this.model.get('tags').split(' ');
+      this._index.tags = (this.model.get('tags') || '').split(' ');
     },
 
     render: function(collection) {
@@ -55,13 +56,14 @@ function(noteTab, notesTableRowTemplate) {
     /**
      * Display the details of a particular note
      */
-    displayContent: function(content) {
+    displayContent: function() {
       var tab = new noteTab({
         tabs: this.options.tabs,
         tabContent: this.options.tabContent,
         model: this.model
       }).render();
       this.options.passwordModal.hide();
+      return tab;
     },
 
     hide: function() {

@@ -44,7 +44,8 @@ def create_note(n, password=None):
     log.debug('%s, %s' % (sql, values))
     c.execute(sql, values)
     c.commit()
-    return True
+    n.pop('content')
+    return n
 
 def delete_note(uid, password=None):
     c = conn()
@@ -52,7 +53,7 @@ def delete_note(uid, password=None):
     log.debug('%s, %s' % (sql, uid))
     c.execute(sql, (uid,))
     c.commit()
-    return True
+    return {}
 
 def encrypt(n, password):
     encrypted = False
@@ -84,7 +85,8 @@ def update_note(n, password=None):
     log.debug('%s, %s' % (sql, values))
     c.execute(sql, values)
     c.commit()
-    return True
+    n.pop('content')
+    return n
 
 def conn():
     d = os.path.dirname(path)
