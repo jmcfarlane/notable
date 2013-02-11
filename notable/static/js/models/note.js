@@ -11,6 +11,12 @@ function(Backbone) {
       return '/api/note/' + (this.get('uid') || 'create');
     },
 
+    parse: function(note) {
+      return _.extend(note, {
+        id: note.uid
+      });
+    },
+
     fetchContent: function(password) {
       $.ajax({
         url: '/api/note/content/' + this.get('uid'),

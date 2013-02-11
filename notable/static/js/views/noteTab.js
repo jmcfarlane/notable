@@ -46,6 +46,7 @@ function(noteDetailTemplate, tabTemplate) {
       // Somehow this seems to result in the right tab saving, but
       // seemms like a defect waiting to happen.
       $(document).bind('keydown', 'ctrl+s', _.bind(this.save, this));
+      this.$('.delete').on('click', _.bind(this.onDelete, this));
 
       // Add a new tab
       tabs.append(_.template(tabTemplate, {
@@ -60,6 +61,13 @@ function(noteDetailTemplate, tabTemplate) {
 
       this.$('.subject input').on('keyup', _.bind(this.onSubjectChange, this));
       return this;
+    },
+
+    onDelete: function() {
+      // TODO: Wrap this in a confirmation modal
+      this.model.destroy();
+      this.close();
+      return false;
     },
 
     onSubjectChange: function() {

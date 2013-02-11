@@ -54,11 +54,9 @@ def decrypt():
     uid = bottle.request.forms.get('uid')
     return db.get_content(uid, password)
 
-@bottle.post('/api/delete')
-def delete():
-    password = bottle.request.forms.get('password')
-    uid = bottle.request.forms.get('uid')
-    return dict(success=db.delete_note(uid, password=password))
+@bottle.delete('/api/note/<uid>')
+def delete(uid):
+    return dict(success=db.delete_note(uid))
 
 @bottle.post('/api/launch_editor')
 def launch_editor():
@@ -80,7 +78,7 @@ def listing():
     notes = db.search(bottle.request.query.get('s'), exclude=exclude)
     return json.dumps(list(notes), indent=2)
 
-@bottle.post('/api/note/<uid>')
+@bottle.put('/api/note/<uid>')
 def update_note(uid):
     return _persist(db.update_note)
 

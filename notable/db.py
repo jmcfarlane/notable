@@ -47,13 +47,13 @@ def create_note(n, password=None):
     n.pop('content')
     return n
 
-def delete_note(uid, password=None):
+def delete_note(uid):
     c = conn()
     sql = 'DELETE FROM notes WHERE uid = ?'
     log.debug('%s, %s' % (sql, uid))
     c.execute(sql, (uid,))
     c.commit()
-    return {}
+    return True
 
 def encrypt(n, password):
     encrypted = False

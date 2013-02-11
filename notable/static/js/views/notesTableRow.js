@@ -24,6 +24,7 @@ function(noteTab, notesTableRowTemplate) {
       this.model.on('change:uid', this.displayContent, this);
       this.model.on('content:fetched', this.displayContent, this);
       this.model.on('change', this.index, this);
+      this.model.on('destroy', this.onDestroy, this);
       this.model.on('decryption:error', modal.renderError, modal);
       this.options.searchModal.on('search', this.search, this);
     },
@@ -71,6 +72,11 @@ function(noteTab, notesTableRowTemplate) {
       this.options.passwordModal.hide();
       this._tab.on('destroy', this.onTabClose, this);
       return this._tab;
+    },
+
+    onDestroy: function() {
+      this.$el.detach().remove();
+      delete this._tab;
     },
 
     onTabClose: function() {
