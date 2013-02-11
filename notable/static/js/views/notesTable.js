@@ -17,6 +17,7 @@ function(Backbone, NoteModel, notesTableRowView, savedTemplate, notesTableTempla
       this.collection.fetch();
       $('body').append(this.options.passwordModal.render().el);
       $('body').append(this.options.searchModal.render().el);
+      $('.create').on('click', _.bind(this.createNote, this));
       $(document).bind('keydown', 'ctrl+c', _.bind(this.createNote, this));
     },
 
