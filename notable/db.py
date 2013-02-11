@@ -55,9 +55,12 @@ def delete_note(uid, password=None):
     return True
 
 def encrypt(n, password):
+    encrypted = False
     content = n['content']
-    content = crypt.encrypt(content, password) if password else content
-    n.update(dict(content=content))
+    if password:
+        content = crypt.encrypt(content, password)
+        encrypted = True
+    n.update(dict(content=content, encrypted=encrypted))
     return n
 
 def update_note(n, password=None):
@@ -68,12 +71,14 @@ def update_note(n, password=None):
         tags = ?,
         subject = ?,
         content = ?,
+        encrypted = ?,
         updated = ?
       WHERE uid = ?
       """
     values = [n.get('tags'),
               n.get('subject'),
               n.get('content'),
+              n.get('encrypted'),
               n.get('updated'),
               n.get('uid')]
     log.debug('%s, %s' % (sql, values))
@@ -130,10 +135,10 @@ def migrate_data(c):
     for n in search(''):
         if n['subject']:
             continue
-        encrypted = 0
+        encrypted = False
         content = n['content'].split('\n')
         if len(content) > 1 and re.search(r'([^ ]{32,})', content[1]):
-            encrypted = 1
+            encrypted = True
         values = (content.pop(0), '\n'.join(content), encrypted, n['uid'])
         c.execute(sql, values)
         log.debug('Migrated: %s', values[0])

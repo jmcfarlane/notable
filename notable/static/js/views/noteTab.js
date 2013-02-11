@@ -69,7 +69,9 @@ function(noteDetailTemplate, tabTemplate) {
       }
       this.model.save({
         content: this._editor.getValue(),
-        subject: this.$el.find('.subject').val()
+        password: this.$el.find('.password input').val(),
+        subject: this.$el.find('.subject input').val(),
+        tags: this.$el.find('.tags input').val()
       }, {
         success: this.saved
       });
