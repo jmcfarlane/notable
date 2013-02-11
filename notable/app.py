@@ -27,7 +27,7 @@ from notable import bottle, db, editor
 host = 'localhost'
 version = '0.0.7'
 static = os.path.join(root, 'static')
-bottle.TEMPLATE_PATH.insert(0, os.path.join(root, 'views'))
+bottle.TEMPLATE_PATH.insert(0, os.path.join(root, 'static/templates'))
 log = logging.getLogger(__name__)
 
 @bottle.route('/')
