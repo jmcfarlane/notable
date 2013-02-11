@@ -72,10 +72,7 @@ function(noteDetailTemplate, tabTemplate) {
     },
 
     saved: function() {
-      $('.saved').fadeIn();
-      setTimeout(function() {
-        $('.saved').fadeOut();
-      }, 2000);
+      $('.saved').fadeIn().delay(4000).fadeOut();
     },
 
     save: function() {
