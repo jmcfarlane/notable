@@ -13,6 +13,7 @@ function(noteTab, notesTableRowTemplate) {
       'click': 'onRowClick'
     },
 
+    className: 'note-row',
     tagName: 'tr',
 
     initialize: function(options) {
