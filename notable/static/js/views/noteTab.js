@@ -15,6 +15,7 @@ function(noteDetailTemplate, tabTemplate) {
 
     initialize: function() {
       this._editor = null;
+      this._tab = null;
     },
 
     render: function(collection) {
@@ -52,15 +53,21 @@ function(noteDetailTemplate, tabTemplate) {
       }));
 
       // Set event handlers, and show the tab
-      this.getTab().on('shown', _.bind(this.shown, this))
+      this._tab = this.getTab();
+      this._tab.on('shown', _.bind(this.shown, this))
         .tab('show')
         .find('button').on('click', _.bind(this.close, this));
 
+      this.$('.subject input').on('keyup', _.bind(this.onSubjectChange, this));
       return this;
     },
 
+    onSubjectChange: function() {
+      this._tab.find('span').text(this.$('.subject input').val());
+    },
+
     show: function() {
-      this.getTab().tab('show');
+      this._tab.tab('show');
     },
 
     shown: function() {
