@@ -51,20 +51,24 @@ function(noteDetailTemplate, tabTemplate) {
         note: note
       }));
 
-      // Activate the new tab
-      this.show().find('button').on('click', _.bind(this.close, this));
-
-      // Set focus on the right thing (giving bootstrap time to
-      // animate, must find the right way to handle this *sigh*.
-      setTimeout(_.bind(function() {
-        if (this.model.get('subject')) {
-          this._editor.focus();
-        } else {
-          this.$('.subject input').focus();
-        }
-      }, this), 800);
+      // Set event handlers, and show the tab
+      this.getTab().on('shown', _.bind(this.shown, this))
+        .tab('show')
+        .find('button').on('click', _.bind(this.close, this));
 
       return this;
+    },
+
+    show: function() {
+      this.getTab().tab('show');
+    },
+
+    shown: function() {
+      if (this.model.get('subject')) {
+        this._editor.focus();
+      } else {
+        this.$('.subject input').focus();
+      }
     },
 
     saved: function() {
@@ -89,8 +93,8 @@ function(noteDetailTemplate, tabTemplate) {
       return false;
     },
 
-    show: function() {
-      return this.options.tabs.find(this.selector()).tab('show');
+    getTab: function() {
+      return this.options.tabs.find(this.selector());
     },
 
     selector: function() {
