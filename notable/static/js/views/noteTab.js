@@ -47,6 +47,10 @@ function(noteDetailTemplate, tabTemplate) {
       // seemms like a defect waiting to happen.
       $(document).bind('keydown', 'ctrl+s', _.bind(this.save, this));
       this.$('.delete').on('click', _.bind(this.onDelete, this));
+      this.$('.save').on('click', _.bind(this.save, this));
+      this.$('.save-close').on('click', {
+        callback: _.bind(this.close, this)
+      }, _.bind(this.save, this));
 
       // Add a new tab
       tabs.append(_.template(tabTemplate, {
@@ -90,7 +94,7 @@ function(noteDetailTemplate, tabTemplate) {
       $('.saved').fadeIn().delay(4000).fadeOut();
     },
 
-    save: function() {
+    save: function(event) {
       if (!this.$el.is(":visible")) {
         return;
       }
@@ -100,7 +104,12 @@ function(noteDetailTemplate, tabTemplate) {
         subject: this.$el.find('.subject input').val(),
         tags: this.$el.find('.tags input').val()
       }, {
-        success: this.saved
+        success: _.bind(function() {
+          this.saved();
+          if (event.data && event.data.callback) {
+            event.data.callback();
+          }
+        }, this)
       });
       return false;
     },
