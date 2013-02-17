@@ -46,6 +46,7 @@ function(noteDetailTemplate, tabTemplate) {
       // Somehow this seems to result in the right tab saving, but
       // seemms like a defect waiting to happen.
       $(document).bind('keydown', 'ctrl+s', _.bind(this.save, this));
+      this.$('.close-button').on('click', _.bind(this.close, this));
       this.$('.delete').on('click', _.bind(this.onDelete, this));
       this.$('.save').on('click', _.bind(this.save, this));
       this.$('.save-close').on('click', {
@@ -57,12 +58,9 @@ function(noteDetailTemplate, tabTemplate) {
         note: note
       }));
 
-      // Set event handlers, and show the tab
+      // Track the tab, show it and set event handlers
       this._tab = this.getTab();
-      this._tab.on('shown', _.bind(this.shown, this))
-        .tab('show')
-        .find('button').on('click', _.bind(this.close, this));
-
+      this._tab.on('shown', _.bind(this.shown, this)).tab('show')
       this.$('.subject input').on('keyup', _.bind(this.onSubjectChange, this));
       return this;
     },
@@ -123,16 +121,22 @@ function(noteDetailTemplate, tabTemplate) {
     },
 
     close: function() {
-      // Show the tab to the left of this one
+      // Show the tab to the left of this one and remove this tab
       var tabToDelete = this.options.tabs.find(this.selector());
       tabToDelete.parent().prev().find('a').tab('show');
+      tabToDelete.parent().remove();
 
-      // Delete the tab and the tab content
-      tabToDelete.parent().detach().remove();
-      $(tabToDelete.attr('href')).detach().remove()
-
-      // Let parents deal with me
+      // Hiding/removing the tab content seems to _piss off_
+      // bootstrap, so sorta hide it by setting it's content to
+      // nothing (see next step).
+      $(tabToDelete.attr('href')).html('');
       this.trigger('destroy');
+
+      // After bootstrap has had time to calm the hell down, remove
+      // the tab body (else crazy "all tab bodies disappear" happens).
+      setTimeout(function() {
+        $(tabToDelete.attr('href')).remove();
+      }, 1000);
     }
 
   });
