@@ -123,19 +123,13 @@ function(noteDetailTemplate, tabTemplate) {
     },
 
     close: function() {
-      // Show the previous tab and then remove this one
-      this.options.tabs.find(this.selector())
-        .parent()
-        .prev()
-        .find('a')
-        .tab('show')
-        .parent()
-        .next()
-        .remove();
-      // Remove the tab content (after the ^ animation is finished) (ick)
-      setTimeout(_.bind(function() {
-        $('#' + this.model.get('uid')).detach().remove();
-      }, this), 300);
+      // Show the tab to the left of this one
+      var tabToDelete = this.options.tabs.find(this.selector());
+      tabToDelete.parent().prev().find('a').tab('show');
+
+      // Delete the tab and the tab content
+      tabToDelete.parent().detach().remove();
+      $(tabToDelete.attr('href')).detach().remove()
 
       // Let parents deal with me
       this.trigger('destroy');
