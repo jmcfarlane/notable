@@ -1,6 +1,7 @@
 """Notable - a simple not taking application"""
 
 # Python imports
+from time import gmtime, sleep, strftime, time
 import httplib
 import json
 import logging
@@ -10,7 +11,6 @@ import re
 import signal
 import sys
 import threading
-import time
 import webbrowser
 try:
     import urllib2
@@ -37,7 +37,10 @@ def homepage():
 
 @bottle.route('/static/<filename:re:.*>')
 def htdocs(filename):
-    return bottle.static_file(filename, root=static)
+    response = bottle.static_file(filename, root=static)
+    expires = strftime('%a, %d %b %Y %H:%M:%S GMT', gmtime(time()))
+    response.set_header('Expires', expires)
+    return response
 
 @bottle.post('/api/note/content/<uid>')
 def content(uid):
@@ -98,7 +101,7 @@ def _persist(func):
     return func(n, password=password)
 
 def browser(opts):
-    time.sleep(1)
+    sleep(1)
     webbrowser.open_new_tab('http://localhost:%s' % opts.port)
 
 def fork_and_exit():
