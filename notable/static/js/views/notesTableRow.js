@@ -22,11 +22,14 @@ function(noteTab, notesTableRowTemplate) {
       this._tab = null;
       this.index();
       this.model.on('change:uid', this.displayContent, this);
+      this.model.on('change:selected', this.toggleSelected, this);
       this.model.on('content:fetched', this.displayContent, this);
       this.model.on('change', this.index, this);
       this.model.on('destroy', this.onDestroy, this);
       this.model.on('decryption:error', modal.renderError, modal);
       this.options.searchModal.on('search', this.search, this);
+      this.model.set('selected', false);
+      this.model.view = this;
     },
 
     index: function() {
@@ -72,6 +75,11 @@ function(noteTab, notesTableRowTemplate) {
       this.options.passwordModal.hide();
       this._tab.on('destroy', this.onTabClose, this);
       return this._tab;
+    },
+
+    toggleSelected: function() {
+      var td = this.$('td:first');
+      td[this.model.get('selected') ? 'addClass' : 'removeClass']('selected');
     },
 
     onDestroy: function() {

@@ -18,3 +18,11 @@
 .note-row:hover {
   cursor: pointer;
 }
+
+td.selector {
+  border-left-width: 3px;
+}
+
+td.selector.selected {
+  border-left-color: #4d90f0;
+}
