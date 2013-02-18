@@ -49,9 +49,7 @@ function(noteDetailTemplate, tabTemplate) {
       this.$('.close-button').on('click', _.bind(this.close, this));
       this.$('.delete').on('click', _.bind(this.onDelete, this));
       this.$('.save').on('click', _.bind(this.save, this));
-      this.$('.save-close').on('click', {
-        callback: _.bind(this.close, this)
-      }, _.bind(this.save, this));
+      this.$('.save-close').on('click', _.bind(this.saveAndClose, this));
 
       // Add a new tab
       tabs.append(_.template(tabTemplate, {
@@ -76,6 +74,10 @@ function(noteDetailTemplate, tabTemplate) {
       this._tab.find('span').text(this.$('.subject input').val());
     },
 
+    saveAndClose: function() {
+      this.save(_.bind(this.close, this));
+    },
+
     show: function() {
       this._tab.tab('show');
     },
@@ -92,7 +94,8 @@ function(noteDetailTemplate, tabTemplate) {
       $('.saved').fadeIn().delay(4000).fadeOut();
     },
 
-    save: function(event) {
+    save: function(callback) {
+      callback = callback || _.identity;
       if (!this.$el.is(":visible")) {
         return;
       }
@@ -104,9 +107,7 @@ function(noteDetailTemplate, tabTemplate) {
       }, {
         success: _.bind(function() {
           this.saved();
-          if (event.data && event.data.callback) {
-            event.data.callback();
-          }
+          callback();
         }, this)
       });
       return false;
