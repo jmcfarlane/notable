@@ -38,7 +38,8 @@ function(noteDetailTemplate, tabTemplate) {
         mode: 'rst',
         value: note.content,
         extraKeys: {
-          'Ctrl-S': _.bind(this.save, this)
+          'Ctrl-S': _.bind(this.save, this),
+          'Shift-Ctrl-S': _.bind(this.saveAndClose, this)
         }
       });
       this.$('input').bind('keydown', 'ctrl+s', _.bind(this.save, this));
