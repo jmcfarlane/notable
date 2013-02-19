@@ -47,6 +47,7 @@ function(noteDetailTemplate, tabTemplate) {
       // Somehow this seems to result in the right tab saving, but
       // seemms like a defect waiting to happen.
       $(document).bind('keydown', 'ctrl+s', _.bind(this.save, this));
+      $(document).bind('keydown', 'esc', _.bind(this.close, this));
       this.$('.close-button').on('click', _.bind(this.close, this));
       this.$('.delete').on('click', _.bind(this.onDelete, this));
       this.$('.save').on('click', _.bind(this.save, this));
@@ -84,9 +85,7 @@ function(noteDetailTemplate, tabTemplate) {
     },
 
     shown: function() {
-      if (this.model.get('subject')) {
-        this._editor.focus();
-      } else {
+      if (!this.model.get('subject')) {
         this.$('.subject input').focus();
       }
     },

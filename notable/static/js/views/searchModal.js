@@ -25,8 +25,24 @@ function(searchTemplate) {
     },
 
     initialize: function() {
+      this._query = null;
       $(document).bind('click', _.bind(this.hide, this));
       $(document).bind('keydown', '/', _.bind(this.show, this));
+    },
+
+    next: function() {
+      this.trigger('next');
+      return false;
+    },
+
+    previous: function() {
+      this.trigger('previous');
+      return false;
+    },
+
+    open: function() {
+      this.trigger('open');
+      return false;
     },
 
     noop: function() {
@@ -35,6 +51,9 @@ function(searchTemplate) {
 
     render: function(collection) {
       this.$el.html(_.template(searchTemplate));
+      this.$('.search-query').bind('keydown', 'ctrl+j', _.bind(this.next, this));
+      this.$('.search-query').bind('keydown', 'ctrl+k', _.bind(this.previous, this));
+      this.$('.search-query').bind('keydown', 'return', _.bind(this.open, this));
       return this;
     },
 
@@ -48,7 +67,11 @@ function(searchTemplate) {
     },
 
     search: function() {
-      this.trigger('search', this.$('input').val().trim().toLowerCase());
+      var query = this.$('input').val().trim().toLowerCase()
+      if (query != this._query) {
+        this.trigger('search', query);
+        this._query = query;
+      }
     }
 
   });

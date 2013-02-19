@@ -22,6 +22,12 @@ function(Backbone, NoteModel, notesTableRowView, savedTemplate, notesTableTempla
       $(document).bind('keydown', 'j', _.bind(this.selectNextNote, this));
       $(document).bind('keydown', 'k', _.bind(this.selectPreviousNote, this));
       $(document).bind('keydown', 'return', _.bind(this.openSelectedNote, this));
+      options.searchModal.on('next', this.selectNextNote, this);
+      options.searchModal.on('previous', this.selectPreviousNote, this);
+      options.searchModal.on('open', this.openSelectedNote, this);
+      options.searchModal.on('search', _.bind(function() {
+        setTimeout(_.bind(this.defaultSelected, this), 100);
+      }, this));
     },
 
     addRow: function(note, idx) {
@@ -33,7 +39,6 @@ function(Backbone, NoteModel, notesTableRowView, savedTemplate, notesTableTempla
         searchModal: this.options.searchModal
       });
       this.$('tbody').append(row.render().el);
-      note.set('selected', (idx === 0));
       return row;
     },
 
@@ -48,6 +53,13 @@ function(Backbone, NoteModel, notesTableRowView, savedTemplate, notesTableTempla
       return false;
     },
 
+    defaultSelected: function() {
+      this.collection.each(function(model) {
+        model.set('selected', false);
+      });
+      this.visibleRows().at(0).set('selected', true);
+    },
+
     openSelectedNote: function() {
       this.collection.find(function(model){
         return model.get('selected');
@@ -58,6 +70,7 @@ function(Backbone, NoteModel, notesTableRowView, savedTemplate, notesTableTempla
       $('body').prepend(_.template(savedTemplate));
       this.$el.append(_.template(notesTableTemplate)());
       this.collection.each(this.addRow, this);
+      this.defaultSelected();
     },
 
     selectNextNote: function() {
@@ -69,17 +82,24 @@ function(Backbone, NoteModel, notesTableRowView, savedTemplate, notesTableTempla
     },
 
     navigateNote: function(step) {
-      this.collection.every(function(model, idx) {
+      var visible = this.visibleRows();
+      visible.every(function(model, idx) {
         if (model.get('selected')) {
-          var possible = this.collection.at(idx - step);
+          var possible = visible.at(idx - step);
           if (possible) {
-            this.collection.at(idx).set('selected', false);
+            visible.at(idx).set('selected', false);
             possible.set('selected', true);
             return false;
           }
         }
         return true;
       }, this)
+    },
+
+    visibleRows: function() {
+      return new Backbone.Collection(this.collection.filter(function(model) {
+        return model.view.$el.is(':visible');
+      }));
     }
 
 
