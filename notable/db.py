@@ -28,9 +28,8 @@ def note(exclude=None, actual=False):
             ]
     n = OrderedDict((k, v) for k, v in model if not k in exclude)
     if actual:
-        now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
         uid = uuid.uuid4().hex
-        n.update(uid=uid, created=now, updated=now)
+        n.update(uid=uid, created=now, updated=now())
     return n
 
 def create_note(n, password=None):
@@ -64,9 +63,13 @@ def encrypt(n, password):
     n.update(dict(content=content, encrypted=encrypted))
     return n
 
+def now():
+    return datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
+
 def update_note(n, password=None):
     c = conn()
     n = encrypt(n, password)
+    n['updated'] = now()
     sql = """
       UPDATE notes SET
         tags = ?,
