@@ -57,7 +57,10 @@ function(Backbone, NoteModel, notesTableRowView, savedTemplate, notesTableTempla
       this.collection.each(function(model) {
         model.set('selected', false);
       });
-      this.visibleRows().at(0).set('selected', true);
+      var visible = this.visibleRows().at(0);
+      if (visible) {
+       visible.set('selected', true);
+      }
     },
 
     openSelectedNote: function() {

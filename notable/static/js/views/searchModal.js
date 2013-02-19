@@ -42,6 +42,8 @@ function(searchTemplate) {
 
     open: function() {
       this.trigger('open');
+      this.hide();
+      this.$('input').blur(); // (un)focus search
       return false;
     },
 
