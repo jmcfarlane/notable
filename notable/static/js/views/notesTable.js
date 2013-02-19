@@ -64,6 +64,11 @@ function(Backbone, NoteModel, notesTableRowView, savedTemplate, notesTableTempla
     },
 
     openSelectedNote: function() {
+      // I don't like this condition.  The enter binding should not be
+      // firing when a modal input (or any input) has focus, hmm.
+      if (this.options.passwordModal.$('input').is(':visible')) {
+        return;
+      }
       this.collection.find(function(model){
         return model.get('selected');
       }, this).view.onRowClick();
