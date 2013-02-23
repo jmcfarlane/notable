@@ -30,9 +30,9 @@ setup(
     classifiers = [c for c in CLASSIFIERS.split('\n') if c],
     description = DESCRIPTION,
     download_url = '%s/Notable-%s.tar.gz' % (PYPI, app.version),
+    include_package_data = True,
     name = NAME,
     packages = ['notable'],
-    package_data = {'notable': ['static/*', 'views/*']},
     scripts = ['scripts/notable'],
     url = URL,
     version = app.version
