@@ -1,14 +1,16 @@
 """Notable - a simple not taking application"""
 
 # Python imports
+from time import gmtime, sleep, strftime, time
 import httplib
+import json
 import logging
 import optparse
 import os
+import re
 import signal
 import sys
 import threading
-import time
 import webbrowser
 try:
     import urllib2
@@ -23,9 +25,9 @@ from notable import bottle, db, editor
 
 # Constants, and help with template lookup
 host = 'localhost'
-version = '0.0.7'
+version = '0.1.0b'
 static = os.path.join(root, 'static')
-bottle.TEMPLATE_PATH.insert(0, os.path.join(root, 'views'))
+bottle.TEMPLATE_PATH.insert(0, os.path.join(root, 'static/templates'))
 log = logging.getLogger(__name__)
 
 @bottle.route('/')
@@ -33,9 +35,21 @@ log = logging.getLogger(__name__)
 def homepage():
     return dict()
 
-@bottle.route('/static/<filename>')
+@bottle.route('/static/<filename:re:.*>')
 def htdocs(filename):
-    return bottle.static_file(filename, root=static)
+    response = bottle.static_file(filename, root=static)
+    expires = strftime('%a, %d %b %Y %H:%M:%S GMT', gmtime(time()))
+    response.set_header('Expires', expires)
+    return response
+
+@bottle.post('/api/note/content/<uid>')
+def content(uid):
+    password = bottle.request.forms.get('password')
+    content = db.get_content(uid, password)
+    if smells_encrypted(content):
+        bottle.response.status = 403
+        return 'Nope, try again'
+    return content
 
 @bottle.post('/api/decrypt')
 def decrypt():
@@ -43,11 +57,9 @@ def decrypt():
     uid = bottle.request.forms.get('uid')
     return db.get_content(uid, password)
 
-@bottle.post('/api/delete')
-def delete():
-    password = bottle.request.forms.get('password')
-    uid = bottle.request.forms.get('uid')
-    return dict(success=db.delete_note(uid, password=password))
+@bottle.delete('/api/note/<uid>')
+def delete(uid):
+    return dict(success=db.delete_note(uid))
 
 @bottle.post('/api/launch_editor')
 def launch_editor():
@@ -63,29 +75,33 @@ def from_disk(uid=None):
     else:
         return 'missing'
 
-@bottle.get('/api/list')
-def api_list():
-    return db.search(bottle.request.query.get('s'))
+@bottle.get('/api/notes/list')
+def listing():
+    exclude = ['content']
+    notes = db.search(bottle.request.query.get('s'), exclude=exclude)
+    return json.dumps(list(notes), indent=2)
 
-@bottle.post('/api/persist')
-def persist():
-    n = db.note(actual=True)
-    password = bottle.request.forms.get('password')
-    form = dict((k, v) for k, v in bottle.request.forms.items() if k in n)
-    if form.get('uid') == '':
-        fcn, _ = db.create_note, form.pop('uid')
-    else:
-        fcn = db.update_note
+@bottle.put('/api/note/<uid>')
+def update_note(uid):
+    return _persist(db.update_note)
 
-    n.update(form)
-    return dict(success=fcn(n, password=password))
+@bottle.post('/api/note/create')
+def create_note():
+    return _persist(db.create_note)
 
 @bottle.get('/pid')
 def getpid():
     return str(os.getpid())
 
+def _persist(func):
+    n = db.note(actual=True)
+    note = json.loads(bottle.request.body.getvalue())
+    password = note.pop('password') if 'password' in note else ''
+    n.update(dict((k, v) for k, v in note.items() if k in n))
+    return func(n, password=password)
+
 def browser(opts):
-    time.sleep(1)
+    sleep(1)
     webbrowser.open_new_tab('http://localhost:%s' % opts.port)
 
 def fork_and_exit():
@@ -136,10 +152,14 @@ def run(opts):
     elif pid:
         return
 
+    reloader = opts.debug
     db.path = db.path + '.debug' if opts.debug else db.path
     db.prepare()
-    bottle.run(host=host, port=opts.port)
+    bottle.run(host=host, port=opts.port, reloader=reloader)
     return 0
+
+def smells_encrypted(content):
+    return len(re.findall(r'[^\x00-\x80]', content)) > 25
 
 def main():
     logging.basicConfig(level=logging.DEBUG)

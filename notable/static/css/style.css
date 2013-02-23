@@ -1,0 +1,28 @@
+.form-search input {
+  position: absolute;
+  right: -450px;
+  top: 3px;
+  width: 400px;
+}
+
+.CodeMirror {
+  border: 1px solid #dddddd;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.editor {
+  margin-top: 12px;
+}
+
+.note-row:hover {
+  cursor: pointer;
+}
+
+td.selector {
+  border-left-width: 3px;
+}
+
+td.selector.selected {
+  border-left-color: #4d90f0;
+}
