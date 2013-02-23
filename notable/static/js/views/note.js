@@ -65,6 +65,10 @@ function(noteDetailTemplate, tabTemplate) {
       return this;
     },
 
+    isVisible: function() {
+      return this.$el.is(":visible");
+    },
+
     onDelete: function() {
       // TODO: Wrap this in a confirmation modal
       this.model.destroy();
@@ -96,7 +100,7 @@ function(noteDetailTemplate, tabTemplate) {
 
     save: function(callback) {
       callback = _.isFunction(callback) ? callback : _.identity;
-      if (!this.$el.is(":visible")) {
+      if (!this.isVisible()) {
         return;
       }
       this.model.save({
@@ -122,6 +126,12 @@ function(noteDetailTemplate, tabTemplate) {
     },
 
     close: function() {
+      // Currently you cannot close a tab unless it's active.  This is
+      // to simplify bootstrap crazy, see below.
+      if (!this.isVisible()) {
+        return;
+      }
+
       // Show the tab to the left of this one and remove this tab
       var tabToDelete = this.options.tabs.find(this.selector());
       tabToDelete.parent().prev().find('a').tab('show');
