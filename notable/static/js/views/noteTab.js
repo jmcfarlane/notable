@@ -95,7 +95,7 @@ function(noteDetailTemplate, tabTemplate) {
     },
 
     save: function(callback) {
-      callback = callback || _.identity;
+      callback = _.isFunction(callback) ? callback : _.identity;
       if (!this.$el.is(":visible")) {
         return;
       }
