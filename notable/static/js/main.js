@@ -9,6 +9,9 @@ require.config({
       deps: ['underscore', 'jquery'],
       exports: 'Backbone'
     },
+    bootstrap: {
+      deps: ['jquery']
+    },
     'lib/codemirror/mode/rst/rst': {
       deps: ['codemirror', 'vim'],
       exports: 'CodeMirror'
@@ -16,6 +19,7 @@ require.config({
   },
 	paths: {
     backbone: '../lib/backbone',
+    bootstrap: '../lib/bootstrap/js/bootstrap.min',
     codemirror: '../lib/codemirror/lib/codemirror',
     jquery: '../lib/jquery',
     lib: '../lib',
@@ -36,7 +40,7 @@ require(
    'jquery',
    'underscore',
    'backbone',
-   'lib/bootstrap/js/bootstrap.min',
+   'bootstrap',
    'lib/plugins/bootstrap/tab'
   ],
 	function(NotesCollection, NotesTableView, PasswordModalView, SearchModalView) {
