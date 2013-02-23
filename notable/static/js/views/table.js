@@ -5,11 +5,17 @@ define([
   'backbone',
   'models/note',
   'views/row',
+  'text!templates/not-saved.html',
   'text!templates/saved.html',
   'text!templates/table.html',
   'lib/jquery.hotkeys'
 ],
-function(Backbone, NoteModel, notesTableRowView, savedTemplate, notesTableTemplate) {
+function(Backbone,
+         NoteModel,
+         notesTableRowView,
+         notSavedTemplate,
+         savedTemplate,
+         notesTableTemplate) {
   return Backbone.View.extend({
 
     initialize: function(options) {
@@ -75,6 +81,7 @@ function(Backbone, NoteModel, notesTableRowView, savedTemplate, notesTableTempla
     },
 
     render: function(collection) {
+      $('body').prepend(_.template(notSavedTemplate));
       $('body').prepend(_.template(savedTemplate));
       this.$el.append(_.template(notesTableTemplate)());
       this.collection.each(this.addRow, this);

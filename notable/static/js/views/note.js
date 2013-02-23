@@ -94,6 +94,10 @@ function(noteDetailTemplate, tabTemplate) {
       }
     },
 
+    notSaved: function() {
+      $('.not-saved').fadeIn().delay(3000).fadeOut();
+    },
+
     saved: function() {
       $('.saved').fadeIn().delay(2000).fadeOut();
     },
@@ -109,6 +113,9 @@ function(noteDetailTemplate, tabTemplate) {
         subject: this.$el.find('.subject input').val(),
         tags: this.$el.find('.tags input').val()
       }, {
+        error: _.bind(function() {
+          this.notSaved();
+        }, this),
         success: _.bind(function() {
           this.saved();
           callback();
