@@ -29,7 +29,7 @@ def note(exclude=None, actual=False):
     n = OrderedDict((k, v) for k, v in model if not k in exclude)
     if actual:
         uid = uuid.uuid4().hex
-        n.update(uid=uid, created=now, updated=now())
+        n.update(uid=uid, created=now(), updated=now())
     return n
 
 def create_note(n, password=None):
