@@ -4,9 +4,9 @@
 define([
   'backbone',
   'models/note',
-  'views/notesTableRow',
+  'views/row',
   'text!templates/saved.html',
-  'text!templates/notesTable.html',
+  'text!templates/table.html',
   'lib/jquery.hotkeys'
 ],
 function(Backbone, NoteModel, notesTableRowView, savedTemplate, notesTableTemplate) {

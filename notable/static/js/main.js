@@ -30,9 +30,9 @@ require.config({
 require(
 	[
    'collections/notes',
-   'views/notesTable',
-   'views/passwordModal',
-   'views/searchModal',
+   'views/table',
+   'views/password',
+   'views/search',
    'jquery',
    'underscore',
    'backbone',

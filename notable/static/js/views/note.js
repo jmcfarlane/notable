@@ -2,7 +2,7 @@
  * @fileoverview Describes a bootstrap tab
  */
 define([
-  'text!templates/noteDetail.html',
+  'text!templates/note.html',
   'text!templates/tab.html',
   'backbone',
   'underscore',

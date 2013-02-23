@@ -2,7 +2,7 @@
  * @fileoverview Describes a password modal
  */
 define([
-  'text!templates/passwordModal.html',
+  'text!templates/password.html',
   'backbone',
   'underscore'
 ],
