@@ -1,6 +1,5 @@
 # Python imports
-from distutils.core import setup
-import os
+from setuptools import setup
 
 # Project imports
 from notable import app
@@ -25,11 +24,6 @@ Topic :: Security :: Cryptography
 Topic :: Utilities
 """
 
-def package_data():
-    for dirpath, _, files in os.walk('notable/static'):
-        for f in files:
-            yield os.path.join(dirpath[dirpath.find('notable'):], f)
-
 setup(
     author = AUTHOR,
     author_email = EMAIL,
@@ -38,7 +32,6 @@ setup(
     download_url = '%s/Notable-%s.tar.gz' % (PYPI, app.version),
     include_package_data = True,
     name = NAME,
-    package_data = {'notable': list(package_data())},
     packages = ['notable'],
     scripts = ['scripts/notable'],
     url = URL,
