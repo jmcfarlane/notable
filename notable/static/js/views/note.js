@@ -155,6 +155,8 @@ function(noteDetailTemplate, tabTemplate) {
       setTimeout(function() {
         $(tabToDelete.attr('href')).remove();
       }, 1000);
+
+      return false;
     }
 
   });
