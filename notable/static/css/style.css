@@ -7,8 +7,12 @@
 
 .CodeMirror {
   border: 1px solid #dddddd;
-  height: auto;
   margin-bottom: 10px;
+}
+
+.CodeMirror-scroll {
+  overflow-x: scroll;
+  overflow-y: scroll;
 }
 
 .editor {

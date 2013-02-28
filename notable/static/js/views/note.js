@@ -42,6 +42,9 @@ function(noteDetailTemplate, tabTemplate) {
           'Shift-Ctrl-S': _.bind(this.saveAndClose, this)
         }
       });
+      var h = document.documentElement.clientHeight;
+      this._editor.getWrapperElement().style.height = h - 155 + 'px';
+      this._editor.refresh();
       this.$('input').bind('keydown', 'ctrl+s', _.bind(this.save, this));
 
       // Somehow this seems to result in the right tab saving, but
