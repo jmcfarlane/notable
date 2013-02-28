@@ -17,6 +17,6 @@
 /* Alerts to be in the top right */
 .alert.top-right {
   position: fixed;
-  right: 0;
-  top: 0;
+  right: 2px;
+  top: 2px;
 }
