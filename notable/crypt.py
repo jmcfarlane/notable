@@ -10,6 +10,7 @@ class NoEncryption(object):
 # Third party imports
 try:
     from Crypto.Cipher import AES
+    from Crypto import Random
 except (ImportError, NameError):
     AES = NoEncryption()
 
@@ -22,17 +23,19 @@ def pad(string):
     return string + (_b32 - len(string) % _b32) * PAD
 
 def encrypt(string, pwd):
-    iv = ''.join(chr(random.randint(0, 255)) for i in range(BLOCKS))
+    iv = Random.new().read(BLOCKS)
     cipher = iv + AES.new(key(pwd), MODE, iv).encrypt(pad(string))
     return base64.b64encode(cipher)
 
 def key(pwd):
-    return hashlib.sha256(pwd).digest()
+    return hashlib.sha256(pwd.encode('utf-8')).digest()
 
 def decrypt(cipher, pwd):
+    cipher = cipher.encode() if hasattr(cipher, 'encode') else cipher
     cipher = base64.b64decode(cipher)
     iv = cipher[:BLOCKS]
-    return AES.new(key(pwd), MODE, iv).decrypt(cipher[BLOCKS:]).rstrip(PAD)
+    decrypted = AES.new(key(pwd), MODE, iv).decrypt(cipher[BLOCKS:])
+    return decrypted.decode('utf-8', errors='ignore').rstrip(PAD)
 
 def main():
     pwd = 'my secret password'

@@ -2,7 +2,6 @@
 
 # Python imports
 from time import gmtime, sleep, strftime, time
-import httplib
 import json
 import logging
 import optparse
@@ -12,10 +11,15 @@ import signal
 import sys
 import threading
 import webbrowser
+
+# Assume python3 and fall back to python2
 try:
-    import urllib2
+    import http.client as http
+    from urllib.request import urlopen
+    from urllib.error import URLError
 except ImportError:
-    from urllib import request as urllib2
+    import httplib as http
+    from urllib2 import urlopen, URLError
 
 root = os.path.abspath(os.path.dirname(__file__))
 sys.path = [os.path.join(root, '..')] + sys.path
@@ -95,9 +99,9 @@ def getpid():
 
 def _persist(func):
     n = db.note(actual=True)
-    note = json.loads(bottle.request.body.getvalue())
+    note = json.loads(bottle.request.body.getvalue().decode())
     password = note.pop('password') if 'password' in note else ''
-    n.update(dict((k, v) for k, v in note.items() if k in n))
+    n.update(dict((k, v) for k, v in list(note.items()) if k in n))
     return func(n, password=password)
 
 def browser(opts):
@@ -141,8 +145,8 @@ def getopts():
 def running(opts):
     url = 'http://%s:%s/pid' % (host, opts.port)
     try:
-        return int(urllib2.urlopen(url).read())
-    except (httplib.BadStatusLine, urllib2.URLError, ValueError):
+        return int(urlopen(url).read())
+    except (http.BadStatusLine, URLError, ValueError):
         return False
 
 def run(opts):

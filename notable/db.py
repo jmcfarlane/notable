@@ -9,7 +9,7 @@ import sys
 import uuid
 
 # Project imports
-import crypt
+from . import crypt
 
 # Constants
 log = logging.getLogger(__name__)
@@ -36,10 +36,10 @@ def create_note(n, password=None):
     c = conn()
     n = encrypt(n, password)
     sql = 'INSERT INTO notes (%s) VALUES (%s);'
-    cols = ','.join(k for k, t in n.items() if not t is None)
-    values = ','.join('?' for k, t in n.items() if not t is None)
+    cols = ','.join(k for k, t in list(n.items()) if not t is None)
+    values = ','.join('?' for k, t in list(n.items()) if not t is None)
     sql = sql % (cols, values)
-    values = [v for v in n.values() if not v is None]
+    values = [v for v in list(n.values()) if not v is None]
     log.debug('%s, %s' % (sql, values))
     c.execute(sql, values)
     c.commit()
@@ -98,14 +98,14 @@ def conn():
 
 def columns(n, row):
     # TODO: This can be deleted
-    for k, _ in n.items():
+    for k, _ in list(n.items()):
         yield row.get(k)
 
 def dict_factory(c, row):
     return dict((col[0], row[i]) for i, col in enumerate(c.description))
 
 def fields(n):
-    for k, v in n.items():
+    for k, v in list(n.items()):
         yield dict(id=k, label=k.capitalize(), type=v)
 
 def rows(n, rs):
@@ -113,7 +113,7 @@ def rows(n, rs):
         yield list(columns(n, row))
 
 def create_schema(c):
-    pairs = [' '.join(pair) for pair in note().items() if pair[1]]
+    pairs = [' '.join(pair) for pair in list(note().items()) if pair[1]]
     sql ='CREATE TABLE notes (%s);' % ','.join(pairs)
     try:
         c.execute(sql)
@@ -123,8 +123,10 @@ def create_schema(c):
 def get_content(uid, password):
     c = conn()
     c.row_factory = dict_factory
-    sql = 'SELECT content FROM notes WHERE uid = ?'
-    content = c.cursor().execute(sql, [uid]).next().get('content')
+    cursor = c.cursor()
+    cursor.execute('SELECT content FROM notes WHERE uid = ?', [uid])
+    # Assume python3 and fallback to python2
+    content = getattr(cursor, 'fetchone', 'next')().get('content')
     return crypt.decrypt(content, password) if password else content
 
 def migrate_data(c):
@@ -164,7 +166,7 @@ def search(s, exclude=None):
     naive = "(content LIKE '%{0}%' OR tags LIKE '%{0}%')"
     where = ['1=1'] + [naive.format(t) for t in terms]
     sql = 'SELECT %s FROM notes WHERE %s ORDER BY updated DESC;'
-    sql = sql % (','.join(k for k, v in n.items() if v), ' AND '.join(where))
+    sql = sql % (','.join(k for k, v in list(n.items()) if v), ' AND '.join(where))
     log.debug(sql)
     c = conn()
     c.row_factory = dict_factory
