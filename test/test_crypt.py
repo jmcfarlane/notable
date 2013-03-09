@@ -32,10 +32,10 @@ class TestCrypt(unittest.TestCase):
     def test_content_containing_special_chars_with_password_that_is(self, pwd):
         self._encrypt("""!@#$%^&*()_+_+[]\{}|;':",./<>?""", pwd)
 
-    @unittest.skip("Fix this please in a subsequent commit")
+    @unittest.skipIf(sys.version_info < (3, 0), "TODO: Fix this for python2")
     def test_content_with_unicode_password(self):
         content = 'abcdefg'
-        pwd = u"☃"
+        pwd = "☃"
         encrypted = crypt.encrypt(content, pwd)
         self.assertEquals(crypt.decrypt(encrypted, pwd), content)
 
