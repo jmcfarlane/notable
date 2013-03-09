@@ -1,5 +1,6 @@
 # Python imports
 import pdb
+import sys
 import time
 import unittest
 import uuid
@@ -7,8 +8,10 @@ import uuid
 # Third party imports
 from selenium import webdriver
 
+@unittest.skipIf(sys.version_info >= (3, 0), "TODO: Need webdriver support")
 class TestWebApp(unittest.TestCase):
 
+    @unittest.skipIf(sys.version_info >= (3, 0), "Needed for ^ skipIf")
     @classmethod
     def setUpClass(self):
         "Create a web driver browser"
