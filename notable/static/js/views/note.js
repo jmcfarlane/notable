@@ -42,6 +42,7 @@ function(noteDetailTemplate, tabTemplate) {
           'Shift-Ctrl-S': _.bind(this.saveAndClose, this)
         }
       });
+      window._editor = this._editor; // For web driver
       var h = document.documentElement.clientHeight;
       this._editor.getWrapperElement().style.height = h - 155 + 'px';
       this._editor.refresh();
