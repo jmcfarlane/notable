@@ -5,10 +5,13 @@ python:
 before_install:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
+  - "sleep 3"
 install:
   - "pip install -r requirements.txt --use-mirrors"
-  - "./scripts/notable -d -f"
+  - "./scripts/notable -d > /tmp/notable.log 2>&1 &"
   - "sleep 2"
 script:
-  - "export BROWSER=FIREFOX"
+  - "curl localhost:8083"
   - "nosetests -v"
+  - "echo Server log:"
+  - "cat /tmp/notable.log"

@@ -1,4 +1,5 @@
 # Python imports
+import os
 import pdb
 import sys
 import time
@@ -8,13 +9,20 @@ import uuid
 # Third party imports
 from selenium import webdriver
 
-@unittest.skipIf(sys.version_info >= (3, 0), "TODO: Need webdriver support")
+def webDriverNotSupported():
+    "Determine if webdriver is supported (at runtime)"
+    def reasons():
+        yield sys.version_info >= (3, 0)
+        yield os.environ.get('TRAVIS')
+    return [r for r in reasons() if r]
+
 class TestWebApp(unittest.TestCase):
 
-    @unittest.skipIf(sys.version_info >= (3, 0), "Needed for ^ skipIf")
     @classmethod
     def setUpClass(self):
         "Create a web driver browser"
+        if webDriverNotSupported():
+            raise unittest.SkipTest('Web driver not supported here')
         self.b = webdriver.Firefox()
 
     @classmethod
