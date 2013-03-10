@@ -1,0 +1,56 @@
+#!/bin/bash
+
+cd $(dirname $(which $0))/..
+
+deps="ddt nose pycrypto selenium"
+
+function run_tests {
+    vm=$1
+    venv=/tmp/notable/$(basename $vm)
+    log=$venv/notable.log
+    if [ ! -x $vm ]; then
+        echo "Unable to find python vm: $vm"
+        return
+    fi
+
+    # Create the virtualenv
+    if [ ! -d $venv ]; then
+        mkdir -p $(dirname $venv)
+        virtualenv -q -p $vm $venv
+        pushd $venv > /dev/null
+        . bin/activate
+        pip install -q $deps
+        popd > /dev/null
+        echo "Virtualenv created: $venv"
+    fi
+
+    # Start the server in debug mode
+    $venv/bin/python scripts/notable -d > $log 2>&1 &
+    pid=$!
+    sleep 2
+
+    # Run all the tests
+    $venv/bin/nosetests -v test
+
+    # Webdriver doesn't support py3k, so run those tests again under 2
+    # if needed.
+    if echo $vm | grep -q 'python3'; then
+        echo "Running webdriver tests with python2.7 (need upstream support)"
+        /tmp/notable/python2.7/bin/nosetests -v test/test_webapp.py
+    fi
+
+    # Kill the server
+    kill $pid >> $log 2>&1
+    echo "Server logs written to: $log"
+    sleep 10
+}
+
+function main {
+    run_tests /usr/bin/python2.7
+    run_tests /usr/bin/python3.2
+}
+
+# Run available tests
+log=/tmp/notable/tests.log
+main 2>&1 | tee $log
+echo "Test output: $log"
