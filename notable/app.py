@@ -163,7 +163,9 @@ def run(opts):
     return 0
 
 def smells_encrypted(content):
-    return len(re.findall(r'[^\x00-\x80]', content)) > 25
+    normal = float(len(re.findall(r'[\x00-\x7F]+', content)))
+    special = float(len(re.findall(r'[^\x00-\x7F]+', content)))
+    return special / normal > 0.40
 
 def main():
     logging.basicConfig(level=logging.DEBUG)
