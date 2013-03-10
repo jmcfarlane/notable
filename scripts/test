@@ -35,7 +35,7 @@ function run_tests {
     # if needed.
     if echo $vm | grep -q 'python3'; then
         echo "Running webdriver tests with python2.7 (need upstream support)"
-        /tmp/notable/python2.7/bin/nosetests -v test/test_webapp.py
+        /tmp/notable/python2.7/bin/nosetests -v test/test_with_webdriver.py
     fi
 
     # Kill the server
