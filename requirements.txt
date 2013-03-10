@@ -1,0 +1,4 @@
+ddt
+nose
+pycrypto
+selenium

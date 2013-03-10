@@ -1,8 +1,7 @@
 #!/bin/bash
 
 cd $(dirname $(which $0))/..
-
-deps="ddt nose pycrypto selenium"
+SRC=$(pwd)
 
 function run_tests {
     vm=$1
@@ -19,7 +18,7 @@ function run_tests {
         virtualenv -q -p $vm $venv
         pushd $venv > /dev/null
         . bin/activate
-        pip install -q $deps
+        pip install -q -r $SRC/requirements.txt
         popd > /dev/null
         echo "Virtualenv created: $venv"
     fi
@@ -51,6 +50,7 @@ function main {
 }
 
 # Run available tests
+mkdir -p /tmp/notable
 log=/tmp/notable/tests.log
 main 2>&1 | tee $log
 echo "Test output: $log"
