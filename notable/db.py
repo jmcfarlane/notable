@@ -1,5 +1,4 @@
 # Python imports
-from collections import OrderedDict
 import datetime
 import logging
 import os
@@ -26,7 +25,7 @@ def note(exclude=None, actual=False):
              ('content', 'string'),
              ('encrypted', 'integer'),
             ]
-    n = OrderedDict((k, v) for k, v in model if not k in exclude)
+    n = dict((k, v) for k, v in model if not k in exclude)
     if actual:
         uid = uuid.uuid4().hex
         n.update(uid=uid, created=now(), updated=now())

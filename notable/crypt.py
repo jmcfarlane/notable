@@ -2,6 +2,7 @@
 import base64
 import hashlib
 import random
+import sys
 
 # Stub in the event pycrypto isn't available
 class NoEncryption(object):
@@ -35,7 +36,9 @@ def decrypt(cipher, pwd):
     cipher = base64.b64decode(cipher)
     iv = cipher[:BLOCKS]
     decrypted = AES.new(key(pwd), MODE, iv).decrypt(cipher[BLOCKS:])
-    return decrypted.decode('utf-8', errors='ignore').rstrip(PAD)
+    if sys.version_info >= (3, 0):
+        return decrypted.decode('utf-8', errors='ignore').rstrip(PAD)
+    return decrypted.rstrip(PAD)
 
 def main():
     pwd = 'my secret password'
