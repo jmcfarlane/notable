@@ -9,6 +9,10 @@ import uuid
 # Third party imports
 from ddt import ddt, data, file_data
 
+# Backport for python2.6
+if not hasattr(unittest, 'skipIf'):
+    import unittest2 as unittest
+
 # Project imports
 sys.path.insert(0, abspath(join(dirname(__file__), '..')))
 from notable import crypt

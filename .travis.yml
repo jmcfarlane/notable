@@ -1,6 +1,7 @@
 language: python
 
 python:
+  - 2.6
   - 2.7
   - 3.2
 
@@ -11,6 +12,7 @@ before_install:
 
 install:
   - "pip install -r requirements.txt --use-mirrors"
+  - "if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install --use-mirrors unittest2; fi"
   - "./scripts/notable -d > /tmp/notable.log 2>&1 &"
   - "sleep 2"
 

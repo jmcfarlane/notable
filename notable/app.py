@@ -163,8 +163,12 @@ def run(opts):
     return 0
 
 def smells_encrypted(content):
-    normal = float(len(re.findall(r'[\x00-\x7F]+', content)))
-    special = float(len(re.findall(r'[^\x00-\x7F]+', content)))
+    if sys.version_info >= (3, 0):
+        normal = float(len(re.findall(r'[\x00-\x7F]+', content)))
+        special = float(len(re.findall(r'[^\x00-\x7F]+', content)))
+    else:
+        normal = float(len([s for s in content if ord(s) < 128]))
+        special = float(len([s for s in content if ord(s) >= 128]))
     return special / normal > 0.40
 
 def main():

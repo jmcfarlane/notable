@@ -9,6 +9,10 @@ import uuid
 # Third party imports
 from selenium import webdriver
 
+# Backport for python2.6
+if not hasattr(unittest, 'skipIf'):
+    import unittest2 as unittest
+
 def webDriverNotSupported():
     "Determine if webdriver is supported (at runtime)"
     def reasons():
@@ -21,15 +25,16 @@ class TestWebApp(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         "Create a web driver browser"
-        if webDriverNotSupported():
-            raise unittest.SkipTest('Web driver not supported here')
-        self.b = webdriver.Firefox()
+        if not webDriverNotSupported():
+            self.b = webdriver.Firefox()
 
     @classmethod
     def tearDownClass(self):
         "Close the browser when the class test is over"
-        self.b.close()
+        if not webDriverNotSupported():
+            self.b.close()
 
+    @unittest.skipIf(webDriverNotSupported(), '')
     def setUp(self):
         "Reload the page at the start of every test"
         self._reload()
@@ -67,6 +72,7 @@ class TestWebApp(unittest.TestCase):
         self.b.get('http://localhost:8083')
         time.sleep(0.5)
 
+    @unittest.skipIf(webDriverNotSupported(), '')
     def test_001_create_note(self):
         "Create a new note and validate it's there after page reload"
         self._create_note()
@@ -76,6 +82,7 @@ class TestWebApp(unittest.TestCase):
         for field, text in self._note_form_fields():
             self.assertEquals(field.get_attribute('value'), text + self.token)
 
+    @unittest.skipIf(webDriverNotSupported(), '')
     def test_005_create_encrypted_note(self):
         "Create an encrypted note and make sure it can be opened"
         self._create_note(encrypted=True)

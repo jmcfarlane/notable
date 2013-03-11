@@ -45,6 +45,7 @@ function run_tests {
 }
 
 function main {
+    run_tests /usr/bin/python2.6
     run_tests /usr/bin/python2.7
     run_tests /usr/bin/python3.2
 }
