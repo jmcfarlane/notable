@@ -95,12 +95,21 @@ def browser(opts):
     webbrowser.open_new_tab('http://localhost:%s' % opts.port)
 
 def fork_and_exit():
-    pid = os.fork()
+    pid = os.fork() # Children return 0 here, parents > 0
     if pid > 0:
+        log.debug('Forked, new pid is: %s', pid)
         sys.exit(0)
     return pid
 
-def fork():
+def fork(opts):
+    pid = running(opts)
+    if pid:
+        if opts.restart:
+            log.debug('Killing previous instance (pid:%s)', pid)
+            os.kill(pid, signal.SIGTERM)
+        else:
+            log.debug('Already running, noop (pid:%s)', pid)
+            return 0
     fork_and_exit()
     os.setsid()
     os.umask(0)
@@ -114,9 +123,9 @@ def getopts():
     parser.add_option('-d', '--debug',
                       action='store_true',
                       help='Debug using a debug db')
-    parser.add_option('-f', '--fork',
+    parser.add_option('-f', '--foreground',
                       action='store_true',
-                      help='Start the server in the background (fork)')
+                      help='Start the server in the foreground')
     parser.add_option('-p', '--port',
                       default=8082,
                       help='TCP port to start the server on')
@@ -142,7 +151,7 @@ def run(opts):
     elif pid:
         return
 
-    reloader = opts.debug
+    reloader = True if opts.debug and opts.foreground else False
     db.path = db.path + '.debug' if opts.debug else db.path
     db.prepare()
     bottle.run(host=host, port=opts.port, reloader=reloader)
@@ -166,8 +175,8 @@ def main():
         return 0
     if opts.browser:
         threading.Thread(target=browser, args=[opts]).start()
-    if opts.fork:
-        fork()
+    if not opts.foreground:
+        fork(opts)
     return run(opts)
 
 if __name__ == '__main__':
