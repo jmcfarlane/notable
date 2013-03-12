@@ -37,11 +37,16 @@ function(passwordModalTemplate) {
       return this.$('.error').html(msg).show();
     },
 
+    reset: function() {
+      this.$('.error').html('').hide()
+    },
+
     setFocus: function() {
       this.$('input').focus();
     },
 
     show: function(callback) {
+      this.reset();
       this.callback = callback;
       this._modal.modal({
         backdrop: 'static',
