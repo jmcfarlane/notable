@@ -25,7 +25,7 @@ root = os.path.abspath(os.path.dirname(__file__))
 sys.path = [os.path.join(root, '..')] + sys.path
 
 # Project imports
-from notable import bottle, db, editor
+from notable import bottle, db
 
 # Constants, and help with template lookup
 host = 'localhost'
@@ -65,20 +65,6 @@ def decrypt():
 def delete(uid):
     return dict(success=db.delete_note(uid))
 
-@bottle.post('/api/launch_editor')
-def launch_editor():
-    uid = bottle.request.forms.get('uid')
-    content = bottle.request.forms.get('content')
-    return editor.launch(uid, content)
-
-@bottle.get('/api/from_disk/<uid>')
-def from_disk(uid=None):
-    path = os.path.join('/tmp', uid)
-    if os.path.exists(path):
-        return open(path).read()
-    else:
-        return 'missing'
-
 @bottle.get('/api/notes/list')
 def listing():
     exclude = ['content']
@@ -92,10 +78,6 @@ def update_note(uid):
 @bottle.post('/api/note/create')
 def create_note():
     return _persist(db.create_note)
-
-@bottle.get('/pid')
-def getpid():
-    return str(os.getpid())
 
 def _persist(func):
     n = db.note(actual=True)

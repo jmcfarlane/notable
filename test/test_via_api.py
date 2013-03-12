@@ -54,5 +54,12 @@ class TestWebAPI(unittest.TestCase):
         self.assertEquals(r.status_code, 403)
         self.assertEquals(r.text, 'Nope, try again')
 
+    def test_015_note_listing_structure(self):
+        "api: note listing (validating the data schema)"
+        keys = ['created', 'encrypted', 'subject', 'tags', 'uid', 'updated']
+        for note in requests.get(self._url('/api/notes/list')).json():
+            self.assertEquals(type(note), type(dict()))
+            self.assertEquals(sorted(note.keys()), keys)
+
 if __name__ == '__main__':
     unittest.main()
