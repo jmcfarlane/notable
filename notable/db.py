@@ -95,21 +95,8 @@ def conn():
     _ = os.makedirs(d) if not os.path.exists(d) else None
     return sqlite3.connect(path)
 
-def columns(n, row):
-    # TODO: This can be deleted
-    for k, _ in list(n.items()):
-        yield row.get(k)
-
 def dict_factory(c, row):
     return dict((col[0], row[i]) for i, col in enumerate(c.description))
-
-def fields(n):
-    for k, v in list(n.items()):
-        yield dict(id=k, label=k.capitalize(), type=v)
-
-def rows(n, rs):
-    for row in rs:
-        yield list(columns(n, row))
 
 def create_schema(c):
     pairs = [' '.join(pair) for pair in list(note().items()) if pair[1]]
@@ -169,12 +156,7 @@ def search(s, exclude=None):
     log.debug(sql)
     c = conn()
     c.row_factory = dict_factory
-    cols = list(fields(n))
-    for row in rows(n, c.cursor().execute(sql)):
-        n = {}
-        for i, col in enumerate(cols):
-            n[cols[i]['id']] = row[i]
-        yield n
+    return c.cursor().execute(sql)
 
 def prepare():
     create_schema(conn())
