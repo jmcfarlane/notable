@@ -105,8 +105,7 @@ def fork(opts):
     pid = running(opts)
     if pid:
         if opts.restart:
-            log.debug('Killing previous instance (pid:%s)', pid)
-            os.kill(pid, signal.SIGTERM)
+            stop(opts, pid)
         else:
             log.debug('Already running, noop (pid:%s)', pid)
             return 0
@@ -132,6 +131,9 @@ def getopts():
     parser.add_option('-r', '--restart',
                       action='store_true',
                       help='Restart if already running')
+    parser.add_option('-s', '--stop',
+                      action='store_true',
+                      help='Stop if already running, and exit')
     parser.add_option('-v', '--version',
                       action='store_true',
                       help='Print version number')
@@ -166,6 +168,13 @@ def smells_encrypted(content):
         special = float(len([s for s in content if ord(s) >= 128]))
     return special / normal > 0.40
 
+def stop(opts, pid=None):
+    pid = pid or running(opts)
+    if pid:
+        log.debug('Stopping instance (pid:%s)', pid)
+        os.kill(pid, signal.SIGTERM)
+    return 0
+
 def main():
     logging.basicConfig(level=logging.DEBUG)
     (opts, _), _ = getopts()
@@ -173,6 +182,8 @@ def main():
     if opts.version:
         print('Notable version %s' % version)
         return 0
+    if opts.stop:
+        return stop(opts)
     if not opts.no_browser:
         threading.Thread(target=browser, args=[opts]).start()
     if not opts.foreground:
