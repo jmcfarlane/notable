@@ -24,7 +24,7 @@ function run_tests {
     fi
 
     # Start the server in debug mode
-    $venv/bin/python scripts/notable -d -f > $log 2>&1 &
+    $venv/bin/python scripts/notable -d -f --no-browser > $log 2>&1 &
     pid=$!
     sleep 2
 

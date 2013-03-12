@@ -117,15 +117,15 @@ def fork(opts):
 
 def getopts():
     parser = optparse.OptionParser(__doc__.strip())
-    parser.add_option('-b', '--browser',
-                      action='store_true',
-                      help='Launch a browser')
     parser.add_option('-d', '--debug',
                       action='store_true',
                       help='Debug using a debug db')
     parser.add_option('-f', '--foreground',
                       action='store_true',
                       help='Start the server in the foreground')
+    parser.add_option('-n', '--no-browser',
+                      action='store_true',
+                      help='Do not launch a browser')
     parser.add_option('-p', '--port',
                       default=8082,
                       help='TCP port to start the server on')
@@ -173,7 +173,7 @@ def main():
     if opts.version:
         print('Notable version %s' % version)
         return 0
-    if opts.browser:
+    if not opts.no_browser:
         threading.Thread(target=browser, args=[opts]).start()
     if not opts.foreground:
         fork(opts)

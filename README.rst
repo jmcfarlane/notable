@@ -19,4 +19,4 @@ Ideally you're using a virtualenv...
 Usage
 -----
 
-``notable -b``
+``notable``
