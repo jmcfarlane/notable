@@ -79,6 +79,10 @@ def update_note(uid):
 def create_note():
     return _persist(db.create_note)
 
+@bottle.get('/pid')
+def getpid():
+    return str(os.getpid())
+
 def _persist(func):
     n = db.note(actual=True)
     note = json.loads(bottle.request.body.getvalue().decode())
