@@ -163,6 +163,8 @@ def run(opts):
     return 0
 
 def setup_logging(opts):
+    if not os.path.exists(os.path.dirname(opts.log)):
+        os.makedirs(os.path.dirname(opts.log))
     handler = logging.FileHandler(opts.log)
     log.addHandler(handler)
     # Forcibly take over SimpleHTTPServer's writing to sys.std{out,err}
