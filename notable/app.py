@@ -32,7 +32,7 @@ host = 'localhost'
 version = '0.1.5b'
 static = os.path.join(root, 'static')
 bottle.TEMPLATE_PATH.insert(0, os.path.join(root, 'static/templates'))
-log = logging.getLogger(__name__)
+log = logging.getLogger()
 
 @bottle.route('/')
 @bottle.view('index')
@@ -125,6 +125,9 @@ def getopts():
     parser.add_option('-n', '--no-browser',
                       action='store_true',
                       help='Do not launch a browser')
+    parser.add_option('-l', '--log',
+                      default=os.path.expanduser('~/.notable/notable.log'),
+                      help='Log file to be used')
     parser.add_option('-p', '--port',
                       default=8082,
                       help='TCP port to start the server on')
@@ -159,6 +162,15 @@ def run(opts):
     bottle.run(host=host, port=opts.port, reloader=reloader)
     return 0
 
+def setup_logging(opts):
+    handler = logging.FileHandler(opts.log)
+    log.addHandler(handler)
+    # Forcibly take over SimpleHTTPServer's writing to sys.std{out,err}
+    for i, fd in enumerate(('stdout', 'stderr'), start=1):
+        _log = '%s.%s' % (opts.log, fd)
+        open(_log, 'w').close()
+        os.dup2(os.open(_log, os.O_RDWR), i)
+
 def smells_encrypted(content):
     if sys.version_info >= (3, 0):
         normal = float(len(re.findall(r'[\x00-\x7F]+', content)))
@@ -179,6 +191,7 @@ def main():
     logging.basicConfig(level=logging.DEBUG)
     (opts, _), _ = getopts()
     opts.port = int(opts.port) + 1 if opts.debug else int(opts.port)
+    setup_logging(opts)
     if opts.version:
         print('Notable version %s' % version)
         return 0
