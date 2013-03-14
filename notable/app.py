@@ -29,7 +29,7 @@ from notable import bottle, db
 
 # Constants, and help with template lookup
 host = 'localhost'
-version = '0.1.5b'
+version = '0.1.6'
 static = os.path.join(root, 'static')
 bottle.TEMPLATE_PATH.insert(0, os.path.join(root, 'static/templates'))
 log = logging.getLogger()
