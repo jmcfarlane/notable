@@ -86,6 +86,7 @@ function(noteDetailTemplate, tabTemplate) {
 
     saveAndClose: function() {
       this.save(_.bind(this.close, this));
+      return false;
     },
 
     show: function() {
