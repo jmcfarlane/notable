@@ -19,6 +19,9 @@ function run_tests {
         pushd $venv > /dev/null
         . bin/activate
         pip install -q -r $SRC/requirements.txt
+        if python --version 2>&1 | grep -q '2.6'; then
+            pip install -q unittest2
+        fi
         popd > /dev/null
         echo "Virtualenv created: $venv"
     fi
