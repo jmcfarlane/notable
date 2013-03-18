@@ -1,6 +1,9 @@
 # Python imports
 from setuptools import setup
 
+#Error in atexit._run_exitfuncs, TypeError: 'NoneType' object is not callable
+from multiprocessing import util
+
 # Project imports
 from notable import app
 
