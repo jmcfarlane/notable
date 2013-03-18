@@ -34,6 +34,7 @@ setup(
     name = NAME,
     packages = ['notable'],
     scripts = ['scripts/notable'],
+    test_suite='nose.collector',
     url = URL,
     version = app.version
 )
