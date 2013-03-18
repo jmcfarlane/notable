@@ -20,6 +20,6 @@ install:
 
 script:
   - "curl localhost:8083"
-  - "python setup.py test"
+  - "nosetests -v"
   - "echo Server log:"
   - "cat /tmp/notable.log"
