@@ -21,7 +21,7 @@ class TestWebAPI(unittest.TestCase):
         if encrypted:
             note['password'] = 'password %s' % self.token
         r = requests.post(self._url('/api/note/create'), json.dumps(note))
-        created = r.json()
+        created = r.json if isinstance(r.json, dict) else r.json()
         self.assertEquals(r.status_code, 200)
         self.assertEquals(created.get('subject'), note.get('subject'))
         self.assertEquals(created.get('tags'), note.get('tags'))
@@ -57,7 +57,8 @@ class TestWebAPI(unittest.TestCase):
     def test_015_note_listing_structure(self):
         "api: note listing (validating the data schema)"
         keys = ['created', 'encrypted', 'subject', 'tags', 'uid', 'updated']
-        for note in requests.get(self._url('/api/notes/list')).json():
+        r = requests.get(self._url('/api/notes/list'))
+        for note in (r.json if isinstance(r.json, list) else r.json()):
             self.assertEquals(type(note), type(dict()))
             self.assertEquals(sorted(note.keys()), keys)
 
