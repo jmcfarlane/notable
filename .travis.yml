@@ -15,11 +15,10 @@ before_install:
 install:
   - "pip install -r requirements.txt --use-mirrors"
   - "if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install --use-mirrors unittest2; fi"
-  - "./scripts/notable -d -f --no-browser > /tmp/notable.log 2>&1 &"
+  - "./scripts/notable -d --no-browser"
   - "sleep 2"
 
 script:
   - "curl localhost:8083"
   - "nosetests -v"
-  - "echo Server log:"
-  - "cat /tmp/notable.log"
+  - "if [ $? != 0 ]; then cat ~/.notable/notable.log*; fi"
