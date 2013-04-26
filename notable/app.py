@@ -29,7 +29,7 @@ from notable import bottle, db
 
 # Constants, and help with template lookup
 host = 'localhost'
-version = '0.1.6'
+version = '0.1.7'
 static = os.path.join(root, 'static')
 bottle.TEMPLATE_PATH.insert(0, os.path.join(root, 'static/templates'))
 log = logging.getLogger()
@@ -180,7 +180,7 @@ def smells_encrypted(content):
     else:
         normal = float(len([s for s in content if ord(s) < 128]))
         special = float(len([s for s in content if ord(s) >= 128]))
-    return special / normal > 0.40
+    return False if not normal else special / normal > 0.40
 
 def stop(opts, pid=None):
     pid = pid or running(opts)

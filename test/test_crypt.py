@@ -15,7 +15,7 @@ if not hasattr(unittest, 'skipIf'):
 
 # Project imports
 sys.path.insert(0, abspath(join(dirname(__file__), '..')))
-from notable import crypt
+from notable import app, crypt
 
 @ddt
 class TestCrypt(unittest.TestCase):
@@ -42,6 +42,12 @@ class TestCrypt(unittest.TestCase):
         pwd = "☃"
         encrypted = crypt.encrypt(content, pwd)
         self.assertEquals(crypt.decrypt(encrypted, pwd), content)
+
+class TestApp(unittest.TestCase):
+
+    def test_smells_encrypted(self):
+        self.assertFalse(app.smells_encrypted(''))
+        self.assertFalse(app.smells_encrypted('hello world'))
 
 if __name__ == '__main__':
     unittest.main()
