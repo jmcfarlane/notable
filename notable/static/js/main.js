@@ -11,22 +11,17 @@ require.config({
     },
     bootstrap: {
       deps: ['jquery']
-    },
-    'lib/codemirror/mode/rst/rst': {
-      deps: ['codemirror', 'vim'],
-      exports: 'CodeMirror'
     }
   },
 	paths: {
+    ace: '../lib/ace/src-min/ace',
     backbone: '../lib/backbone',
     bootstrap: '../lib/bootstrap/js/bootstrap.min',
-    codemirror: '../lib/codemirror/lib/codemirror',
     jquery: '../lib/jquery',
     lib: '../lib',
     templates: '../templates',
     text: '../lib/plugins/require/text',
-    underscore: '../lib/underscore',
-    vim: '../lib/codemirror/keymap/vim'
+    underscore: '../lib/underscore'
 	}
 });
 
