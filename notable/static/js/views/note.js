@@ -7,8 +7,7 @@ define([
   'backbone',
   'underscore',
   'lib/jquery.hotkeys',
-  'codemirror',
-  'lib/codemirror/mode/rst/rst'
+  'ace'
 ],
 function(noteDetailTemplate, tabTemplate) {
   return Backbone.View.extend({
@@ -31,21 +30,27 @@ function(noteDetailTemplate, tabTemplate) {
         note: note
       }));
 
-      // Use codemirror for the content
+      // Once the tab content is populated, set el.
       this.el = $(tabContent).find('.editor').last().parent();
       this.$el = $(this.el);
-      this._editor = CodeMirror(_.first(this.$el.find('.editor')), {
-        mode: 'rst',
-        value: note.content,
-        extraKeys: {
-          'Ctrl-S': _.bind(this.save, this),
-          'Shift-Ctrl-S': _.bind(this.saveAndClose, this)
-        }
+
+      // Chuck the note content into the editor element
+      this.$el.find('.editor')
+        .html(note.content)
+        .height(document.documentElement.clientHeight - 155);
+
+      // Attach the ace editor to the editor element
+      this._editor = ace.edit(_.first(this.$el.find('.editor')));
+      this._editor.commands.addCommand({
+        name: 'save',
+        bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
+        exec: _.bind(function(editor) {
+          this.save();
+        }, this)
       });
+      this._editor.commands.removeCommand('gotoline');
+      this._editor.focus();
       window._editor = this._editor; // For web driver
-      var h = document.documentElement.clientHeight;
-      this._editor.getWrapperElement().style.height = h - 155 + 'px';
-      this._editor.refresh();
       this.$('input').bind('keydown', 'ctrl+s', _.bind(this.save, this));
 
       // Somehow this seems to result in the right tab saving, but
