@@ -1,3 +1,8 @@
+/* Don't let the search box cause a horizontal scroll */
+body {
+  overflow-x: hidden;
+}
+
 .form-search input {
   position: absolute;
   right: -450px;
