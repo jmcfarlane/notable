@@ -36,7 +36,7 @@ function(noteDetailTemplate, tabTemplate) {
 
       // Chuck the note content into the editor element
       this.$el.find('.editor')
-        .html(note.content)
+        .text(note.content)
         .height(document.documentElement.clientHeight - 155);
 
       // Attach the ace editor to the editor element
