@@ -20,7 +20,7 @@ function(searchTemplate) {
       this.$('input').animate({
         right: '-450px'
       }, 'fast', function() {
-        $(this).val('');
+        $(this).val('').blur();
       });
     },
 
@@ -55,6 +55,7 @@ function(searchTemplate) {
       this.$el.html(_.template(searchTemplate));
       this.$('.search-query').bind('keydown', 'ctrl+j', _.bind(this.next, this));
       this.$('.search-query').bind('keydown', 'ctrl+k', _.bind(this.previous, this));
+      this.$('.search-query').bind('keydown', 'esc', _.bind(this.hide, this));
       this.$('.search-query').bind('keydown', 'return', _.bind(this.open, this));
       return this;
     },
