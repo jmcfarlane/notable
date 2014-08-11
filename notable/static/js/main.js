@@ -35,8 +35,7 @@ require(
    'jquery',
    'underscore',
    'backbone',
-   'bootstrap',
-   'lib/plugins/bootstrap/tab'
+   'bootstrap'
   ],
 	function(NotesCollection, NotesTableView, PasswordModalView, SearchModalView) {
     var notesView = new NotesTableView({

@@ -12,7 +12,7 @@ function(passwordModalTemplate) {
       'click .modal-footer .btn:first': 'hide',
       'click .modal-footer .btn-primary': 'submit',
       'submit form': 'submit',
-      'shown': 'setFocus'
+      'shown.bs.modal': 'setFocus'
     },
 
     getModal: function() {

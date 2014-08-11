@@ -31,13 +31,13 @@ function(noteDetailTemplate, tabTemplate) {
       }));
 
       // Once the tab content is populated, set el.
-      this.el = $(tabContent).find('.editor').last().parent();
+      this.el = $(tabContent).find('.editor').last().parent().parent().parent();
       this.$el = $(this.el);
 
       // Chuck the note content into the editor element
       this.$el.find('.editor')
         .text(note.content)
-        .height(document.documentElement.clientHeight - 155);
+        .height(document.documentElement.clientHeight - 175);
 
       // Attach the ace editor to the editor element
       this._editor = ace.edit(_.first(this.$el.find('.editor')));
@@ -69,7 +69,7 @@ function(noteDetailTemplate, tabTemplate) {
 
       // Track the tab, show it and set event handlers
       this._tab = this.getTab();
-      this._tab.on('shown', _.bind(this.shown, this)).tab('show')
+      this._tab.on('shown.bs.modal', _.bind(this.shown, this)).tab('show')
       this.$('.subject input').on('keyup', _.bind(this.onSubjectChange, this));
       return this;
     },
@@ -105,11 +105,11 @@ function(noteDetailTemplate, tabTemplate) {
     },
 
     notSaved: function() {
-      $('.not-saved').fadeIn().delay(3000).fadeOut();
+      $('.not-saved').removeClass('hide').hide().fadeIn().delay(3000).fadeOut();
     },
 
     saved: function() {
-      $('.saved').fadeIn().delay(2000).fadeOut();
+      $('.saved').removeClass('hide').hide().fadeIn().delay(2000).fadeOut();
     },
 
     save: function(callback) {

@@ -2,34 +2,30 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Notable (notes)</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <!-- CSS -->
-    <link rel="stylesheet" href="/static/lib/bootstrap/css/bootstrap-responsive.css">
-    <link rel="stylesheet" href="/static/css/bootstrap-custom.css">
-    <link rel="stylesheet" href="/static/lib/bootstrap/css/bootstrap.css">
-    <link rel="stylesheet" href="/static/css/bootstrap-custom.css">
+    <link rel="stylesheet" href="/static/lib/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/style.css">
   </head>
   <body>
-    <div id="wrap">
-      <div class="container-fluid">
-
-        <button class="btn pull-right create">Create</button>
-        <ul class="nav nav-tabs">
-          <li class="active"><a href="#notes" data-toggle="tab">Notes</a></li>
-        </ul>
-
-        <div class="tab-content">
-          <div class="tab-pane fade in active" id="notes"></div>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <button type="button" class="btn btn-default pull-right create">Create</button>
+          <ul class="nav nav-tabs" role="tablist">
+            <li class="active"><a href="#notes" data-toggle="tab">Notes</a></li>
+          </ul>
         </div>
-
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="tab-content">
+            <div class="tab-pane fade in active" id="notes"></div>
+          </div>
+        </div>
       </div>
     </div>
-    <script data-main="/static/js/main.js"
-            src="/static/lib/requirejs/require.js"></script>
+    <script data-main="/static/js/main.js" src="/static/lib/requirejs/require.js"></script>
   </body>
 </html>

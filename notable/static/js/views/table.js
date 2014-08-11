@@ -86,6 +86,7 @@ function(Backbone,
       this.$el.append(_.template(notesTableTemplate)());
       this.collection.each(this.addRow, this);
       this.defaultSelected();
+      $('td.selector').css('border-left-width', '3px');
     },
 
     selectNextNote: function() {

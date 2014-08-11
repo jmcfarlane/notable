@@ -63,7 +63,7 @@ function(searchTemplate) {
     show: function() {
       $('.nav-tabs a:first').tab('show');
       this.$('input').animate({
-        right: '10px'
+        right: '0px'
       }, 'fast', function() {
         $(this).focus();
       });
