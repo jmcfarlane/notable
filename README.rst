@@ -13,6 +13,21 @@ Dependencies
 1. `Python <http://www.python.org>`_ (2.6, 2.7, 3.2, 3.3)
 2. `PyCrypto <https://www.dlitz.net/software/pycrypto/>`_
 
+Docker usage
+++++++++++++
+
+Demo:
+
+.. code-block:: bash
+
+  docker run -p 8082:8082 jmcfarlane/notable
+
+Real usage, with local storage:
+
+.. code-block:: bash
+
+  docker run -p 8082:8082 -d -v ~/.notable:/root/.notable jmcfarlane/notable:lastest
+
 Installation
 ++++++++++++
 
