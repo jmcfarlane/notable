@@ -68,9 +68,10 @@ function(noteView, notesTableRowTemplate) {
      */
     displayContent: function() {
       this._tab = new noteView({
-        tabs: this.options.tabs,
+        _row: this,
+        model: this.model,
         tabContent: this.options.tabContent,
-        model: this.model
+        tabs: this.options.tabs
       }).render();
       this.options.passwordModal.hide();
       this._tab.on('destroy', this.onTabClose, this);

@@ -127,6 +127,7 @@ function(noteDetailTemplate, tabTemplate) {
           this.notSaved();
         }, this),
         success: _.bind(function() {
+          this.options._row.render();
           this.saved();
           callback();
         }, this)
