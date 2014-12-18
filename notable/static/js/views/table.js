@@ -36,7 +36,7 @@ function(Backbone,
       }, this));
     },
 
-    addRow: function(note, idx) {
+    addRow: function(note, position) {
       var row = new notesTableRowView({
         model: note,
         tabs: $('.nav-tabs'),
@@ -44,7 +44,11 @@ function(Backbone,
         passwordModal: this.options.passwordModal,
         searchModal: this.options.searchModal
       });
-      this.$('tbody').append(row.render().el);
+      if (position == 0) {
+        this.$('tbody').prepend(row.render().el);
+      } else {
+        this.$('tbody').append(row.render().el);
+      }
       return row;
     },
 
@@ -54,7 +58,7 @@ function(Backbone,
         subject: '',
         tags: ''
       });
-      this.addRow(note);
+      this.addRow(note, 0);
       note.save();
       return false;
     },
