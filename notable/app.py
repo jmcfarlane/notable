@@ -193,10 +193,10 @@ def main():
     logging.basicConfig(level=logging.DEBUG)
     (opts, _), _ = getopts()
     opts.port = int(opts.port) + 1 if opts.debug else int(opts.port)
-    setup_logging(opts)
     if opts.version:
         print('Notable version %s' % version)
         return 0
+    setup_logging(opts)
     if opts.stop:
         return stop(opts)
     if not opts.no_browser:
