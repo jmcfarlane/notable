@@ -92,7 +92,7 @@ def _persist(func):
 
 def browser(opts):
     sleep(1)
-    webbrowser.open_new_tab('http://localhost:%s' % opts.port)
+    webbrowser.open_new_tab('http://%(bind)s:%(port)s' % vars(opts))
 
 def fork_and_exit():
     pid = os.fork() # Children return 0 here, parents > 0
@@ -116,6 +116,9 @@ def fork(opts):
 
 def getopts():
     parser = optparse.OptionParser(__doc__.strip())
+    parser.add_option('-b', '--bind',
+                      default='localhost',
+                      help='Network to bind to, default is: localhost')
     parser.add_option('-d', '--debug',
                       action='store_true',
                       help='Debug using a debug db')
@@ -143,7 +146,7 @@ def getopts():
     return parser.parse_args(), parser
 
 def running(opts):
-    url = 'http://%s:%s/pid' % (host, opts.port)
+    url = 'http://%(bind)s:%(port)s/pid' % vars(opts)
     try:
         return int(urlopen(url).read())
     except (http.BadStatusLine, URLError, ValueError):
@@ -159,7 +162,7 @@ def run(opts):
     reloader = True if opts.debug and opts.foreground else False
     db.path = db.path + '.debug' if opts.debug else db.path
     db.prepare()
-    bottle.run(host=host, port=opts.port, reloader=reloader)
+    bottle.run(host=opts.bind, port=opts.port, reloader=reloader)
     return 0
 
 def setup_logging(opts):
