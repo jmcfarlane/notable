@@ -4,12 +4,12 @@
 define([
   'text!templates/note.html',
   'text!templates/tab.html',
+  'lib/mousetrap.min',
   'backbone',
   'underscore',
-  'lib/jquery.hotkeys',
   'ace'
 ],
-function(noteDetailTemplate, tabTemplate) {
+function(noteDetailTemplate, tabTemplate, Mousetrap) {
   return Backbone.View.extend({
 
     initialize: function() {
@@ -51,12 +51,10 @@ function(noteDetailTemplate, tabTemplate) {
       this._editor.commands.removeCommand('gotoline');
       this._editor.focus();
       window._editor = this._editor; // For web driver
-      this.$('input').bind('keydown', 'ctrl+s', _.bind(this.save, this));
 
       // Somehow this seems to result in the right tab saving, but
-      // seemms like a defect waiting to happen.
-      $(document).bind('keydown', 'ctrl+s', _.bind(this.save, this));
-      $(document).bind('keydown', 'esc', _.bind(this.close, this));
+      // seems like a defect waiting to happen.
+      Mousetrap.bind('ctrl+s', _.bind(this.save, this));
       this.$('.close-button').on('click', _.bind(this.close, this));
       this.$('.delete').on('click', _.bind(this.onDelete, this));
       this.$('.save').on('click', _.bind(this.save, this));

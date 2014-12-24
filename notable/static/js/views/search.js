@@ -3,11 +3,11 @@
  */
 define([
   'text!templates/search.html',
+  'lib/mousetrap.min',
   'backbone',
-  'underscore',
-  'lib/jquery.hotkeys'
+  'underscore'
 ],
-function(searchTemplate) {
+function(searchTemplate, Mousetrap) {
   return Backbone.View.extend({
 
     events: {
@@ -27,7 +27,7 @@ function(searchTemplate) {
     initialize: function() {
       this._query = null;
       $(document).bind('click', _.bind(this.hide, this));
-      $(document).bind('keydown', '/', _.bind(this.show, this));
+      Mousetrap.bind('/', _.bind(this.show, this));
     },
 
     next: function() {
@@ -53,10 +53,9 @@ function(searchTemplate) {
 
     render: function(collection) {
       this.$el.html(_.template(searchTemplate));
-      this.$('.search-query').bind('keydown', 'ctrl+j', _.bind(this.next, this));
-      this.$('.search-query').bind('keydown', 'ctrl+k', _.bind(this.previous, this));
-      this.$('.search-query').bind('keydown', 'esc', _.bind(this.hide, this));
-      this.$('.search-query').bind('keydown', 'return', _.bind(this.open, this));
+      Mousetrap.bind('ctrl+j', _.bind(this.next, this));
+      Mousetrap.bind('ctrl+k', _.bind(this.previous, this));
+      Mousetrap.bind('esc', _.bind(this.hide, this));
       return this;
     },
 

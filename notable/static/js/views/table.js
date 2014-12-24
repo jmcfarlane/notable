@@ -8,14 +8,15 @@ define([
   'text!templates/not-saved.html',
   'text!templates/saved.html',
   'text!templates/table.html',
-  'lib/jquery.hotkeys'
+  'lib/mousetrap.min'
 ],
 function(Backbone,
          NoteModel,
          notesTableRowView,
          notSavedTemplate,
          savedTemplate,
-         notesTableTemplate) {
+         notesTableTemplate,
+         Mousetrap) {
   return Backbone.View.extend({
 
     initialize: function(options) {
@@ -24,10 +25,13 @@ function(Backbone,
       $('body').append(this.options.passwordModal.render().el);
       $('body').append(this.options.searchModal.render().el);
       $('.create').on('click', _.bind(this.createNote, this));
-      $(document).bind('keydown', 'ctrl+c', _.bind(this.createNote, this));
-      $(document).bind('keydown', 'j', _.bind(this.selectNextNote, this));
-      $(document).bind('keydown', 'k', _.bind(this.selectPreviousNote, this));
-      $(document).bind('keydown', 'return', _.bind(this.openSelectedNote, this));
+      Mousetrap.bind('ctrl+c', _.bind(this.createNote, this));
+      Mousetrap.bind('j', _.bind(this.selectNextNote, this));
+      Mousetrap.bind('k', _.bind(this.selectPreviousNote, this));
+      Mousetrap.bind('return', _.bind(function() {
+        this.openSelectedNote();
+        this.options.searchModal.hide();
+      }, this));
       options.searchModal.on('next', this.selectNextNote, this);
       options.searchModal.on('previous', this.selectPreviousNote, this);
       options.searchModal.on('open', this.openSelectedNote, this);
