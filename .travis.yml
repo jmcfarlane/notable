@@ -1,24 +1,23 @@
-language: python
+language: go
 
 python:
-  - 2.6
-  - 2.7
-  - 3.2
-  - 3.3
-  - pypy
+  - 1.3
+  - 1.4
+  - 1.5
+  - tip
 
-before_install:
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
-  - "sleep 3"
-
-install:
-  - "pip install -r requirements.txt --use-mirrors"
-  - "if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install --use-mirrors unittest2; fi"
-  - "./scripts/notable -d --no-browser"
-  - "sleep 2"
-
-script:
-  - "curl localhost:8083"
-  - "nosetests -v"
-  - "if [ $? != 0 ]; then cat ~/.notable/notable.log*; fi"
+#before_install:
+#  - "export DISPLAY=:99.0"
+#  - "sh -e /etc/init.d/xvfb start"
+#  - "sleep 3"
+#
+#install:
+#  - "pip install -r requirements.txt --use-mirrors"
+#  - "if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install --use-mirrors unittest2; fi"
+#  - "./scripts/notable -d --no-browser"
+#  - "sleep 2"
+#
+#script:
+#  - "curl localhost:8083"
+#  - "nosetests -v"
+#  - "if [ $? != 0 ]; then cat ~/.notable/notable.log*; fi"
