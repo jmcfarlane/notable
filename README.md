@@ -1,36 +1,37 @@
-Notable
-=======
+# Notable
 
-.. image:: https://api.travis-ci.org/jmcfarlane/Notable.png
-  :alt: Notable build
-  :target: https://travis-ci.org/jmcfarlane/Notable
+[![Build Status](https://travis-ci.org/jmcfarlane/notable.svg?branch=master)](https://travis-ci.org/jmcfarlane/notable)
 
 A **very** simple note taking application.
 
-Dependencies
-++++++++++++
+## Dependencies
 
-1. `Python <http://www.python.org>`_ (2.6, 2.7, 3.2, 3.3)
-2. `PyCrypto <https://www.dlitz.net/software/pycrypto/>`_
+1. [Python](http://www.python.org) (2.6, 2.7, 3.2, 3.3)
+2. [PyCrypto](https://www.dlitz.net/software/pycrypto/)
 
-Installation
-++++++++++++
+## Backend language migration
 
-Ideally you're using `Virtualenv <http://www.virtualenv.org>`_:
+The backend is currently being re-written in
+[golang](https://golang.org). This will result in **zero**
+dependencies :)
 
-.. code-block:: bash
+[![Build Status](https://travis-ci.org/jmcfarlane/notable.svg?branch=golang)](https://github.com/jmcfarlane/notable/tree/golang)
 
+## Installation
+
+Ideally you're using [Virtualenv](http://www.virtualenv.org):
+
+```
   pip install notable
+```
 
-Usage
-+++++
+## Usage
 
-.. code-block:: bash
-
+```
   notable
+```
 
-Features
-++++++++
+## Features
 
 - **Secure**
   Nothing leaves your computer unless you want it to.
@@ -54,5 +55,3 @@ Features
 
 - **Keyboard friendly**
   Where possible keyboard shortcuts are available.
-
-
