@@ -10,10 +10,9 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-// Index returns the landing page html (the application only has one
-// page).
+// Index the landing page html (the application only has one page.
 func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	f, _ := ioutil.ReadFile("../notable/static/templates/index.html")
+	f, _ := ioutil.ReadFile("notable/static/templates/index.html")
 	fmt.Fprint(w, string(f))
 }
 
@@ -22,6 +21,8 @@ func main() {
 	router.GET("/", Index)
 	router.GET("/api/notes/list", api.Search)
 	router.POST("/api/note/content/:uid", api.GetContent)
-	router.NotFound = http.FileServer(http.Dir("../notable"))
+	router.PUT("/api/note/:uid", api.PersistNote)
+	router.NotFound = http.FileServer(http.Dir("notable"))
+	fmt.Println("Listening on :8080")
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
