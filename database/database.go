@@ -6,6 +6,7 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/twinj/uuid"
 
 	// Imported only for it's side effect
 	_ "github.com/mattn/go-sqlite3"
@@ -28,12 +29,62 @@ type Note struct {
 // Notes is a collection of Note objects
 type Notes []Note
 
+// connection to a sqlite database (currently hard coded for testing)
 func connection() (*sql.DB, error) {
 	db, err := sql.Open("sqlite3", "/home/jmcfarlane/Desktop/notes.sqlite3")
 	if err != nil {
 		panic(err)
 	}
 	return db, err
+}
+
+// persistable prepares a note for being persisted to storage
+func persistable(note Note) (Note, error) {
+	note.Updated = Now()
+	// Generate a uuid if necessary
+	if note.UID == "" {
+		note.UID = uuid.NewV4().String()
+	}
+	// Make sure the contents are encrypted if a password is set
+	if note.Password != "" {
+		note.Content = Encrypt(note.Content, note.Password)
+	}
+	return note, nil
+}
+
+// Create a note
+func Create(note Note) (Note, error) {
+	note, err := persistable(note)
+	if err != nil {
+		panic(err)
+	}
+	db, _ := connection()
+	defer db.Close()
+
+	// No sql injection please
+	stmt, err := db.Prepare(`
+      INSERT INTO notes
+        (content, created, encrypted, subject, tags, uid, updated)
+	  VALUES
+	    (?, ?, ?, ?, ?, ?, ?)
+	`)
+	if err != nil {
+		panic(err)
+	}
+	_, err = stmt.Exec(
+		note.Content,
+		note.Encrypted,
+		note.Subject,
+		note.Tags,
+		note.UID,
+		note.UID,
+		note.Updated)
+	if err != nil {
+		panic(err)
+	}
+	log.Infof("Completed DB insert uid=%s", note.UID)
+
+	return note, nil
 }
 
 // GetContentByUID fetches content (which might be encrypted) by uid.
@@ -58,13 +109,13 @@ func GetContentByUID(uid string, password string) (string, error) {
 	return "", fmt.Errorf("No note found")
 }
 
-// Now is a current timestamp in string format
+// Now is the current timestamp in time.RFC3339 format
 func Now() string {
 	t := time.Now()
 	return t.Format(time.RFC3339)
 }
 
-// Search fetches all notes as filtered by the provided query
+// Search all notes as filtered by the provided query
 func Search(query string) Notes {
 	db, _ := connection()
 	defer db.Close()
@@ -94,11 +145,9 @@ func Search(query string) Notes {
 
 // Update a note
 func Update(note Note) (Note, error) {
-	// Make sure the timestamp reflects the update
-	note.Updated = Now()
-	// Make sure the contents are encrypted if a password is set
-	if note.Password != "" {
-		note.Content = Encrypt(note.Content, note.Password)
+	note, err := persistable(note)
+	if err != nil {
+		panic(err)
 	}
 	db, _ := connection()
 	defer db.Close()
@@ -106,10 +155,10 @@ func Update(note Note) (Note, error) {
 	// No sql injection please
 	stmt, err := db.Prepare(`
       UPDATE notes SET
-        tags = ?,
-        subject = ?,
         content = ?,
         encrypted = ?,
+        subject = ?,
+        tags = ?,
         updated = ?
       WHERE uid = ?
 	`)
@@ -117,17 +166,17 @@ func Update(note Note) (Note, error) {
 		panic(err)
 	}
 	res, err := stmt.Exec(
-		note.Tags,
-		note.Subject,
 		note.Content,
 		note.Encrypted,
+		note.Subject,
+		note.Tags,
 		note.Updated,
 		note.UID)
 	if err != nil {
 		panic(err)
 	}
-	affect, _ := res.RowsAffected()
-	log.Infof("Completed DB update uid=%s, affected=%d", note.UID, affect)
+	affected, _ := res.RowsAffected()
+	log.Infof("Completed DB update uid=%s, affected=%d", note.UID, affected)
 
 	return note, nil
 }
