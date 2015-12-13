@@ -56,11 +56,17 @@ func DeleteNote(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 // GetContent fetches note content from the database by it's uid.
 func GetContent(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	password := r.PostFormValue("password")
-	body, err := database.GetContentByUID(ps.ByName("uid"), password)
+	content, err := database.GetContentByUID(ps.ByName("uid"), password)
+	if database.SmellsEncrypted(content) == true {
+		w.WriteHeader(http.StatusForbidden)
+		fmt.Fprintf(w, "Nope, try again")
+		return
+	}
 	if err != nil {
+		log.Error(err)
 		fmt.Fprintf(w, "ERROR")
 	}
-	fmt.Fprintf(w, body)
+	fmt.Fprintf(w, content)
 }
 
 // Search for notes based on an optional querystring parameter
