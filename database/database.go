@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"time"
 
@@ -50,6 +51,28 @@ func persistable(note Note) (Note, error) {
 		note.Content = Encrypt(note.Content, note.Password)
 	}
 	return note, nil
+}
+
+// DeleteByUID removes a note from storage
+func DeleteByUID(uid string) error {
+	if uid == "" {
+		return errors.New("Deletion uid must not be an empty string")
+	}
+	db, _ := connection()
+	defer db.Close()
+	stmt, err := db.Prepare(`DELETE FROM notes WHERE uid=?`)
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+	res, err := stmt.Exec(uid)
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+	affected, _ := res.RowsAffected()
+	log.Infof("Completed DB delete uid=%s, affected=%d", uid, affected)
+	return nil
 }
 
 // Create a note

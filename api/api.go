@@ -12,6 +12,12 @@ import (
 	log "github.com/Sirupsen/logrus"
 )
 
+// APIResponse envelope to communicate details to the frontent
+type APIResponse struct {
+	Message string `json:"message"`
+	Success bool   `json:"success"`
+}
+
 // CreateNote creates a new note
 func CreateNote(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	payload, _ := ioutil.ReadAll(r.Body)
@@ -31,6 +37,20 @@ func CreateNote(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		fmt.Fprintf(w, err.Error())
 	}
 	fmt.Fprintf(w, string(noteJSON))
+}
+
+// DeleteNote removes a note from storage
+func DeleteNote(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	outcome := APIResponse{}
+	err := database.DeleteByUID(ps.ByName("uid"))
+	if err != nil {
+		outcome.Success = false
+		outcome.Message = err.Error()
+		log.Error(err)
+	}
+	outcome.Success = true
+	outcomeJSON, _ := json.Marshal(outcome)
+	fmt.Fprintf(w, string(outcomeJSON))
 }
 
 // GetContent fetches note content from the database by it's uid.

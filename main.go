@@ -22,6 +22,7 @@ func main() {
 	router.GET("/api/notes/list", api.Search)
 	router.POST("/api/note/content/:uid", api.GetContent)
 	router.POST("/api/note/create", api.CreateNote)
+	router.DELETE("/api/note/:uid", api.DeleteNote)
 	router.PUT("/api/note/:uid", api.UpdateNote)
 	router.NotFound = http.FileServer(http.Dir("notable"))
 	fmt.Println("Listening on :8080")
