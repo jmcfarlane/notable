@@ -23,20 +23,15 @@ func CreateNote(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	payload, _ := ioutil.ReadAll(r.Body)
 	note := database.Note{}
 	json.Unmarshal(payload, &note)
-	note, err := database.Create(note)
-
-	// Return the note (minus the content) in case the UI sees any
-	// changes (like timestamps or ids for new notes)
-	note.Content = ""
+	_, err := database.Create(note)
 	if err != nil {
 		fmt.Fprintf(w, err.Error())
 	}
-	noteJSON, err := json.MarshalIndent(note, "", "  ")
+	noteJSON, err := note.ToJSON()
 	if err != nil {
-		log.Error("Failed to parse note into json", err)
 		fmt.Fprintf(w, err.Error())
 	}
-	fmt.Fprintf(w, string(noteJSON))
+	fmt.Fprintf(w, noteJSON)
 }
 
 // DeleteNote removes a note from storage
@@ -88,14 +83,9 @@ func UpdateNote(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	if err != nil {
 		fmt.Fprintf(w, err.Error())
 	}
-
-	// Return the note (minus the content) in case the UI sees any
-	// changes (like timestamps or ids for new notes)
-	note.Content = ""
-	noteJSON, err := json.MarshalIndent(note, "", "  ")
+	noteJSON, err := note.ToJSON()
 	if err != nil {
-		log.Error("Failed to parse note into json", err)
 		fmt.Fprintf(w, err.Error())
 	}
-	fmt.Fprintf(w, string(noteJSON))
+	fmt.Fprintf(w, noteJSON)
 }

@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"time"
@@ -18,17 +19,29 @@ type Note struct {
 	Content   string `json:"content"`
 	Created   string `json:"created"`
 	Encrypted bool   `json:"encrypted"`
+	Password  string `json:"password"`
 	Subject   string `json:"subject"`
 	Tags      string `json:"tags"`
 	UID       string `json:"uid"`
 	Updated   string `json:"updated"`
-
-	// Don't pass this one around unless really necessary
-	Password string `json:"-"`
 }
 
 // Notes is a collection of Note objects
 type Notes []Note
+
+// ToJSON converts a (filtered) note into json fields filtered:
+// - Content: For performance reasons
+// - Password: For security reasons
+func (note Note) ToJSON() (string, error) {
+	note.Content = ""
+	note.Password = ""
+	noteJSON, err := json.MarshalIndent(note, "", "  ")
+	if err != nil {
+		log.Error("Failed to parse note into json", err)
+		return "", err
+	}
+	return string(noteJSON), err
+}
 
 // connection to a sqlite database (currently hard coded for testing)
 func connection() (*sql.DB, error) {
@@ -49,6 +62,9 @@ func persistable(note Note) (Note, error) {
 	// Make sure the contents are encrypted if a password is set
 	if note.Password != "" {
 		note.Content = Encrypt(note.Content, note.Password)
+		note.Encrypted = true
+	} else {
+		note.Encrypted = false
 	}
 	return note, nil
 }
