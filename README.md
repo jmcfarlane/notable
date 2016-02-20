@@ -1,34 +1,23 @@
 # Notable
 
-[![Build Status](https://travis-ci.org/jmcfarlane/notable.svg?branch=master)](https://travis-ci.org/jmcfarlane/notable)
+[![Build Status](https://travis-ci.org/jmcfarlane/notable.svg?branch=golang)](https://github.com/jmcfarlane/notable/tree/golang)
 
 A **very** simple note taking application.
 
 ## Dependencies
 
-1. [Python](http://www.python.org) (2.6, 2.7, 3.2, 3.3)
-2. [PyCrypto](https://www.dlitz.net/software/pycrypto/)
-
-## Backend language migration
-
-The backend is currently being re-written in
-[golang](https://golang.org). This will result in **zero**
-dependencies :)
-
-[![Build Status](https://travis-ci.org/jmcfarlane/notable.svg?branch=golang)](https://github.com/jmcfarlane/notable/tree/golang)
+- None (Thanks http://golang.org)
 
 ## Installation
 
-Ideally you're using [Virtualenv](http://www.virtualenv.org):
-
 ```
-  pip install notable
+go get github.com/jmcfarlane/Notable
 ```
 
 ## Usage
 
 ```
-  notable
+notable
 ```
 
 ## Features

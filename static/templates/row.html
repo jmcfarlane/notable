@@ -1,0 +1,8 @@
+<td class="selector">
+  <%=note.updated%>
+  <% if (note.encrypted) { %>
+    <img class="pull-right" src="/static/img/encrypted.png" />
+  <% } %>
+</td>
+<td><%=note.subject%></td>
+<td><%=note.tags%></td>

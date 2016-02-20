@@ -1,0 +1,41 @@
+<div class="tab-pane fade active in" id="<%= note.uid %>">
+  <form class="form" role="form">
+    <div class="row" id="toolbar">
+      <div class="form-group col-md-4 subject">
+        <div class="input-group">
+          <div class="input-group-addon">Subject</div>
+          <input class="form-control mousetrap" type="text" placeholder="Subject" value="<%= note.subject %>" />
+        </div>
+      </div>
+      <div class="form-group col-md-4 tags">
+        <div class="input-group">
+          <div class="input-group-addon">Tags</div>
+          <input class="form-control mousetrap" type="text" placeholder="Tags" value="<%= note.tags %>" />
+        </div>
+      </div>
+      <div class="form-group col-md-3 password">
+        <div class="input-group">
+          <input class="form-control mousetrap" type="password" placeholder="Password" value="<%= note.password %>" />
+          <div class="input-group-addon">Password</div>
+        </div>
+      </div>
+      <div class="col-md-1 pull-right">
+        <button type="button" class="btn btn-primary pull-right close-button">Close</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <pre class="editor"></pre>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <button type="button" class="btn save btn-default btn-sm">Save this note</button>
+          <button type="button" class="btn save-close btn-default btn-sm">Save and close this note</button>
+          <button type="button" class="btn btn-danger delete btn-sm">Delete this note</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
