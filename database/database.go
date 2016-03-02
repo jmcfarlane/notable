@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/jmcfarlane/notable/flags"
 
 	// Imported only for it's side effect
 	_ "github.com/mattn/go-sqlite3"
@@ -13,7 +14,7 @@ import (
 
 // connection to a sqlite database (currently hard coded for testing)
 func connection() (*sql.DB, error) {
-	db, err := sql.Open("sqlite3", "/home/jmcfarlane/Desktop/notes.sqlite3")
+	db, err := sql.Open("sqlite3", *flags.DBPath)
 	if err != nil {
 		panic(err)
 	}

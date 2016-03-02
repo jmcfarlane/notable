@@ -3,17 +3,17 @@ package main
 //go:generate go-bindata-assetfs static/...
 
 import (
-	"flag"
 	"fmt"
-	"log"
 	"net/http"
+	"os/exec"
+	"runtime"
+	"strconv"
 
 	"github.com/jmcfarlane/notable/api"
+	"github.com/jmcfarlane/notable/flags"
 	"github.com/julienschmidt/httprouter"
-)
 
-var (
-	listen = flag.String("listen", ":8080", "Interface and port to listen on")
+	log "github.com/Sirupsen/logrus"
 )
 
 // Index the landing page html (the application only has one page.
@@ -25,8 +25,20 @@ func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	fmt.Fprint(w, string(asset))
 }
 
+func browser() {
+	if *flags.Browser {
+		cmd := "open"
+		if runtime.GOOS == "linux" {
+			cmd = "xdg-open"
+		}
+		err := exec.Command(cmd, "http://localhost:"+strconv.Itoa(*flags.Port)).Run()
+		if err != nil {
+			log.Errorf("Error spawning web browser err=%v")
+		}
+	}
+}
+
 func main() {
-	flag.Parse()
 	router := httprouter.New()
 	router.GET("/", Index)
 	router.GET("/api/notes/list", api.Search)
@@ -35,6 +47,7 @@ func main() {
 	router.DELETE("/api/note/:uid", api.DeleteNote)
 	router.PUT("/api/note/:uid", api.UpdateNote)
 	router.NotFound = http.FileServer(assetFS())
-	fmt.Println("Listening on ", *listen)
-	log.Fatal(http.ListenAndServe(*listen, router))
+	browser()
+	log.Infof("Listening on localhost:%v", *flags.Port)
+	log.Fatal(http.ListenAndServe(":"+strconv.Itoa(*flags.Port), router))
 }
