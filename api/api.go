@@ -23,7 +23,7 @@ func CreateNote(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	payload, _ := ioutil.ReadAll(r.Body)
 	note := database.Note{}
 	json.Unmarshal(payload, &note)
-	_, err := database.Create(note)
+	note, err := database.Create(note)
 	if err != nil {
 		fmt.Fprintf(w, err.Error())
 	}
