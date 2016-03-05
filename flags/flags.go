@@ -13,8 +13,10 @@ var (
 	Port = flag.Int("port", 8080, "Interface and port to listen on")
 	// DBPath is assumed to be in your home directory unless specified
 	DBPath = flag.String("db", "", "File system path to db file")
-	// Browser shoudl be opened
+	// Browser should be opened
 	Browser = flag.Bool("browser", true, "Open a web browser")
+	// Daemon should be opened
+	Daemon = flag.Bool("daemon", true, "Run as a daemon")
 )
 
 func homeDirPath() string {

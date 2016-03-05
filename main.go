@@ -41,6 +41,7 @@ func browser() {
 func main() {
 	router := httprouter.New()
 	router.GET("/", Index)
+	router.GET("/pid", api.Pid)
 	router.GET("/api/notes/list", api.Search)
 	router.POST("/api/note/content/:uid", api.GetContent)
 	router.POST("/api/note/create", api.CreateNote)
@@ -48,6 +49,11 @@ func main() {
 	router.PUT("/api/note/:uid", api.UpdateNote)
 	router.NotFound = http.FileServer(assetFS())
 	browser()
-	log.Infof("Listening on localhost:%v", *flags.Port)
-	log.Fatal(http.ListenAndServe(":"+strconv.Itoa(*flags.Port), router))
+	if *flags.Daemon {
+		if !flags.Daemonize() {
+			api.Start(router)
+		}
+	} else {
+		api.Start(router)
+	}
 }

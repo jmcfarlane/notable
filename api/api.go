@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
+	"strconv"
 
 	"github.com/jmcfarlane/notable/database"
 	"github.com/julienschmidt/httprouter"
@@ -32,6 +34,11 @@ func CreateNote(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		fmt.Fprintf(w, err.Error())
 	}
 	fmt.Fprintf(w, noteJSON)
+}
+
+// Pid is the current process id
+func Pid(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	fmt.Fprintf(w, strconv.Itoa(os.Getpid()))
 }
 
 // DeleteNote removes a note from storage
