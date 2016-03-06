@@ -3,4 +3,4 @@ MAINTAINER John McFarlane
 
 EXPOSE 8080
 RUN go get -u github.com/jmcfarlane/notable
-ENTRYPOINT ["/go/bin/notable", "-daemon=false"]
+ENTRYPOINT ["/go/bin/notable", "-daemon=false", "-browser=false", "-bind=0.0.0.0"]

@@ -31,7 +31,7 @@ func browser() {
 		if runtime.GOOS == "linux" {
 			cmd = "xdg-open"
 		}
-		err := exec.Command(cmd, "http://localhost:"+strconv.Itoa(*flags.Port)).Run()
+		err := exec.Command(cmd, "http://"+*flags.Bind+":"+strconv.Itoa(*flags.Port)).Run()
 		if err != nil {
 			log.Errorf("Error spawning web browser err=%v")
 		}

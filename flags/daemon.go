@@ -34,7 +34,7 @@ func Daemonize() bool {
 }
 
 func running() bool {
-	resp, err := http.Get("http://localhost:" + strconv.Itoa(*Port) + "/pid")
+	resp, err := http.Get("http://" + *Bind + ":" + strconv.Itoa(*Port) + "/pid")
 	if err != nil {
 		return false
 	}
