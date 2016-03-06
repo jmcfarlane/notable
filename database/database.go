@@ -12,13 +12,45 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+func init() {
+	createSchema()
+}
+
 // connection to a sqlite database (currently hard coded for testing)
 func connection() (*sql.DB, error) {
 	db, err := sql.Open("sqlite3", *flags.DBPath)
 	if err != nil {
-		panic(err)
+		log.Panicf("Unable to open database path=%s, err=%v", *flags.DBPath, err)
 	}
 	return db, err
+}
+
+// Create schema
+func createSchema() {
+	db, _ := connection()
+	defer db.Close()
+	stmt, err := db.Prepare(`
+		CREATE TABLE notes (
+			uid string,
+			created string,
+			updated string,
+			tags string,
+			content string,
+			encrypted INTEGER DEFAULT 0,
+			subject TEXT
+		);`)
+	if err != nil {
+		if err.Error() != "table notes already exists" {
+			log.Panicf("Unable to verify schema path=%s, err=%v", *flags.DBPath, err)
+		}
+		return
+	}
+	_, err = stmt.Exec()
+	if err != nil {
+		log.Errorf("Unable to create schema err=%v", err)
+	}
+	log.Infof("Schema created path=%s", *flags.DBPath)
+
 }
 
 // DeleteByUID removes a note from storage
