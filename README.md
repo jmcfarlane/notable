@@ -6,18 +6,32 @@ A **very** simple note taking application.
 
 ## Dependencies
 
-- None (Thanks http://golang.org)
+- None, a single binary.
 
 ## Installation
 
 ```
-go get github.com/jmcfarlane/Notable
+go get -u github.com/jmcfarlane/notable
 ```
 
 ## Usage
 
 ```
 notable
+```
+
+## Docker usage
+
+Demo:
+
+```
+docker run -p 8082:8082 jmcfarlane/notable
+```
+
+Real usage, with local storage:
+
+```
+docker run -p 8082:8082 -d -v ~/.notable:/root/.notable jmcfarlane/notable:latest
 ```
 
 ## Features
