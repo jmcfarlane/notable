@@ -20,6 +20,20 @@ go get github.com/jmcfarlane/Notable
 notable
 ```
 
+## Docker usage
+
+Demo:
+
+```
+docker run -p 8082:8082 jmcfarlane/notable
+```
+
+Real usage, with local storage:
+
+```
+docker run -p 8082:8082 -d -v ~/.notable:/root/.notable jmcfarlane/notable:latest
+```
+
 ## Features
 
 - **Secure**
