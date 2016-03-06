@@ -6,12 +6,12 @@ A **very** simple note taking application.
 
 ## Dependencies
 
-- None (Thanks http://golang.org)
+- None, a single binary.
 
 ## Installation
 
 ```
-go get github.com/jmcfarlane/Notable
+go get -u github.com/jmcfarlane/notable
 ```
 
 ## Usage
