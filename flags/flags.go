@@ -17,6 +17,8 @@ var (
 	Browser = flag.Bool("browser", true, "Open a web browser")
 	// Daemon should be opened
 	Daemon = flag.Bool("daemon", true, "Run as a daemon")
+	// Restart if already running
+	Restart = flag.Bool("restart", false, "Restart if already running")
 )
 
 func homeDirPath() string {

@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
+	"syscall"
 
 	log "github.com/Sirupsen/logrus"
 )
@@ -44,5 +45,11 @@ func running() bool {
 		return false
 	}
 	log.Infof("Already running pid=%v", pid)
+	if *Restart {
+		process := os.Process{Pid: pid}
+		process.Signal(syscall.SIGINT)
+		log.Warnf("Requested graceful shutdown pid=%v", pid)
+		return false
+	}
 	return true
 }
