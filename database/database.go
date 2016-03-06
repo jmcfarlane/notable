@@ -41,7 +41,7 @@ func createSchema() {
 		);`)
 	if err != nil {
 		if err.Error() != "table notes already exists" {
-			log.Panicf("Unable to verify schema path=%s, err=%v", *flags.DBPath, err)
+			log.Panicf("Unable to prepare schema path=%s, err=%v", *flags.DBPath, err)
 		}
 		return
 	}
