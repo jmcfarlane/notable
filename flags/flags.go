@@ -19,6 +19,8 @@ var (
 	Daemon = flag.Bool("daemon", true, "Run as a daemon")
 	// Restart if already running
 	Restart = flag.Bool("restart", false, "Restart if already running")
+	// Bind address
+	Bind = flag.String("bind", "localhost", "Bind address")
 )
 
 func homeDirPath() string {

@@ -12,6 +12,6 @@ import (
 
 // Start the service
 func Start(router *httprouter.Router) {
-	log.Infof("Listening on localhost:%v", *flags.Port)
+	log.Infof("Listening on %s:%v", *flags.Bind, *flags.Port)
 	log.Fatal(http.ListenAndServe(":"+strconv.Itoa(*flags.Port), router))
 }
