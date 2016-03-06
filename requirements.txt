@@ -1,5 +1,0 @@
-ddt
-nose
-pycrypto
-requests
-selenium

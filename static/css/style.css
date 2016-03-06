@@ -1,0 +1,49 @@
+.alert.top-right {
+  position: fixed;
+  right: 2px;
+  top: 2px;
+}
+
+.container-fluid {
+  margin: 10px 0;
+}
+
+.editor {
+  margin-top: 12px;
+}
+
+.form-inline.search input {
+  position: relative;
+  right: -450px;
+  width: 400px;
+  padding: 2px;
+}
+
+.note-row:hover {
+  cursor: pointer;
+}
+
+.row > div pre.editor {
+  margin-top: -4px
+}
+
+.search-container {
+  overflow: hidden;
+  position: absolute;
+  right: 85px;
+  top: 4px;
+  width: 400px;
+}
+
+.table {
+  border: 0;
+}
+
+#toolbar {
+  padding-top: 8px;
+}
+
+td.selector.selected {
+  border-left-color: #4d90f0;
+}
+
