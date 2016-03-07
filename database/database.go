@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"os"
+	"path/filepath"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/jmcfarlane/notable/flags"
@@ -27,6 +29,11 @@ func connection() (*sql.DB, error) {
 
 // Create schema
 func createSchema() {
+	dbDir := filepath.Dir(*flags.DBPath)
+	if _, err := os.Stat(dbDir); os.IsNotExist(err) {
+		os.MkdirAll(dbDir, 0777)
+		log.Infof("Created directory path=%s", dbDir)
+	}
 	db, _ := connection()
 	defer db.Close()
 	stmt, err := db.Prepare(`
