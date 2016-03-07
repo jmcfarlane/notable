@@ -25,13 +25,13 @@ notable
 Demo:
 
 ```
-docker run -p 8082:8082 jmcfarlane/notable
+docker run -p 8080:8080 jmcfarlane/notable
 ```
 
 Real usage, with local storage:
 
 ```
-docker run -p 8082:8082 -d -v ~/.notable:/root/.notable jmcfarlane/notable:latest
+docker run -p 8080:8080 -d -v ~/.notable:/root/.notable jmcfarlane/notable:latest
 ```
 
 ## Features
