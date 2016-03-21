@@ -68,7 +68,7 @@ func GetContent(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		log.Error(err)
 		fmt.Fprintf(w, "ERROR")
 	}
-	fmt.Fprintf(w, content)
+	w.Write([]byte(content))
 }
 
 // Search for notes based on an optional querystring parameter
