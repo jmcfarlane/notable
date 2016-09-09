@@ -16,6 +16,15 @@ import (
 	log "github.com/Sirupsen/logrus"
 )
 
+// Program version information
+var (
+	buildarch     string
+	buildcompiler string
+	buildhash     string
+	buildstamp    string
+	builduser     string
+)
+
 // Index the landing page html (the application only has one page.
 func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	asset, err := Asset("static/templates/index.html")
@@ -33,12 +42,19 @@ func browser() {
 		}
 		err := exec.Command(cmd, "http://"+*flags.Bind+":"+strconv.Itoa(*flags.Port)).Run()
 		if err != nil {
-			log.Errorf("Error spawning web browser err=%v")
+			log.Errorf("Error spawning web browser err=%v", err)
 		}
 	}
 }
 
 func main() {
+	if *flags.Version {
+		fmt.Printf("Build time:\t%s\n", buildstamp)
+		fmt.Printf("Build user:\t%s@%s\n", builduser, buildhash)
+		fmt.Printf("Compiler:\t%s\n", buildcompiler)
+		fmt.Printf("Arch:\t\t%s\n", buildarch)
+		return
+	}
 	router := httprouter.New()
 	router.GET("/", Index)
 	router.GET("/pid", api.Pid)

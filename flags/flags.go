@@ -21,6 +21,8 @@ var (
 	Restart = flag.Bool("restart", false, "Restart if already running")
 	// Bind address
 	Bind = flag.String("bind", "localhost", "Bind address")
+	// Version information to print
+	Version = flag.Bool("version", false, "Print program version information")
 )
 
 func homeDirPath() string {
