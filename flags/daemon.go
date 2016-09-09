@@ -25,6 +25,7 @@ func Daemonize() bool {
 			break
 		}
 	}
+	args = append(args, "-browser=false")
 	args = append(args, "-daemon=false")
 	cmd := exec.Command(os.Args[0], args...)
 	cmd.Start()
