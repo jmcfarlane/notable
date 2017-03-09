@@ -1,0 +1,10 @@
+[Service]
+Type=simple
+User=jmcfarlane
+WorkingDirectory=/home/jmcfarlane
+ExecStart=/usr/local/bin/notable -port 18080 -browser=false -daemon=false
+ExecStop=/bin/true
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target
