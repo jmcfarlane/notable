@@ -15,4 +15,4 @@ install:
 
 script:
   - "go build"
-  - "go test -v ./... -db=/tmp/test.db"
+  - "./run-tests.sh"
