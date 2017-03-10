@@ -59,7 +59,7 @@ func setup(t *testing.T) Mock {
 
 func tearDown(mock Mock) {
 	defer mock.server.Close()
-	// os.Remove(mock.dbPath)
+	os.Remove(mock.dbPath)
 	log.Warnf("Deleted temp db path=%s", mock.dbPath)
 }
 
