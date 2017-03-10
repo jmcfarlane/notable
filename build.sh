@@ -12,3 +12,7 @@ flags="-X main.buildarch=$(go version | cut -f 4 -d' ')
 mkdir -p target/{linux,macos}
 GOOS=darwin GOARCH=amd64 go build -ldflags "$flags" -o target/macos/notable
 GOOS=linux GOARCH=amd64 go build -ldflags "$flags" -o target/linux/notable
+
+# Build zip files for hosting on github
+pushd target/macos && zip notable-macos.zip notable; popd
+pushd target/linux && zip notable-linux.zip notable; popd
