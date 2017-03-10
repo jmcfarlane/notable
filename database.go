@@ -1,0 +1,201 @@
+package main
+
+import (
+	"database/sql"
+	"errors"
+	"fmt"
+	"os"
+	"path/filepath"
+
+	// Imported only for it's side effect
+	_ "github.com/mattn/go-sqlite3"
+
+	log "github.com/Sirupsen/logrus"
+)
+
+// connection to a sqlite database (currently hard coded for testing)
+func connection() (*sql.DB, error) {
+	db, err := sql.Open("sqlite3", *dbPath)
+	if err != nil {
+		log.Panicf("Unable to open database path=%s, err=%v", *dbPath, err)
+	}
+	return db, err
+}
+
+// Create schema
+func createSchema() {
+	dbDir := filepath.Dir(*dbPath)
+	if _, err := os.Stat(dbDir); os.IsNotExist(err) {
+		os.MkdirAll(dbDir, 0777)
+		log.Infof("Created directory path=%s", dbDir)
+	}
+	db, _ := connection()
+	defer db.Close()
+	stmt, err := db.Prepare(`
+		CREATE TABLE notes (
+			uid string,
+			created string,
+			updated string,
+			tags string,
+			content string,
+			encrypted INTEGER DEFAULT 0,
+			subject TEXT
+		);`)
+	if err != nil {
+		if err.Error() != "table notes already exists" {
+			log.Panicf("Unable to prepare schema path=%s, err=%v", *dbPath, err)
+		}
+		return
+	}
+	_, err = stmt.Exec()
+	if err != nil {
+		log.Errorf("Unable to create schema err=%v", err)
+	}
+	log.Infof("Schema created path=%s", *dbPath)
+
+}
+
+// Removes a note from storage
+func deleteByUID(uid string) error {
+	if uid == "" {
+		return errors.New("Deletion uid must not be an empty string")
+	}
+	db, _ := connection()
+	defer db.Close()
+	stmt, err := db.Prepare(`DELETE FROM notes WHERE uid=?`)
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+	res, err := stmt.Exec(uid)
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+	affected, _ := res.RowsAffected()
+	log.Infof("Completed DB delete uid=%s, affected=%d", uid, affected)
+	return nil
+}
+
+// Create a note
+func create(note Note) (Note, error) {
+	note, err := persistable(note)
+	if err != nil {
+		panic(err)
+	}
+	db, _ := connection()
+	defer db.Close()
+
+	// No sql injection please
+	stmt, err := db.Prepare(`
+      INSERT INTO notes
+        (content, created, encrypted, subject, tags, uid, updated)
+	  VALUES
+	    (?, ?, ?, ?, ?, ?, ?)
+	`)
+	if err != nil {
+		panic(err)
+	}
+	_, err = stmt.Exec(
+		note.Content,
+		note.Created,
+		note.Encrypted,
+		note.Subject,
+		note.Tags,
+		note.UID,
+		note.Updated)
+	if err != nil {
+		panic(err)
+	}
+	log.Infof("Completed DB insert uid=%s", note.UID)
+
+	return note, nil
+}
+
+// Fetch content (which might be encrypted) by uid.
+func getContentByUID(uid string, password string) (string, error) {
+	db, _ := connection()
+	defer db.Close()
+	rows, _ := db.Query("SELECT content FROM notes WHERE uid=?", uid)
+	var notes Notes
+	for rows.Next() {
+		var note Note
+		rows.Scan(&note.Content)
+		notes = append(notes, note)
+	}
+	if len(notes) == 1 {
+		content := notes[0].Content
+		if password == "" {
+			return content, nil
+		}
+		return decrypt(content, password)
+	}
+
+	return "", fmt.Errorf("No note found")
+}
+
+// Search all notes as filtered by the provided query
+func search(query string) Notes {
+	db, _ := connection()
+	defer db.Close()
+	rows, _ := db.Query(`
+		SELECT
+			created, encrypted, subject, tags, uid, updated
+		FROM
+			notes
+		ORDER BY updated DESC`)
+	defer rows.Close()
+
+	var notes Notes
+	for rows.Next() {
+		var note Note
+		rows.Scan(
+			&note.Created,
+			&note.Encrypted,
+			&note.Subject,
+			&note.Tags,
+			&note.UID,
+			&note.Updated)
+		notes = append(notes, note)
+	}
+
+	return notes
+}
+
+// Update a note
+func update(note Note) (Note, error) {
+	note, err := persistable(note)
+	if err != nil {
+		panic(err)
+	}
+	db, _ := connection()
+	defer db.Close()
+
+	// No sql injection please
+	stmt, err := db.Prepare(`
+      UPDATE notes SET
+        content = ?,
+        encrypted = ?,
+        subject = ?,
+        tags = ?,
+        updated = ?
+      WHERE uid = ?
+	`)
+	if err != nil {
+		panic(err)
+	}
+	res, err := stmt.Exec(
+		note.Content,
+		note.Encrypted,
+		note.Subject,
+		note.Tags,
+		note.Updated,
+		note.UID)
+	if err != nil {
+		panic(err)
+	}
+	affected, _ := res.RowsAffected()
+	log.Infof("Completed DB update uid=%s, affected=%d", note.UID, affected)
+
+	return note, nil
+}

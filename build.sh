@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/bin/bash -ex
+
+cd $(dirname $0)
 
 flags="-X main.buildarch=$(go version | cut -f 4 -d' ')
        -X main.buildcompiler=$(go version | cut -f 3 -d' ')
@@ -7,4 +9,6 @@ flags="-X main.buildarch=$(go version | cut -f 4 -d' ')
        -X main.builduser=$(whoami)
 "
 
-go build -ldflags "$flags"
+mkdir -p target/{linux,macos}
+GOOS=darwin GOARCH=amd64 go build -ldflags "$flags" -o target/macos/notable
+GOOS=linux GOARCH=amd64 go build -ldflags "$flags" -o target/linux/notable
