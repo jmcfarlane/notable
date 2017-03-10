@@ -2,6 +2,6 @@
 
 cd $(dirname $0)
 
-go test -v -cover -race -db=/tmp/test.db
+go test -v -cover -db=/tmp/test.db
 echo "All tests passed!"
 

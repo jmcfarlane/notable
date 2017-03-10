@@ -26,6 +26,9 @@ var (
 	builduser     string
 )
 
+// This is the application itself
+var router = getRouter()
+
 // Flags
 var (
 	port    = flag.Int("port", 8080, "Interface and port to listen on")
@@ -70,6 +73,19 @@ func homeDirPath() string {
 	return usr.HomeDir
 }
 
+func getRouter() *httprouter.Router {
+	router := httprouter.New()
+	router.GET("/", index)
+	router.GET("/pid", pid)
+	router.GET("/api/notes/list", searchHandler)
+	router.POST("/api/note/content/:uid", getContent)
+	router.POST("/api/note/create", createNote)
+	router.DELETE("/api/note/:uid", deleteNote)
+	router.PUT("/api/note/:uid", updateNote)
+	router.NotFound = http.FileServer(assetFS())
+	return router
+}
+
 func init() {
 	flag.Parse()
 	if *dbPath == "" {
@@ -87,15 +103,6 @@ func main() {
 		fmt.Printf("Arch:\t\t%s\n", buildarch)
 		return
 	}
-	router := httprouter.New()
-	router.GET("/", index)
-	router.GET("/pid", pid)
-	router.GET("/api/notes/list", searchHandler)
-	router.POST("/api/note/content/:uid", getContent)
-	router.POST("/api/note/create", createNote)
-	router.DELETE("/api/note/:uid", deleteNote)
-	router.PUT("/api/note/:uid", updateNote)
-	router.NotFound = http.FileServer(assetFS())
 	if *browser {
 		openBrowser()
 	}

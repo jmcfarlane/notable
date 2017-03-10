@@ -98,10 +98,10 @@ func create(note Note) (Note, error) {
 	}
 	_, err = stmt.Exec(
 		note.Content,
+		note.Created,
 		note.Encrypted,
 		note.Subject,
 		note.Tags,
-		note.UID,
 		note.UID,
 		note.Updated)
 	if err != nil {
