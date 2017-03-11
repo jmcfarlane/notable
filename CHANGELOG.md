@@ -1,3 +1,7 @@
+## v0.0.3 / ...
+
+* Fix initial subject focus on note creation.
+
 ## v0.0.2 / 2017-03-10
 
 * Include the license in each release.

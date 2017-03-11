@@ -67,7 +67,7 @@ function(noteDetailTemplate, tabTemplate, Mousetrap) {
 
       // Track the tab, show it and set event handlers
       this._tab = this.getTab();
-      this._tab.on('shown.bs.modal', _.bind(this.shown, this)).tab('show')
+      this._tab.on('shown.bs.tab', _.bind(this.shown, this)).tab('show');
       this.$('.subject input').on('keyup', _.bind(this.onSubjectChange, this));
       return this;
     },
