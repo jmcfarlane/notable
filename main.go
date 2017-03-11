@@ -24,6 +24,7 @@ var (
 	buildhash     string
 	buildstamp    string
 	builduser     string
+	buildversion  string
 )
 
 // This is the application itself
@@ -97,6 +98,7 @@ func init() {
 
 func main() {
 	if *version {
+		fmt.Printf("Version:\t%s\n", buildversion)
 		fmt.Printf("Build time:\t%s\n", buildstamp)
 		fmt.Printf("Build user:\t%s@%s\n", builduser, buildhash)
 		fmt.Printf("Compiler:\t%s\n", buildcompiler)
