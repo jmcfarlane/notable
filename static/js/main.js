@@ -42,7 +42,9 @@ require(
       collection: new NotesCollection(),
       el: $('#notes'),
       passwordModal: new PasswordModalView(),
-      searchModal: new SearchModalView()
+      searchModal: new SearchModalView({
+        el: $('#search'),
+      }).render()
     });
 	}
 );

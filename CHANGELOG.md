@@ -1,6 +1,7 @@
 ## v0.0.3 / ...
 
 * Fix initial subject focus on note creation.
+* Improve search performance by simplifying the widget.
 
 ## v0.0.2 / 2017-03-10
 
