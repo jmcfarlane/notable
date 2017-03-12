@@ -2,6 +2,7 @@
 
 * Fix initial subject focus on note creation.
 * Improve search performance by simplifying the widget.
+* Disable caching to allow clean upgrades, closes GH-25.
 
 ## v0.0.2 / 2017-03-10
 

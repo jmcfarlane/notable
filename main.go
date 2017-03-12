@@ -1,6 +1,6 @@
 package main
 
-//go:generate go-bindata-assetfs static/...
+//go:generate go-bindata-assetfs -modtime=1257894000 static/...
 
 import (
 	"flag"
@@ -74,6 +74,13 @@ func homeDirPath() string {
 	return usr.HomeDir
 }
 
+func withoutCaching(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Cache-Control", "no-cache")
+		next.ServeHTTP(w, r)
+	})
+}
+
 func getRouter() *httprouter.Router {
 	router := httprouter.New()
 	router.GET("/", index)
@@ -83,7 +90,7 @@ func getRouter() *httprouter.Router {
 	router.POST("/api/note/create", createNote)
 	router.DELETE("/api/note/:uid", deleteNote)
 	router.PUT("/api/note/:uid", updateNote)
-	router.NotFound = http.FileServer(assetFS())
+	router.NotFound = withoutCaching(http.FileServer(assetFS()))
 	return router
 }
 
