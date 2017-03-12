@@ -11,17 +11,13 @@ function(searchTemplate, Mousetrap) {
   return Backbone.View.extend({
 
     events: {
-      'keyup .search-query': 'search',
+      'keyup #search': 'search',
       'submit form': 'noop'
     },
 
     hide: function() {
       this.trigger('search', null);
-      this.$('input').animate({
-        right: '-450px'
-      }, 'fast', function() {
-        $(this).val('').blur();
-      });
+      this.$('input').blur();
     },
 
     initialize: function() {
@@ -60,12 +56,9 @@ function(searchTemplate, Mousetrap) {
     },
 
     show: function() {
+      this.$('input').focus();
       $('.nav-tabs a:first').tab('show');
-      this.$('input').animate({
-        right: '0px'
-      }, 'fast', function() {
-        $(this).focus();
-      });
+      return false
     },
 
     search: function() {

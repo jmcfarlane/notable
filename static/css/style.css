@@ -11,14 +11,6 @@
 .editor {
   margin-top: 12px;
 }
-
-.form-inline.search input {
-  position: relative;
-  right: -450px;
-  width: 400px;
-  padding: 2px;
-}
-
 .note-row:hover {
   cursor: pointer;
 }
@@ -27,12 +19,8 @@
   margin-top: -4px
 }
 
-.search-container {
-  overflow: hidden;
-  position: absolute;
-  right: 85px;
-  top: 4px;
-  width: 400px;
+#search {
+  margin-right: 6px;
 }
 
 .table {
