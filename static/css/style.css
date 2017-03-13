@@ -1,7 +1,8 @@
-.alert.top-right {
+.alert {
   position: fixed;
-  right: 2px;
-  top: 2px;
+  right: 12px;
+  bottom: 0;
+  z-index: 1000;
 }
 
 .container-fluid {
