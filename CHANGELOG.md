@@ -3,6 +3,7 @@
 * Fix initial subject focus on note creation.
 * Improve search performance by simplifying the widget.
 * Disable caching to allow clean upgrades, closes [GH-25](https://github.com/jmcfarlane/notable/issues/25).
+* Move alerts to the lower right and use upstream class name.
 
 ## v0.0.2 / 2017-03-10
 
