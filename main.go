@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"strconv"
+	"time"
 
 	"github.com/julienschmidt/httprouter"
 
@@ -29,6 +30,7 @@ var (
 
 // This is the application itself
 var router = getRouter()
+var booted = time.Now()
 
 // Flags
 var (
@@ -86,6 +88,7 @@ func getRouter() *httprouter.Router {
 	router.GET("/", index)
 	router.GET("/pid", pid)
 	router.GET("/api/notes/list", searchHandler)
+	router.GET("/api/version", versionHandler)
 	router.POST("/api/note/content/:uid", getContent)
 	router.POST("/api/note/create", createNote)
 	router.DELETE("/api/note/:uid", deleteNote)

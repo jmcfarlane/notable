@@ -1,0 +1,21 @@
+<div class="row">
+  <div class="col-lg-2">Notable</div>
+  <div class="col-lg-10">
+    <a href="https://github.com/jmcfarlane/notable/releases/tag/<%= model.Version %>">
+      <%= model.Version %>
+    </a>
+    (has been up for <%= model.Uptime %>)
+  </div>
+</div>
+<div class="row">
+  <div class="col-lg-2">Build</div>
+  <div class="col-lg-10"><%= model.User %>@<%= model.Hash %>, <%= model.Arch %></div>
+</div>
+<div class="row">
+  <div class="col-lg-2">Compiled</div>
+  <div class="col-lg-10"><%= model.Date %></div>
+</div>
+<div class="row">
+  <div class="col-lg-2">Compiler</div>
+  <div class="col-lg-10"><%= model.Compiler %></div>
+</div>

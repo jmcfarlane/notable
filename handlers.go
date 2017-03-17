@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/julienschmidt/httprouter"
 
@@ -88,4 +89,24 @@ func updateNote(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		fmt.Fprintf(w, err.Error())
 	}
 	fmt.Fprintf(w, noteJSON)
+}
+
+func versionHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	json.NewEncoder(w).Encode(struct {
+		Arch     string
+		Compiler string
+		Date     string
+		Hash     string
+		Uptime   string
+		User     string
+		Version  string
+	}{
+		buildarch,
+		buildcompiler,
+		buildstamp,
+		buildhash,
+		time.Since(booted).String(),
+		builduser,
+		buildversion,
+	})
 }
