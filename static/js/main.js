@@ -32,19 +32,21 @@ require(
    'views/table',
    'views/password',
    'views/search',
+   'views/usage',
    'jquery',
    'underscore',
    'backbone',
    'bootstrap'
   ],
-	function(NotesCollection, NotesTableView, PasswordModalView, SearchModalView) {
+	function(NotesCollection, NotesTableView, PasswordModalView, SearchModalView, UsageModalView) {
     var notesView = new NotesTableView({
       collection: new NotesCollection(),
       el: $('#notes'),
       passwordModal: new PasswordModalView(),
       searchModal: new SearchModalView({
         el: $('#search'),
-      }).render()
+      }).render(),
+      usageModal: new UsageModalView()
     });
 	}
 );

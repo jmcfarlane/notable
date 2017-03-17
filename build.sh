@@ -18,6 +18,9 @@ rm -rf target
 mkdir -p target/notable-${TAG}.darwin-amd64
 mkdir -p target/notable-${TAG}.linux-amd64
 
+# Build static assets
+go generate
+
 # Build for each supported arch
 GOOS=darwin GOARCH=amd64 go build -ldflags "$flags" \
     -o target/notable-${TAG}.darwin-amd64/notable

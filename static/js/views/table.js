@@ -23,6 +23,7 @@ function(Backbone,
       this.collection.on('reset', this.render, this);
       this.collection.fetch();
       $('body').append(this.options.passwordModal.render().el);
+      $('body').append(this.options.usageModal.render().el);
       $('.create').on('click', _.bind(this.createNote, this));
       Mousetrap.bind('ctrl+c', _.bind(this.createNote, this));
       Mousetrap.bind('j', _.bind(this.selectNextNote, this));
