@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -21,7 +22,7 @@ const (
 )
 
 type Mock struct {
-	dbPath string
+	db     Backend
 	server *httptest.Server
 }
 
@@ -49,18 +50,30 @@ func setup(t *testing.T) Mock {
 	if !assert.Nil(t, err, "Error creating temp file") {
 		return Mock{}
 	}
-	*dbPath = file.Name()
-	createSchema()
+
+	// Set the `db` global to a test backend
+	backend := os.Getenv("BACKEND")
+	switch backend {
+	case "sqlite3":
+		db, err = NewSqlite3(file.Name())
+	case "boltdb":
+		db, err = NewBoltDB(file.Name())
+	default:
+		log.Panic("Please specify backend to test via: env BACKEND")
+	}
+	fmt.Println("TESTING BACKEND:", backend)
+	db.createSchema()
 	return Mock{
-		dbPath: *dbPath,
+		db:     db,
 		server: httptest.NewServer(router),
 	}
 }
 
 func tearDown(mock Mock) {
 	defer mock.server.Close()
-	os.Remove(mock.dbPath)
-	log.Warnf("Deleted temp db path=%s", mock.dbPath)
+	mock.db.close()
+	os.Remove(mock.db.dbFilePath())
+	log.Warnf("Deleted temp db path=%s", mock.db.dbFilePath())
 }
 
 func TestIndexHandler(t *testing.T) {

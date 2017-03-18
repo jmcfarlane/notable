@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"encoding/gob"
 	"encoding/json"
 	"time"
 
@@ -30,6 +32,13 @@ type Note struct {
 // Notes is a collection of Note objects
 type Notes []Note
 
+// timeSorter sorts notes lines by last updated
+type timeSorter Notes
+
+func (a timeSorter) Len() int           { return len(a) }
+func (a timeSorter) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a timeSorter) Less(i, j int) bool { return a[i].Updated < a[j].Updated }
+
 // ToJSON converts a (filtered) note into json fields filtered:
 // - Content: For performance reasons
 // - Password: For security reasons
@@ -42,6 +51,24 @@ func (note Note) ToJSON() (string, error) {
 		return "", err
 	}
 	return string(noteJSON), err
+}
+
+// FromBytes converts encoding.Gob bytes into a Note
+func (note *Note) FromBytes(b []byte) error {
+	buf := bytes.NewBuffer(b)
+	dec := gob.NewDecoder(buf)
+	return dec.Decode(&note)
+}
+
+// ToBytes converts a raw note into encoding.Gob bytes
+func (note Note) ToBytes() ([]byte, error) {
+	buf := new(bytes.Buffer)
+	enc := gob.NewEncoder(buf)
+	err := enc.Encode(note)
+	if err != nil {
+		return []byte{}, err
+	}
+	return buf.Bytes(), nil
 }
 
 // The current timestamp in time.RFC3339 format

@@ -31,15 +31,20 @@ var (
 // This is the application itself
 var router = getRouter()
 var booted = time.Now()
+var db Backend
+var err error
 
 // Flags
 var (
-	port    = flag.Int("port", 8080, "Interface and port to listen on")
-	dbPath  = flag.String("db", "", "File system path to db file")
+	bind   = flag.String("bind", "localhost", "Bind address")
+	dbPath = flag.String("db", "", "File system path to db file")
+
+	port = flag.Int("port", 8080, "Interface and port to listen on")
+
 	browser = flag.Bool("browser", true, "Open a web browser")
 	daemon  = flag.Bool("daemon", true, "Run as a daemon")
 	restart = flag.Bool("restart", false, "Restart if already running")
-	bind    = flag.String("bind", "localhost", "Bind address")
+	useBolt = flag.Bool("use.bolt", false, "Use the new BoltDB backend")
 	version = flag.Bool("version", false, "Print program version information")
 )
 
@@ -100,10 +105,8 @@ func getRouter() *httprouter.Router {
 func init() {
 	flag.Parse()
 	if *dbPath == "" {
-		*dbPath = filepath.Join(homeDirPath(), ".notable/notes.sqlite3")
+		*dbPath = filepath.Join(homeDirPath(), ".notable/notes.db")
 	}
-	log.Infof("Database path=%s", *dbPath)
-	createSchema()
 }
 
 func main() {
@@ -115,6 +118,16 @@ func main() {
 		fmt.Printf("Arch:\t\t%s\n", buildarch)
 		return
 	}
+	if *useBolt || runtime.GOOS == "darwin" {
+		db, err = NewBoltDB(*dbPath)
+	} else {
+		db, err = NewSqlite3(*dbPath)
+	}
+	defer db.close()
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Infof("Using backend %s", db)
 	if *browser {
 		openBrowser()
 	}

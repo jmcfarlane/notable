@@ -4,34 +4,50 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"os"
-	"path/filepath"
 
 	// Imported only for it's side effect
+
 	_ "github.com/mattn/go-sqlite3"
 
 	log "github.com/Sirupsen/logrus"
 )
 
-// connection to a sqlite database (currently hard coded for testing)
-func connection() (*sql.DB, error) {
-	db, err := sql.Open("sqlite3", *dbPath)
-	if err != nil {
-		log.Panicf("Unable to open database path=%s, err=%v", *dbPath, err)
-	}
-	return db, err
+// Sqlite3 backend
+type Sqlite3 struct {
+	Engine *sql.DB
+	Path   string
+	Type   string
 }
 
-// Create schema
-func createSchema() {
-	dbDir := filepath.Dir(*dbPath)
-	if _, err := os.Stat(dbDir); os.IsNotExist(err) {
-		os.MkdirAll(dbDir, 0777)
-		log.Infof("Created directory path=%s", dbDir)
+// NewSqlite3 engine instance
+func NewSqlite3(path string) (*Sqlite3, error) {
+	db := &Sqlite3{Path: path, Type: "Sqlite3"}
+	_, fileExisted := createParentDirs(path)
+	engine, err := sql.Open("sqlite3", path)
+	if err != nil {
+		return db, fmt.Errorf(connectionErrFmt, "sqlite3", path, err)
 	}
-	db, _ := connection()
-	defer db.Close()
-	stmt, err := db.Prepare(`
+	db.Engine = engine
+	if !fileExisted {
+		db.createSchema()
+	}
+	return db, nil
+}
+
+func (db *Sqlite3) String() string {
+	return fmt.Sprintf("type=%s path=%s", db.Type, db.Path)
+}
+
+func (db *Sqlite3) close() {
+	db.Engine.Close()
+}
+
+func (db *Sqlite3) dbFilePath() string {
+	return db.Path
+}
+
+func (db *Sqlite3) createSchema() {
+	stmt, err := db.Engine.Prepare(`
 		CREATE TABLE notes (
 			uid string,
 			created string,
@@ -43,7 +59,7 @@ func createSchema() {
 		);`)
 	if err != nil {
 		if err.Error() != "table notes already exists" {
-			log.Panicf("Unable to prepare schema path=%s, err=%v", *dbPath, err)
+			log.Panicf("Unable to prepare schema path=%s, err=%v", db.Path, err)
 		}
 		return
 	}
@@ -51,18 +67,15 @@ func createSchema() {
 	if err != nil {
 		log.Errorf("Unable to create schema err=%v", err)
 	}
-	log.Infof("Schema created path=%s", *dbPath)
-
+	log.Infof("Schema created path=%s", db.Path)
 }
 
 // Removes a note from storage
-func deleteByUID(uid string) error {
+func (db *Sqlite3) deleteByUID(uid string) error {
 	if uid == "" {
 		return errors.New("Deletion uid must not be an empty string")
 	}
-	db, _ := connection()
-	defer db.Close()
-	stmt, err := db.Prepare(`DELETE FROM notes WHERE uid=?`)
+	stmt, err := db.Engine.Prepare(`DELETE FROM notes WHERE uid=?`)
 	if err != nil {
 		log.Error(err)
 		return err
@@ -78,16 +91,13 @@ func deleteByUID(uid string) error {
 }
 
 // Create a note
-func create(note Note) (Note, error) {
+func (db *Sqlite3) create(note Note) (Note, error) {
 	note, err := persistable(note)
 	if err != nil {
 		panic(err)
 	}
-	db, _ := connection()
-	defer db.Close()
-
 	// No sql injection please
-	stmt, err := db.Prepare(`
+	stmt, err := db.Engine.Prepare(`
       INSERT INTO notes
         (content, created, encrypted, subject, tags, uid, updated)
 	  VALUES
@@ -113,10 +123,8 @@ func create(note Note) (Note, error) {
 }
 
 // Fetch content (which might be encrypted) by uid.
-func getContentByUID(uid string, password string) (string, error) {
-	db, _ := connection()
-	defer db.Close()
-	rows, _ := db.Query("SELECT content FROM notes WHERE uid=?", uid)
+func (db *Sqlite3) getContentByUID(uid string, password string) (string, error) {
+	rows, _ := db.Engine.Query("SELECT content FROM notes WHERE uid=?", uid)
 	var notes Notes
 	for rows.Next() {
 		var note Note
@@ -134,11 +142,33 @@ func getContentByUID(uid string, password string) (string, error) {
 	return "", fmt.Errorf("No note found")
 }
 
-// Search all notes as filtered by the provided query
-func search(query string) Notes {
-	db, _ := connection()
-	defer db.Close()
-	rows, _ := db.Query(`
+func (db *Sqlite3) fetchAll() Notes {
+	rows, _ := db.Engine.Query(`
+		SELECT
+			content, created, encrypted, subject, tags, uid, updated
+		FROM
+			notes
+		`)
+	defer rows.Close()
+
+	var notes Notes
+	for rows.Next() {
+		var note Note
+		rows.Scan(
+			&note.Content,
+			&note.Created,
+			&note.Encrypted,
+			&note.Subject,
+			&note.Tags,
+			&note.UID,
+			&note.Updated)
+		notes = append(notes, note)
+	}
+	return notes
+}
+
+func (db *Sqlite3) search(query string) Notes {
+	rows, _ := db.Engine.Query(`
 		SELECT
 			created, encrypted, subject, tags, uid, updated
 		FROM
@@ -158,21 +188,16 @@ func search(query string) Notes {
 			&note.Updated)
 		notes = append(notes, note)
 	}
-
 	return notes
 }
 
-// Update a note
-func update(note Note) (Note, error) {
+func (db *Sqlite3) update(note Note) (Note, error) {
 	note, err := persistable(note)
 	if err != nil {
 		panic(err)
 	}
-	db, _ := connection()
-	defer db.Close()
-
 	// No sql injection please
-	stmt, err := db.Prepare(`
+	stmt, err := db.Engine.Prepare(`
       UPDATE notes SET
         content = ?,
         encrypted = ?,

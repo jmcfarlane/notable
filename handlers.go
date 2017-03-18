@@ -19,7 +19,7 @@ func createNote(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	payload, _ := ioutil.ReadAll(r.Body)
 	note := Note{}
 	json.Unmarshal(payload, &note)
-	note, err := create(note)
+	note, err := db.create(note)
 	if err != nil {
 		fmt.Fprintf(w, err.Error())
 	}
@@ -38,7 +38,7 @@ func pid(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 // Remove a note from storage
 func deleteNote(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	outcome := apiResponse{}
-	err := deleteByUID(ps.ByName("uid"))
+	err := db.deleteByUID(ps.ByName("uid"))
 	if err != nil {
 		outcome.Success = false
 		outcome.Message = err.Error()
@@ -52,7 +52,7 @@ func deleteNote(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 // Fetch note content from the database by it's uid.
 func getContent(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	password := r.PostFormValue("password")
-	content, err := getContentByUID(ps.ByName("uid"), password)
+	content, err := db.getContentByUID(ps.ByName("uid"), password)
 	if smellsEncrypted(content) == true {
 		w.WriteHeader(http.StatusForbidden)
 		fmt.Fprintf(w, "Nope, try again")
@@ -67,7 +67,7 @@ func getContent(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 // Search for notes based on an optional querystring parameter
 func searchHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	notes := search("")
+	notes := db.search("")
 	thing, err := json.MarshalIndent(notes, "", "\t")
 	if err != nil {
 		fmt.Fprintf(w, "[]")
@@ -80,7 +80,7 @@ func updateNote(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	payload, _ := ioutil.ReadAll(r.Body)
 	note := Note{}
 	json.Unmarshal(payload, &note)
-	note, err := update(note)
+	note, err := db.update(note)
 	if err != nil {
 		fmt.Fprintf(w, err.Error())
 	}
