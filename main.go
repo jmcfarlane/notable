@@ -7,13 +7,13 @@ import (
 	"fmt"
 	"net/http"
 	"os/exec"
-	"os/user"
 	"path/filepath"
 	"runtime"
 	"strconv"
 	"time"
 
 	"github.com/julienschmidt/httprouter"
+	homedir "github.com/mitchellh/go-homedir"
 
 	log "github.com/Sirupsen/logrus"
 )
@@ -74,11 +74,11 @@ func start(router *httprouter.Router) {
 }
 
 func homeDirPath() string {
-	usr, err := user.Current()
+	h, err := homedir.Expand("~/")
 	if err != nil {
 		log.Panic("Unable to determine user home directory")
 	}
-	return usr.HomeDir
+	return h
 }
 
 func withoutCaching(next http.Handler) http.Handler {
