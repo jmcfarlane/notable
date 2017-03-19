@@ -13,7 +13,7 @@ export DATE="$(head -n1 CHANGELOG.md | grep -E -o '[0-9]{4}-[0-9]{2}-[0-9]{2}')"
 
 # Find the Second file heading (because the first heading is removed,
 # the resulting offset is then adjusted by 1 line).
-offset=$(tail -n +2 CHANGELOG.md | grep -n '^##' | head -n1 | grep -E -o '^[0-9]+')
+offset=$(tail -n +2 CHANGELOG.md | grep -n '^## ' | head -n1 | grep -E -o '^[0-9]+')
 offset=$((offset-1))
 
 # Extract the description from this release as the "inner" first

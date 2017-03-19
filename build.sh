@@ -4,6 +4,7 @@ cd $(dirname $0)
 
 # The current version
 TAG="$(head -n1 CHANGELOG.md | grep -E -o 'v[^ ]+')"
+VERSION=$(echo $TAG | cut -c2-)
 
 # Provide args for the program to display via -version
 flags="-X main.buildarch=$(go version | cut -f 4 -d' ')
@@ -30,6 +31,11 @@ GOOS=linux GOARCH=amd64 go build -ldflags "$flags" \
 # Copy the license into each release binary
 cp LICENSE target/notable-${TAG}.darwin-amd64
 cp LICENSE target/notable-${TAG}.linux-amd64
+
+# Create a macos app bundle
+./app.sh target/notable-${TAG}.darwin-amd64/Notable $VERSION ./static/img/edit-paste.png
+cp target/notable-${TAG}.darwin-amd64/notable \
+    target/notable-${TAG}.darwin-amd64/Notable.app/Contents/MacOS/Notable
 
 # Build zip files for hosting on github
 cd target
