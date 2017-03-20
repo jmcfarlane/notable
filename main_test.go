@@ -151,6 +151,31 @@ func TestEncryptedNoteCreationContentFetchWithWrongPassword(t *testing.T) {
 	assert.NotEqual(t, expected.Content, string(content), "Got content back?")
 }
 
+func TestNoteDeletion(t *testing.T) {
+	mock := setup(t)
+	defer tearDown(mock)
+	_, got, code, err := createTestNote(mock, "")
+	fmt.Println("UID:", got.UID)
+	assert.Nil(t, err, "Should be no http error")
+	assert.Equal(t, http.StatusOK, code, "Response code != 200")
+	req, err := http.NewRequest("DELETE", mock.server.URL+"/api/note/"+got.UID, nil)
+	assert.Nil(t, err, "Should be no error creating a new request")
+	resp, err := http.DefaultClient.Do(req)
+	content, err := ioutil.ReadAll(resp.Body)
+	assert.Nil(t, err, "Should be no error reading the response")
+	outcome := apiResponse{}
+	err = json.Unmarshal(content, &outcome)
+	assert.Nil(t, err, "Should be no error unmarshaling the response")
+	assert.Equal(t, true, outcome.Success)
+	resp, err = http.Get(mock.server.URL + "/api/notes/list")
+	assert.Nil(t, err, "Should be no http error")
+	content, err = ioutil.ReadAll(resp.Body)
+	assert.Nil(t, err, "Should be not be a response error")
+	notes := []Note{}
+	json.Unmarshal(content, &notes)
+	assert.Equal(t, 0, len(notes), "Should be no notes as the only one was deleted")
+}
+
 func TestNoteListing(t *testing.T) {
 	mock := setup(t)
 	defer tearDown(mock)
