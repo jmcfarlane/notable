@@ -65,7 +65,11 @@ func (db *BoltDB) createSchema() {
 }
 
 func (db *BoltDB) deleteByUID(uid string) error {
-	return nil
+	err = db.Engine.Update(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket(db.NotesBucket)
+		return bucket.Delete([]byte(uid))
+	})
+	return err
 }
 
 func (db *BoltDB) getContentByUID(uid string, password string) (string, error) {
