@@ -13,10 +13,7 @@ import (
 )
 
 // Daemonize (please use something like upstart, daemontools, systemd)
-func daemonize() bool {
-	if running() {
-		return true
-	}
+func daemonize() {
 	args := os.Args[1:]
 	i := 0
 	for ; i < len(args); i++ {
@@ -31,7 +28,6 @@ func daemonize() bool {
 	cmd.Start()
 	log.Infof("Started pid=%v", cmd.Process.Pid)
 	os.Exit(0)
-	return false
 }
 
 func running() bool {
