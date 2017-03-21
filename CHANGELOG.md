@@ -1,4 +1,4 @@
-## v0.0.3 / ...
+## v0.0.3 / 2017-03-20
 
 This release adds support for a new
 [BoltDB](https://github.com/boltdb/bolt) backend.  This backend was
