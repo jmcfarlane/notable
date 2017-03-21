@@ -118,23 +118,24 @@ func main() {
 		fmt.Printf("Arch:\t\t%s\n", buildarch)
 		return
 	}
+	if *browser {
+		openBrowser()
+	}
+	if running() {
+		return
+	}
 	if *useBolt || runtime.GOOS == "darwin" {
 		db, err = NewBoltDB(*dbPath)
 	} else {
 		db, err = NewSqlite3(*dbPath)
 	}
-	defer db.close()
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer db.close()
 	log.Infof("Using backend %s", db)
-	if *browser {
-		openBrowser()
-	}
 	if *daemon {
-		if !daemonize() {
-			start(router)
-		}
+		daemonize()
 	} else {
 		start(router)
 	}

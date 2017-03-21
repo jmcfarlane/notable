@@ -38,6 +38,7 @@ Additional notes:
 * The tests have been updated to run twice, once for each backend. The
   intention being to maintain feature parity until a given backend is
   retired.
+* Simplfy daemonization logic.
 
 
 ## v0.0.2 / 2017-03-10
