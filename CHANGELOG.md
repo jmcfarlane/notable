@@ -39,6 +39,7 @@ Additional notes:
   intention being to maintain feature parity until a given backend is
   retired.
 * Simplfy daemonization logic.
+* Add ability to restart via sending a `SIGUSR2` signal.
 
 
 ## v0.0.2 / 2017-03-10
