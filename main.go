@@ -5,11 +5,15 @@ package main
 import (
 	"flag"
 	"fmt"
+	"net"
 	"net/http"
+	"os"
 	"os/exec"
+	"os/signal"
 	"path/filepath"
 	"runtime"
 	"strconv"
+	"syscall"
 	"time"
 
 	"github.com/julienschmidt/httprouter"
@@ -69,8 +73,23 @@ func openBrowser() {
 }
 
 func start(router *httprouter.Router) {
-	log.Infof("Listening on %s:%v", *bind, *port)
-	log.Fatal(http.ListenAndServe(":"+strconv.Itoa(*port), router))
+	listener, err := net.Listen("tcp", fmt.Sprintf("%s:%d", *bind, *port))
+	log.Infof("Listening on %s:%v pid=%d", *bind, *port, os.Getpid())
+	if err != nil {
+		log.Fatal(err)
+	}
+	go func(listener net.Listener) {
+		sig := make(chan os.Signal, 1)
+		signal.Notify(sig, syscall.SIGUSR2)
+		<-sig
+		listener.Close()
+		cmd := exec.Command(os.Args[0], os.Args[2:]...)
+		cmd.Start()
+		log.Infof("Replacement started pid=%v", cmd.Process.Pid)
+		os.Exit(0)
+	}(listener)
+	http.Serve(listener, router)
+	time.Sleep(time.Second * 5)
 }
 
 func homeDirPath() string {
