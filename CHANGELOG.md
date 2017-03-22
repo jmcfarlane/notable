@@ -2,6 +2,7 @@
 
 * Fixed styling of "wrong password" modal.
 * Remove password and close buttons from tab index to optimize on the access pattern.
+* Start publishing a docker container.
 
 ## v0.0.3 / 2017-03-20
 

@@ -1,6 +1,6 @@
 #!/bin/bash -ex
 
-cd $(dirname $0)
+cd $(dirname $0)/..
 
 # The current version
 TAG="$(head -n1 CHANGELOG.md | grep -E -o 'v[^ ]+')"
@@ -22,18 +22,20 @@ mkdir -p target/notable-${TAG}.linux-amd64
 # Build static assets
 go generate
 
-# Build for each supported arch
-GOOS=darwin GOARCH=amd64 go build -ldflags "$flags" \
-    -o target/notable-${TAG}.darwin-amd64/notable
-GOOS=linux GOARCH=amd64 go build -ldflags "$flags" \
-    -o target/notable-${TAG}.linux-amd64/notable
-
-# Copy the license into each release binary
-cp LICENSE target/notable-${TAG}.darwin-amd64
+# Linux
+GOOS=linux GOARCH=amd64 go build -ldflags "$flags" -o target/notable-${TAG}.linux-amd64/notable
 cp LICENSE target/notable-${TAG}.linux-amd64
 
-# Create a macos app bundle
-./app.sh target/notable-${TAG}.darwin-amd64/Notable $VERSION ./static/img/edit-paste.png
+if [ "$DOCKER" == "true" ]; then
+    exit 0
+fi
+
+# Macos
+GOOS=darwin GOARCH=amd64 go build -ldflags "$flags" -o target/notable-${TAG}.darwin-amd64/notable
+cp LICENSE target/notable-${TAG}.darwin-amd64
+
+# Macos: create a macos app bundle
+./scripts/app.sh target/notable-${TAG}.darwin-amd64/Notable $VERSION ./static/img/edit-paste.png
 cp target/notable-${TAG}.darwin-amd64/notable \
     target/notable-${TAG}.darwin-amd64/Notable.app/Contents/MacOS/Notable
 
