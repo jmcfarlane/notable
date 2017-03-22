@@ -1,3 +1,7 @@
+## v0.0.4 / ...
+
+* Fixed styling of "wrong password" modal.
+
 ## v0.0.3 / 2017-03-20
 
 This release adds support for a new
