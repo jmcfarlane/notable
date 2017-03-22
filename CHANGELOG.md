@@ -1,4 +1,4 @@
-## v0.0.4 / ...
+## v0.0.4 / 2017-03-21
 
 * Fixed styling of "wrong password" modal.
 * Remove password and close buttons from tab index to optimize on the access pattern.
