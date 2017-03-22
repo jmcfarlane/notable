@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+cd $(dirname $0)/..
+
 # App path and name
 app_path=$1
 app_name=$(basename "$app_path")

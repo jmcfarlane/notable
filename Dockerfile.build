@@ -1,0 +1,16 @@
+FROM golang:1.8.0-alpine
+
+# Build dependencies
+RUN apk add --update bash gcc git musl-dev
+
+ENV PROJECT /go/src/github.com/jmcfarlane/notable
+
+ADD . $PROJECT
+WORKDIR $PROJECT
+
+RUN go env
+RUN go version
+RUN go get github.com/jteeuwen/go-bindata/...
+RUN go get github.com/elazarl/go-bindata-assetfs/...
+RUN go get -t ./...
+RUN DOCKER=true ./scripts/build.sh
