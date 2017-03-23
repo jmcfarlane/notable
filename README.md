@@ -2,33 +2,26 @@
 
 [![Build Status](https://travis-ci.org/jmcfarlane/notable.svg?branch=master)](https://github.com/jmcfarlane/notable/tree/master)
 
-A **very** simple note taking application.
-
-## Dependencies
-
-- None, a single binary.
+A **very** simple note taking application. It has no dependencies and
+ships as a static binary.
 
 ## Installation
 
+### Linux or MacOS
+
+Download and extract the latest
+[release](https://github.com/jmcfarlane/notable/releases) version.
+Both include a static binary but the MacOS version also
+includes an [app bundle](https://en.wikipedia.org/wiki/Bundle_(macOS)).
+
+### Compile from source
+
 ```
 go get -u github.com/jmcfarlane/notable
-```
-
-## Usage
-
-```
 notable
 ```
 
-## Docker usage
-
-Demo:
-
-```
-docker run -p 8080:8080 jmcfarlane/notable
-```
-
-Real usage, with local storage:
+### Docker
 
 ```
 docker run -p 8080:8080 -d -v ~/.notable:/root/.notable jmcfarlane/notable:latest
@@ -36,25 +29,12 @@ docker run -p 8080:8080 -d -v ~/.notable:/root/.notable jmcfarlane/notable:lates
 
 ## Features
 
-- **Secure**
-  Nothing leaves your computer unless you want it to.
-
-- **Encrypted**
-  Individual notes can be encrypted if you want them to be.
-
-- **Simple**
-  Nothing fancy, it's just a basic web page.
-
-- **Standalone**
-  Even though it's a webpage, it has no runtime dependencies on the
-  internet.  You can use it on an airplane.
-
-- **Distributed**
-  If you want to share your notes across computers, you can put the
-  sqlite db on Dropbox or the like, nothing to it.
-
-- **Cross platform**
-  It works on Linux and Mac (it's not been tested on windows).
-
-- **Keyboard friendly**
-  Where possible keyboard shortcuts are available.
+- [x] Secure: Everything is local to your computer.
+- [x] Private: Each note can be encrypted.
+- [x] Simple: Nothing fancy. It's just a basic web page.
+- [x] Standalone: You can use it on an airplane.
+- [x] Cross platform:
+    - [x] Linux
+    - [x] MacOS
+    - [ ] Windows
+- [x] Keyboard friendly.
