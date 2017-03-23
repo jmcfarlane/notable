@@ -48,7 +48,7 @@ var (
 	browser = flag.Bool("browser", true, "Open a web browser")
 	daemon  = flag.Bool("daemon", true, "Run as a daemon")
 	restart = flag.Bool("restart", false, "Restart if already running")
-	useBolt = flag.Bool("use.bolt", false, "Use the new BoltDB backend")
+	useBolt = flag.Bool("use.bolt", true, "Use the new BoltDB backend")
 	version = flag.Bool("version", false, "Print program version information")
 )
 

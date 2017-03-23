@@ -1,3 +1,7 @@
+## v0.0.5 / 2017-03-22
+
+* Make BoltDB the default.
+
 ## v0.0.4 / 2017-03-21
 
 * Fixed styling of "wrong password" modal.
