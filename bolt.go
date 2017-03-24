@@ -72,7 +72,7 @@ func (db *BoltDB) deleteByUID(uid string) error {
 	return err
 }
 
-func (db *BoltDB) getContentByUID(uid string, password string) (string, error) {
+func (db *BoltDB) getNoteByUID(uid string, password string) (Note, error) {
 	var note Note
 	err := db.Engine.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(db.NotesBucket)
@@ -80,12 +80,9 @@ func (db *BoltDB) getContentByUID(uid string, password string) (string, error) {
 		return note.FromBytes(v)
 	})
 	if err != nil {
-		return "", err
+		return note, err
 	}
-	if password != "" {
-		return decrypt(note.Content, password)
-	}
-	return note.Content, nil
+	return decryptNote(note, password)
 }
 
 func (db *BoltDB) migrate() {

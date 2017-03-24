@@ -28,7 +28,6 @@ func TestDecryptionReturnsOriginal(t *testing.T) {
 		decrypted, err := decrypt(encrypted, tt.Password)
 		assert.Nil(t, err, "Should not be an error calling decrypt")
 		msg := fmt.Sprintf("Decryption should return the original (%s)", tt.Description)
-		fmt.Printf("Testing password description=%s\n", tt.Description)
 		assert.Equal(t, decrypted, original, msg)
 	}
 	password := "my secret password"

@@ -1,6 +1,7 @@
-## v0.0.6 / ...
+## v0.0.6 / 2017-03-23
 
 * Improve error handling during encryption and decryption.
+* Fix security regression in new BoltDB backend.
 
 ## v0.0.5 / 2017-03-22
 
