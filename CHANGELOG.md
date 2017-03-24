@@ -1,3 +1,7 @@
+## v0.0.6 / ...
+
+* Improve error handling during encryption and decryption.
+
 ## v0.0.5 / 2017-03-22
 
 * Make BoltDB the default.

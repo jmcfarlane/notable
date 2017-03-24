@@ -23,15 +23,19 @@ var samplePasswords = []struct {
 
 func TestDecryptionReturnsOriginal(t *testing.T) {
 	for _, tt := range samplePasswords {
-		encrypted := encrypt(original, tt.Password)
-		decrypted, _ := decrypt(encrypted, tt.Password)
+		encrypted, err := encrypt(original, tt.Password)
+		assert.Nil(t, err, "Should not be an error calling encrypt")
+		decrypted, err := decrypt(encrypted, tt.Password)
+		assert.Nil(t, err, "Should not be an error calling decrypt")
 		msg := fmt.Sprintf("Decryption should return the original (%s)", tt.Description)
 		fmt.Printf("Testing password description=%s\n", tt.Description)
 		assert.Equal(t, decrypted, original, msg)
 	}
 	password := "my secret password"
-	encrypted := encrypt(original, password)
-	decrypted, _ := decrypt(encrypted, password)
+	encrypted, err := encrypt(original, password)
+	assert.Nil(t, err, "Should not be an error calling encrypt")
+	decrypted, err := decrypt(encrypted, password)
+	assert.Nil(t, err, "Should not be an error calling decrypt")
 	assert.Equal(t, decrypted, original, "Decryption should return the original")
 
 }
