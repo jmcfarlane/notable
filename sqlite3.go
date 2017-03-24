@@ -122,8 +122,7 @@ func (db *Sqlite3) create(note Note) (Note, error) {
 	return note, nil
 }
 
-// Fetch content (which might be encrypted) by uid.
-func (db *Sqlite3) getContentByUID(uid string, password string) (string, error) {
+func (db *Sqlite3) getNoteByUID(uid string, password string) (Note, error) {
 	rows, _ := db.Engine.Query("SELECT content FROM notes WHERE uid=?", uid)
 	var notes Notes
 	for rows.Next() {
@@ -131,15 +130,10 @@ func (db *Sqlite3) getContentByUID(uid string, password string) (string, error) 
 		rows.Scan(&note.Content)
 		notes = append(notes, note)
 	}
-	if len(notes) == 1 {
-		content := notes[0].Content
-		if password == "" {
-			return content, nil
-		}
-		return decrypt(content, password)
+	if len(notes) != 1 {
+		return Note{}, fmt.Errorf("No note found")
 	}
-
-	return "", fmt.Errorf("No note found")
+	return decryptNote(notes[0], password)
 }
 
 func (db *Sqlite3) fetchAll() Notes {

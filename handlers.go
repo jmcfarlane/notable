@@ -52,7 +52,7 @@ func deleteNote(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 // Fetch note content from the database by it's uid.
 func getContent(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	password := r.PostFormValue("password")
-	content, err := db.getContentByUID(ps.ByName("uid"), password)
+	content, err := getContentByUID(db, ps.ByName("uid"), password)
 	if smellsEncrypted(content) == true {
 		w.WriteHeader(http.StatusForbidden)
 		fmt.Fprintf(w, "Nope, try again")

@@ -62,6 +62,9 @@ func (note *Note) FromBytes(b []byte) error {
 
 // ToBytes converts a raw note into encoding.Gob bytes
 func (note Note) ToBytes() ([]byte, error) {
+	// Never include the password in a byte representation
+	note.Password = ""
+
 	buf := new(bytes.Buffer)
 	enc := gob.NewEncoder(buf)
 	err := enc.Encode(note)

@@ -135,6 +135,16 @@ func TestEncryptedNoteCreationContentFetch(t *testing.T) {
 	assert.Equal(t, expected.Content, string(content), "Did not get the content back")
 }
 
+func TestEncryptedNoteCreationExcludesPassword(t *testing.T) {
+	mock := setup(t)
+	defer tearDown(mock)
+	password := "fancy-password"
+	_, got, _, _ := createTestNote(mock, password)
+	persistedNote, err := db.getNoteByUID(got.UID, password)
+	assert.Nil(t, err, "Should be no error fetching the note")
+	assert.Equal(t, "", persistedNote.Password, "Passwords should not be persisted!")
+}
+
 func TestEncryptedNoteCreationContentFetchWithWrongPassword(t *testing.T) {
 	mock := setup(t)
 	defer tearDown(mock)
