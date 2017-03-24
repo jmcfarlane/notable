@@ -6,7 +6,6 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/base64"
-	"fmt"
 	"io"
 	"regexp"
 	"strings"
@@ -28,17 +27,13 @@ var (
 	encryptedRE = regexp.MustCompile(`[^\x00-\x7F]`)
 )
 
-func handleError(err error) {
-	if err != nil {
-		fmt.Println(err)
-	}
-}
-
 // Decrypt a string given the provided password
 func decrypt(content string, password string) (string, error) {
 	// Base64 decode the string
 	decoded, err := base64.StdEncoding.DecodeString(content)
-	handleError(err)
+	if err != nil {
+		return "", err
+	}
 
 	// Extract the iv and the encrypted cipher
 	iv := decoded[:bits.IV]
@@ -46,7 +41,9 @@ func decrypt(content string, password string) (string, error) {
 
 	// Create the aes thingy
 	aesBlock, err := aes.NewCipher(passwordHash(password))
-	handleError(err)
+	if err != nil {
+		return "", err
+	}
 
 	// Create the decryptor and decrypt payload with it
 	decrypter := cipher.NewCBCDecrypter(aesBlock, iv)
@@ -56,19 +53,22 @@ func decrypt(content string, password string) (string, error) {
 }
 
 // Encrypt a string given the provided password
-func encrypt(content string, password string) string {
+func encrypt(content string, password string) (string, error) {
 	key := passwordHash(password)
 	block, err := aes.NewCipher(key)
-	handleError(err)
+	if err != nil {
+		return "", err
+	}
 	padded := pad(content)
 	ciphertext := make([]byte, aes.BlockSize+len(padded))
 	iv := ciphertext[:aes.BlockSize]
-	if _, err := io.ReadFull(rand.Reader, iv); err != nil {
-		panic(err)
+	_, err = io.ReadFull(rand.Reader, iv)
+	if err != nil {
+		return "", err
 	}
 	mode := cipher.NewCBCEncrypter(block, iv)
 	mode.CryptBlocks(ciphertext[aes.BlockSize:], []byte(padded))
-	return base64.StdEncoding.EncodeToString(ciphertext)
+	return base64.StdEncoding.EncodeToString(ciphertext), nil
 }
 
 // Pad with 32bits for AES

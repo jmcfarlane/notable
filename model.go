@@ -86,7 +86,11 @@ func persistable(note Note) (Note, error) {
 	}
 	// Make sure the contents are encrypted if a password is set
 	if note.Password != "" {
-		note.Content = encrypt(note.Content, note.Password)
+		encrypted, err := encrypt(note.Content, note.Password)
+		if err != nil {
+			return note, err
+		}
+		note.Content = encrypted
 		note.Encrypted = true
 	} else {
 		note.Encrypted = false
