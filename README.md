@@ -1,6 +1,9 @@
 # Notable
 
-[![Build Status](https://travis-ci.org/jmcfarlane/notable.svg?branch=master)](https://github.com/jmcfarlane/notable/tree/master)
+[![Go Report Card](https://goreportcard.com/badge/jmcfarlane/notable)](https://goreportcard.com/report/jmcfarlane/notable)
+[![GitHub release](https://img.shields.io/github/release/jmcfarlane/notable.svg)](https://github.com/jmcfarlane/notable/releases)
+[![Build Status](https://img.shields.io/travis/jmcfarlane/notable/master.svg)](https://github.com/jmcfarlane/notable/tree/master)
+[![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/jmcfarlane/notable/blob/master/LICENSE)
 
 A **very** simple note taking application. It has no dependencies and
 ships as a static binary.
