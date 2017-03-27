@@ -15,15 +15,17 @@ function(searchTemplate, Mousetrap) {
       'submit form': 'noop'
     },
 
-    hide: function() {
-      this.trigger('search', null);
-      this.$('input').blur();
-    },
-
     initialize: function() {
       this._query = null;
-      $(document).bind('click', _.bind(this.hide, this));
       Mousetrap.bind('/', _.bind(this.show, this));
+    },
+
+    focus: function() {
+      this.$('input').focus();
+    },
+
+    isMidSearch: function() {
+      return this.$('input').val().length > 0;
     },
 
     next: function() {
@@ -36,13 +38,6 @@ function(searchTemplate, Mousetrap) {
       return false;
     },
 
-    open: function() {
-      this.trigger('open');
-      this.hide();
-      this.$('input').blur(); // (un)focus search
-      return false;
-    },
-
     noop: function() {
       return false;
     },
@@ -51,12 +46,11 @@ function(searchTemplate, Mousetrap) {
       this.$el.html(_.template(searchTemplate));
       Mousetrap.bind('ctrl+j', _.bind(this.next, this));
       Mousetrap.bind('ctrl+k', _.bind(this.previous, this));
-      Mousetrap.bind('esc', _.bind(this.hide, this));
       return this;
     },
 
     show: function() {
-      this.$('input').focus();
+      this.focus();
       $('.nav-tabs a:first').tab('show');
       return false
     },
