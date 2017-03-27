@@ -1,3 +1,7 @@
+## v0.0.7 / ...
+
+* Allow search to be resumed after switching tabs.
+
 ## v0.0.6 / 2017-03-23
 
 * Improve error handling during encryption and decryption.

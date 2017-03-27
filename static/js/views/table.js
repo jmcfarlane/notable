@@ -30,7 +30,6 @@ function(Backbone,
       Mousetrap.bind('k', _.bind(this.selectPreviousNote, this));
       Mousetrap.bind('return', _.bind(function() {
         this.openSelectedNote();
-        this.options.searchModal.hide();
       }, this));
       options.searchModal.on('next', this.selectNextNote, this);
       options.searchModal.on('previous', this.selectPreviousNote, this);
@@ -95,6 +94,13 @@ function(Backbone,
       this.collection.each(this.addRow, this);
       this.defaultSelected();
       $('td.selector').css('border-left-width', '3px');
+      $('a[data-toggle="tab"]').on('shown.bs.tab', _.bind(this.primaryTabSelected, this));
+    },
+
+    primaryTabSelected: function() {
+      if (this.options.searchModal.isMidSearch()) {
+        this.options.searchModal.focus();
+      }
     },
 
     selectNextNote: function() {
