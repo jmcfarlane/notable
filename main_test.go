@@ -56,10 +56,9 @@ func setup(t *testing.T) Mock {
 	switch backend {
 	case "sqlite3":
 		db, err = NewSqlite3(file.Name())
-	case "boltdb":
-		db, err = NewBoltDB(file.Name())
 	default:
-		log.Panic("Please specify backend to test via: env BACKEND")
+		backend = "boltdb"
+		db, err = NewBoltDB(file.Name())
 	}
 	fmt.Println("TESTING BACKEND:", backend)
 	db.createSchema()
