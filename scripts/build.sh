@@ -43,3 +43,12 @@ cp target/notable-${TAG}.darwin-amd64/notable \
 cd target
 zip -r notable-${TAG}.darwin-amd64.zip notable-${TAG}.darwin-amd64
 zip -r notable-${TAG}.linux-amd64.zip notable-${TAG}.linux-amd64
+
+# rkt container
+cd notable-${TAG}.linux-amd64
+acbuild begin
+acbuild set-name github.com/jmcfarlane/notable
+acbuild copy notable /bin/notable
+acbuild set-exec -- /bin/notable -daemon=false -browser=false
+acbuild write ../notable-${TAG}-linux-amd64.aci
+acbuild end

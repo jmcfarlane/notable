@@ -24,7 +24,16 @@ go get -u github.com/jmcfarlane/notable
 notable
 ```
 
-### Docker
+### [rkt](https://coreos.com/rkt/)
+
+Download the latest `.aci` from the [release](https://github.com/jmcfarlane/notable/releases) page. Then run it:
+
+```
+sudo rkt run --insecure-options=image --net=host --volume data,kind=host,source=$HOME/.notable \
+    --mount volume=data,target=/root/.notable notable-v0.0.7-linux-amd64.aci
+```
+
+### [Docker](https://www.docker.com/)
 
 ```
 docker run -p 8080:8080 -d -v ~/.notable:/root/.notable jmcfarlane/notable:latest
