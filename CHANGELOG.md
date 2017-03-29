@@ -1,6 +1,7 @@
 ## v0.0.7 / ...
 
 * Allow search to be resumed after switching tabs.
+* Allow forward slashes in subject, tag, and password fields.
 
 ## v0.0.6 / 2017-03-23
 
