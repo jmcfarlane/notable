@@ -48,6 +48,13 @@ github-release upload \
     --name "notable-${TAG}.linux-amd64.zip" \
     --file target/notable-${TAG}.linux-amd64.zip
 
+github-release upload \
+    --user jmcfarlane \
+    --repo notable \
+    --tag $TAG \
+    --name "notable-${TAG}.linux-amd64.aci" \
+    --file target/notable-${TAG}.linux-amd64.aci
+
 # Docker vars
 project=jmcfarlane
 binary=notable
