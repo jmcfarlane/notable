@@ -49,7 +49,12 @@ function(searchTemplate, Mousetrap) {
       return this;
     },
 
-    show: function() {
+    show: function(e) {
+      if (typeof document.activeElement.form != 'undefined') {
+        var el = $(e.target);
+        el.val(el.val() + e.key);
+        return false;
+      }
       this.focus();
       $('.nav-tabs a:first').tab('show');
       return false
