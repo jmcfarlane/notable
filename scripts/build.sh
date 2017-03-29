@@ -23,7 +23,7 @@ mkdir -p target/notable-${TAG}.linux-amd64
 go generate
 
 # Linux
-GOOS=linux GOARCH=amd64 go build -ldflags "$flags" -o target/notable-${TAG}.linux-amd64/notable
+GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags "$flags" -o target/notable-${TAG}.linux-amd64/notable
 cp LICENSE target/notable-${TAG}.linux-amd64
 
 if [ "$DOCKER" == "true" ]; then

@@ -2,6 +2,7 @@
 
 * Allow search to be resumed after switching tabs.
 * Allow forward slashes in subject, tag, and password fields.
+* Disable cgo on Linux. Compile from source if you want sqlite.
 
 ## v0.0.6 / 2017-03-23
 
