@@ -30,7 +30,7 @@ Download the latest `.aci` from the [release](https://github.com/jmcfarlane/nota
 
 ```
 sudo rkt run --insecure-options=image --net=host --volume data,kind=host,source=$HOME/.notable \
-    --mount volume=data,target=/root/.notable notable-v0.0.7-linux-amd64.aci
+    --mount volume=data,target=/root/.notable notable-v0.0.7.linux-amd64.aci
 ```
 
 ### [Docker](https://www.docker.com/)
