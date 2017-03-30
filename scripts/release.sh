@@ -2,11 +2,10 @@
 
 cd $(dirname $0)/..
 
+source scripts/version.sh
+
 # Perform a build
 ./scripts/build.sh
-
-# The tag is something like: v1.2.3
-export TAG="$(head -n1 CHANGELOG.md | grep -E -o 'v[^ ]+')"
 
 # The date is something like: 2017-01-20
 export DATE="$(head -n1 CHANGELOG.md | grep -E -o '[0-9]{4}-[0-9]{2}-[0-9]{2}')"
@@ -54,27 +53,6 @@ github-release upload \
     --tag $TAG \
     --name "notable-${TAG}.linux-amd64.aci" \
     --file target/notable-${TAG}.linux-amd64.aci
-
-# Docker vars
-project=jmcfarlane
-binary=notable
-build_tag=$project/${binary}-build
-run_tag=$project/$binary
-
-# Build the binary via docker
-docker build --no-cache -t $build_tag -f Dockerfile.build .
-
-# Copy out the (musl) binary
-docker run --rm -v $(pwd):/mount $build_tag cp \
-    /go/src/github.com/$project/$binary/target/$binary-${TAG}.linux-amd64/$binary \
-    /mount/$binary
-
-# Build the runnable container
-docker build --no-cache -t $run_tag .
-docker tag $run_tag:latest $run_tag:$TAG
-
-# Include some info about the containers
-docker images $project/$binary*
 
 # Pubish
 docker login
