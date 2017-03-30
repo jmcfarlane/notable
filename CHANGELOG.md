@@ -1,4 +1,4 @@
-## v0.0.7 / ...
+## v0.0.7 / 2017-03-29
 
 * Allow search to be resumed after switching tabs.
 * Allow forward slashes in subject, tag, and password fields.
