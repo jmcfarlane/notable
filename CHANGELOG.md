@@ -1,3 +1,7 @@
+## v0.0.8 / ...
+
+* Allow search to be resumed after manual focus.
+
 ## v0.0.7 / 2017-03-29
 
 * Allow search to be resumed after switching tabs.

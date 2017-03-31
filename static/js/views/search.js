@@ -12,12 +12,17 @@ function(searchTemplate, Mousetrap) {
 
     events: {
       'keyup #search': 'search',
-      'submit form': 'noop'
+      'submit form': 'noop',
+      'focus input': 'activatePrimaryTab'
     },
 
     initialize: function() {
       this._query = null;
       Mousetrap.bind('/', _.bind(this.show, this));
+    },
+
+    activatePrimaryTab: function() {
+      $('.nav-tabs a:first').tab('show');
     },
 
     focus: function() {
@@ -56,7 +61,6 @@ function(searchTemplate, Mousetrap) {
         return false;
       }
       this.focus();
-      $('.nav-tabs a:first').tab('show');
       return false
     },
 
