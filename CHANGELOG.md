@@ -1,4 +1,4 @@
-## v0.0.8 / ...
+## v0.0.8 / 2017-03-31
 
 * Allow search to be resumed after manual focus.
 * Initial support for (amd64) Microsoft Windows.
