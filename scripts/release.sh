@@ -32,27 +32,25 @@ github-release release \
     --description "$DESC" \
     --pre-release
 
-# Upload any relevant binaries
-github-release upload \
-    --user jmcfarlane \
-    --repo notable \
-    --tag $TAG \
-    --name "notable-${TAG}.darwin-amd64.zip" \
-    --file target/notable-${TAG}.darwin-amd64.zip
+# Upload zip files
+for goos in darwin linux windows; do
+    github-release upload \
+        --user jmcfarlane \
+        --repo notable \
+        --tag $TAG \
+        --name "notable-${TAG}.${goos}-amd64.zip" \
+        --file target/notable-${TAG}.${goos}-amd64.zip
+    echo "Uploaded: target/notable-${TAG}.${goos}-amd64.zip"
+done
 
-github-release upload \
-    --user jmcfarlane \
-    --repo notable \
-    --tag $TAG \
-    --name "notable-${TAG}.linux-amd64.zip" \
-    --file target/notable-${TAG}.linux-amd64.zip
-
+# rkt container
 github-release upload \
     --user jmcfarlane \
     --repo notable \
     --tag $TAG \
     --name "notable-${TAG}.linux-amd64.aci" \
     --file target/notable-${TAG}.linux-amd64.aci
+echo "Uploaded: target/notable-${TAG}.linux-amd64.aci"
 
 # Pubish
 docker login
