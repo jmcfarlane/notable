@@ -14,8 +14,10 @@ flags="-X main.buildarch=$(go version | cut -f 4 -d' ')
 
 # Clean house
 rm -rf target
-mkdir -p target/notable-${TAG}.darwin-amd64
-mkdir -p target/notable-${TAG}.linux-amd64
+for goos in darwin linux windows; do
+    mkdir -p target/notable-${TAG}.${goos}-amd64
+    cp LICENSE target/notable-${TAG}.${goos}-amd64
+done
 
 # Build static assets
 go generate
@@ -23,15 +25,16 @@ go generate
 # Linux
 GOOS=linux GOARCH=amd64 CGO_ENABLED=${CGO_ENABLED:-0} go build \
     -ldflags "$flags" -o target/notable-${TAG}.linux-amd64/notable
-cp LICENSE target/notable-${TAG}.linux-amd64
-
 if [ "$DOCKER" == "true" ]; then
     exit 0
 fi
 
+# Windows
+GOOS=windows GOARCH=amd64 CGO_ENABLED=${CGO_ENABLED:-0} go build \
+    -ldflags "$flags" -o target/notable-${TAG}.windows-amd64/notable.exe
+
 # Macos
 GOOS=darwin GOARCH=amd64 go build -ldflags "$flags" -o target/notable-${TAG}.darwin-amd64/notable
-cp LICENSE target/notable-${TAG}.darwin-amd64
 
 # Macos: create a macos app bundle
 ./scripts/app.sh target/notable-${TAG}.darwin-amd64/Notable $VERSION ./static/img/edit-paste.png
@@ -44,5 +47,6 @@ cp target/notable-${TAG}.darwin-amd64/notable \
 
 # Build zip files for hosting on github
 cd target
-zip -r notable-${TAG}.darwin-amd64.zip notable-${TAG}.darwin-amd64
-zip -r notable-${TAG}.linux-amd64.zip notable-${TAG}.linux-amd64
+for goos in darwin linux windows; do
+    zip -r notable-${TAG}.${goos}-amd64.zip notable-${TAG}.${goos}-amd64
+done

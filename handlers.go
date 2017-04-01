@@ -65,6 +65,11 @@ func getContent(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Write([]byte(content))
 }
 
+func restartHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	restartChan <- r.URL.Query().Get("msg")
+	w.Write([]byte("ok"))
+}
+
 // Search for notes based on an optional querystring parameter
 func searchHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	notes := db.search("")

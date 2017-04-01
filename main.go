@@ -9,11 +9,9 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
-	"os/signal"
 	"path/filepath"
 	"runtime"
 	"strconv"
-	"syscall"
 	"time"
 
 	"github.com/julienschmidt/httprouter"
@@ -38,6 +36,9 @@ var booted = time.Now()
 var db Backend
 var err error
 
+// Support restarts
+var restartChan = make(chan string, 1)
+
 // Flags
 var (
 	bind   = flag.String("bind", "localhost", "Bind address")
@@ -61,15 +62,18 @@ func index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	fmt.Fprint(w, string(asset))
 }
 
-func openBrowser() {
-	cmd := "open"
-	if runtime.GOOS == "linux" {
-		cmd = "xdg-open"
+func openBrowser() error {
+	var args []string
+	switch runtime.GOOS {
+	case "darwin":
+		args = []string{"open"}
+	case "windows":
+		args = []string{"cmd", "/c", "start"}
+	default:
+		args = []string{"xdg-open"}
 	}
-	err := exec.Command(cmd, "http://"+*bind+":"+strconv.Itoa(*port)).Run()
-	if err != nil {
-		log.Errorf("Error spawning web browser err=%v", err)
-	}
+	url := "http://" + *bind + ":" + strconv.Itoa(*port)
+	return exec.Command(args[0], append(args[1:], url)...).Run()
 }
 
 func start(router *httprouter.Router) {
@@ -79,11 +83,9 @@ func start(router *httprouter.Router) {
 		log.Fatal(err)
 	}
 	go func(listener net.Listener) {
-		sig := make(chan os.Signal, 1)
-		signal.Notify(sig, syscall.SIGUSR2)
-		<-sig
+		log.Warnf("Restart requested msg=%s", <-restartChan)
 		listener.Close()
-		cmd := exec.Command(os.Args[0], os.Args[2:]...)
+		cmd := exec.Command(os.Args[0], os.Args[1:]...)
 		cmd.Start()
 		log.Infof("Replacement started pid=%v", cmd.Process.Pid)
 		os.Exit(0)
@@ -117,6 +119,7 @@ func getRouter() *httprouter.Router {
 	router.POST("/api/note/create", createNote)
 	router.DELETE("/api/note/:uid", deleteNote)
 	router.PUT("/api/note/:uid", updateNote)
+	router.PUT("/api/restart", restartHandler)
 	router.NotFound = withoutCaching(http.FileServer(assetFS()))
 	return router
 }
@@ -138,7 +141,10 @@ func main() {
 		return
 	}
 	if *browser {
-		openBrowser()
+		err := openBrowser()
+		if err != nil {
+			log.Fatalf("Failed to open a browser err=%v", err)
+		}
 	}
 	if running() {
 		return
