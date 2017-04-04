@@ -106,13 +106,19 @@ function(noteView, notesTableRowTemplate) {
     search: function(q) {
       var subject = this.model.get('subject').toLowerCase(),
         match = _.find(this._index.tags, function(tag) {
-        return this.startsWith(tag, q);
+        return this.startsWith(tag, q.query);
       }, this);
 
-      if (this.startsWith(subject, q) || match || _.isEmpty(q)) {
+      if (this.startsWith(subject, q.query) || match || _.isEmpty(q.query)) {
         this.show();
       } else {
-        this.hide();
+        // Secondary search is full text index
+        if (_.contains(q.uids, this.model.get('uid'))) {
+          this.show();
+        } else {
+          // No soup for you
+          this.hide();
+        }
       }
     },
 

@@ -65,19 +65,24 @@ func getContent(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Write([]byte(content))
 }
 
+func listHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	encoder := json.NewEncoder(w)
+	encoder.Encode(db.list())
+}
+
 func restartHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	restartChan <- r.URL.Query().Get("msg")
 	w.Write([]byte("ok"))
 }
 
-// Search for notes based on an optional querystring parameter
 func searchHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	notes := db.search("")
-	thing, err := json.MarshalIndent(notes, "", "\t")
+	uids, err := searchIndex(r.URL.Query().Get("q"))
 	if err != nil {
-		fmt.Fprintf(w, "[]")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
-	fmt.Fprintf(w, string(thing))
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(uids)
 }
 
 // Persist the updated note to storage

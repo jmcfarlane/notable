@@ -55,7 +55,7 @@ func (db *BoltDB) create(note Note) (Note, error) {
 }
 
 func (db *BoltDB) createSchema() {
-	err = db.Engine.Update(func(tx *bolt.Tx) error {
+	err := db.Engine.Update(func(tx *bolt.Tx) error {
 		tx.CreateBucket(db.NotesBucket)
 		return nil
 	})
@@ -65,7 +65,10 @@ func (db *BoltDB) createSchema() {
 }
 
 func (db *BoltDB) deleteByUID(uid string) error {
-	err = db.Engine.Update(func(tx *bolt.Tx) error {
+	if err := unIndex(uid); err != nil {
+		return err
+	}
+	err := db.Engine.Update(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket(db.NotesBucket)
 		return bucket.Delete([]byte(uid))
 	})
@@ -110,7 +113,7 @@ func (db *BoltDB) migrate() {
 	log.Infof("Migration complete err=%v", err)
 }
 
-func (db *BoltDB) search(query string) Notes {
+func (db *BoltDB) list() Notes {
 	var notes Notes
 	db.Engine.View(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket(db.NotesBucket)
@@ -144,5 +147,8 @@ func (db *BoltDB) update(note Note) (Note, error) {
 		bucket.Put([]byte(note.UID), b)
 		return nil
 	})
-	return note, err
+	if err != nil {
+		return note, err
+	}
+	return note, indexNote(note)
 }

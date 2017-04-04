@@ -1,3 +1,8 @@
+## v0.0.9 / ...
+
+* Introduce full text index via [Bleve](http://www.blevesearch.com/).
+
+
 ## v0.0.8 / 2017-03-31
 
 * Allow search to be resumed after manual focus.

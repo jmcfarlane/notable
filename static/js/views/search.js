@@ -67,8 +67,28 @@ function(searchTemplate, Mousetrap) {
     search: function() {
       var query = this.$('input').val().trim().toLowerCase()
       if (query != this._query) {
-        this.trigger('search', query);
-        this._query = query;
+        $.ajax({
+          url: '/api/notes/search',
+          type: 'get',
+          data: {
+            q: query
+          },
+          error: function(xhr) {
+            console.log('Error:', xhr);
+            this.trigger('search', {
+              query: query,
+              uids: []
+            });
+            this._query = query;
+          }.bind(this),
+          success: function(resp) {
+            this.trigger('search', {
+              query: query,
+              uids: resp
+            });
+            this._query = query;
+          }.bind(this)
+        });
       }
     }
 

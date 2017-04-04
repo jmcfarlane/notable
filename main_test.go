@@ -28,7 +28,7 @@ type Mock struct {
 
 func createTestNote(mock Mock, password string) (Note, Note, int, error) {
 	expected := Note{
-		Content:  "note body",
+		Content:  "note body beer",
 		Password: password,
 		Subject:  "test",
 		Tags:     "tag1 tag2",
@@ -60,6 +60,7 @@ func setup(t *testing.T) Mock {
 		backend = "boltdb"
 		db, err = NewBoltDB(file.Name())
 	}
+	idx, err = getIndex(file.Name() + ".idx")
 	fmt.Println("TESTING BACKEND:", backend)
 	db.createSchema()
 	return Mock{
@@ -164,7 +165,6 @@ func TestNoteDeletion(t *testing.T) {
 	mock := setup(t)
 	defer tearDown(mock)
 	_, got, code, err := createTestNote(mock, "")
-	fmt.Println("UID:", got.UID)
 	assert.Nil(t, err, "Should be no http error")
 	assert.Equal(t, http.StatusOK, code, "Response code != 200")
 	req, err := http.NewRequest("DELETE", mock.server.URL+"/api/note/"+got.UID, nil)
@@ -195,4 +195,55 @@ func TestNoteListing(t *testing.T) {
 	notes := []Note{}
 	json.Unmarshal(content, &notes)
 	assert.Equal(t, expected.Subject, notes[0].Subject, "Listing miissing our note")
+}
+
+func TestNoteFullTextSearch(t *testing.T) {
+	mock := setup(t)
+	defer tearDown(mock)
+	_, got, _, _ := createTestNote(mock, "")
+	resp, err := http.Get(mock.server.URL + "/api/notes/search?q=beer")
+	content, err := ioutil.ReadAll(resp.Body)
+	assert.Nil(t, err, "Should be no http error")
+	uids := []string{}
+	json.Unmarshal(content, &uids)
+	if assert.Equal(t, 1, len(uids), "Full text should find 1 note") {
+		assert.Equal(t, got.UID, uids[0], "Full text found the note")
+	}
+}
+
+func TestNoteFullTextSearchDeletion(t *testing.T) {
+	mock := setup(t)
+	defer tearDown(mock)
+	_, got, _, _ := createTestNote(mock, "")
+	req, err := http.NewRequest("DELETE", mock.server.URL+"/api/note/"+got.UID, nil)
+	assert.Nil(t, err, "Should be no error creating a new request")
+	resp, err := http.DefaultClient.Do(req)
+	assert.Nil(t, err, "Should be no error requesting a note deletion")
+	resp, err = http.Get(mock.server.URL + "/api/notes/search?q=beer")
+	content, err := ioutil.ReadAll(resp.Body)
+	assert.Nil(t, err, "Should be no http error")
+	uids := []string{}
+	json.Unmarshal(content, &uids)
+	assert.Equal(t, 0, len(uids), "Full text should find 0 notes")
+}
+
+func TestNoteFullTextSearchUpdate(t *testing.T) {
+	mock := setup(t)
+	defer tearDown(mock)
+	_, got, _, _ := createTestNote(mock, "")
+	got.Content = "ipa only pls"
+	b := new(bytes.Buffer)
+	json.NewEncoder(b).Encode(got)
+	req, err := http.NewRequest("PUT", mock.server.URL+"/api/note/"+got.UID, b)
+	assert.Nil(t, err, "Should be no error creating the http request")
+	_, err = http.DefaultClient.Do(req)
+	assert.Nil(t, err, "Should be no error requesting a note update")
+	resp, err := http.Get(mock.server.URL + "/api/notes/search?q=ipa")
+	content, err := ioutil.ReadAll(resp.Body)
+	assert.Nil(t, err, "Should be no http error")
+	uids := []string{}
+	json.Unmarshal(content, &uids)
+	if assert.Equal(t, 1, len(uids), "Full text should find 1 note") {
+		assert.Equal(t, got.UID, uids[0], "Full text found the note")
+	}
 }
