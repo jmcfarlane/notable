@@ -1,3 +1,9 @@
+## v0.0.9 / ...
+
+* Introduce full text index via [Bleve](http://www.blevesearch.com/).
+* Drop support for <= golang-1.4 as Bleve uses `strings.Compare`.
+
+
 ## v0.0.8 / 2017-03-31
 
 * Allow search to be resumed after manual focus.

@@ -14,6 +14,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/blevesearch/bleve"
 	"github.com/julienschmidt/httprouter"
 	homedir "github.com/mitchellh/go-homedir"
 
@@ -34,7 +35,7 @@ var (
 var router = getRouter()
 var booted = time.Now()
 var db Backend
-var err error
+var idx bleve.Index
 
 // Support restarts
 var restartChan = make(chan string, 1)
@@ -46,11 +47,12 @@ var (
 
 	port = flag.Int("port", 8080, "Interface and port to listen on")
 
-	browser = flag.Bool("browser", true, "Open a web browser")
-	daemon  = flag.Bool("daemon", true, "Run as a daemon")
-	restart = flag.Bool("restart", false, "Restart if already running")
-	useBolt = flag.Bool("use.bolt", true, "Use the new BoltDB backend")
-	version = flag.Bool("version", false, "Print program version information")
+	browser   = flag.Bool("browser", true, "Open a web browser")
+	daemon    = flag.Bool("daemon", true, "Run as a daemon")
+	doReIndex = flag.Bool("reindex", false, "Re-index all notes on startup")
+	restart   = flag.Bool("restart", false, "Restart if already running")
+	useBolt   = flag.Bool("use.bolt", true, "Use the new BoltDB backend")
+	version   = flag.Bool("version", false, "Print program version information")
 )
 
 // Index the landing page html (the application only has one page.
@@ -113,7 +115,8 @@ func getRouter() *httprouter.Router {
 	router := httprouter.New()
 	router.GET("/", index)
 	router.GET("/pid", pid)
-	router.GET("/api/notes/list", searchHandler)
+	router.GET("/api/notes/list", listHandler)
+	router.GET("/api/notes/search", searchHandler)
 	router.GET("/api/version", versionHandler)
 	router.POST("/api/note/content/:uid", getContent)
 	router.POST("/api/note/create", createNote)
@@ -128,6 +131,11 @@ func init() {
 	flag.Parse()
 	if *dbPath == "" {
 		*dbPath = filepath.Join(homeDirPath(), ".notable/notes.db")
+	}
+	var err error
+	idx, err = getIndex(*dbPath + ".idx")
+	if err != nil {
+		log.Fatalf("Unable to establish search index err=%v", err)
 	}
 }
 
@@ -149,6 +157,7 @@ func main() {
 	if running() {
 		return
 	}
+	var err error
 	if *useBolt || runtime.GOOS == "darwin" {
 		db, err = NewBoltDB(*dbPath)
 	} else {
@@ -156,6 +165,12 @@ func main() {
 	}
 	if err != nil {
 		log.Fatal(err)
+	}
+	if *doReIndex {
+		err = reIndex(db)
+		if err != nil {
+			log.Panic("Re-indexing failed:", err)
+		}
 	}
 	defer db.close()
 	log.Infof("Using backend %s", db)

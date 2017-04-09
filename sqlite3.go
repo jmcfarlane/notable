@@ -72,6 +72,9 @@ func (db *Sqlite3) createSchema() {
 
 // Removes a note from storage
 func (db *Sqlite3) deleteByUID(uid string) error {
+	if err := unIndex(uid); err != nil {
+		return err
+	}
 	if uid == "" {
 		return errors.New("Deletion uid must not be an empty string")
 	}
@@ -119,7 +122,7 @@ func (db *Sqlite3) create(note Note) (Note, error) {
 	}
 	log.Infof("Completed DB insert uid=%s", note.UID)
 
-	return note, nil
+	return note, indexNote(note)
 }
 
 func (db *Sqlite3) getNoteByUID(uid string, password string) (Note, error) {
@@ -161,7 +164,7 @@ func (db *Sqlite3) fetchAll() Notes {
 	return notes
 }
 
-func (db *Sqlite3) search(query string) Notes {
+func (db *Sqlite3) list() Notes {
 	rows, _ := db.Engine.Query(`
 		SELECT
 			created, encrypted, subject, tags, uid, updated
@@ -215,6 +218,5 @@ func (db *Sqlite3) update(note Note) (Note, error) {
 	}
 	affected, _ := res.RowsAffected()
 	log.Infof("Completed DB update uid=%s, affected=%d", note.UID, affected)
-
-	return note, nil
+	return note, indexNote(note)
 }

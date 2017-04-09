@@ -29,7 +29,7 @@ type Backend interface {
 	dbFilePath() string
 	deleteByUID(string) error
 	getNoteByUID(string, password string) (Note, error)
-	search(string) Notes
+	list() Notes
 	String() string
 	update(Note) (Note, error)
 }
