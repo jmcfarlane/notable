@@ -9,7 +9,7 @@
 </div>
 <div class="row">
   <div class="col-lg-2">Build</div>
-  <div class="col-lg-10"><%= model.User %>@<%= model.Hash %>, <%= model.Arch %></div>
+  <div class="col-lg-10"><%= model.User %>@<%= model.Branch %>:<%= model.Hash %></div>
 </div>
 <div class="row">
   <div class="col-lg-2">Compiled</div>
@@ -18,4 +18,8 @@
 <div class="row">
   <div class="col-lg-2">Compiler</div>
   <div class="col-lg-10"><%= model.Compiler %></div>
+</div>
+<div class="row">
+  <div class="col-lg-2">Arch</div>
+  <div class="col-lg-10"><%= model.Arch %></div>
 </div>

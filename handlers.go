@@ -102,21 +102,24 @@ func updateNote(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 }
 
 func versionHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	json.NewEncoder(w).Encode(struct {
+	type v struct {
 		Arch     string
+		Branch   string
 		Compiler string
 		Date     string
 		Hash     string
 		Uptime   string
 		User     string
 		Version  string
-	}{
-		buildarch,
-		buildcompiler,
-		buildstamp,
-		buildhash,
-		time.Since(booted).String(),
-		builduser,
-		buildversion,
+	}
+	json.NewEncoder(w).Encode(v{
+		Arch:     buildArch,
+		Branch:   buildBranch,
+		Compiler: buildCompiler,
+		Hash:     buildHash,
+		Date:     buildStamp,
+		User:     buildUser,
+		Version:  buildVersion,
+		Uptime:   time.Since(booted).String(),
 	})
 }

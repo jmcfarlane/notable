@@ -5,12 +5,13 @@ cd $(dirname $0)/..
 source scripts/version.sh
 
 # Provide args for the program to display via -version
-flags="-X main.buildarch=$(go version | cut -f 4 -d' ')
-       -X main.buildcompiler=$(go version | cut -f 3 -d' ')
-       -X main.buildhash=$(git rev-parse --short HEAD)
-       -X main.buildstamp=$(date -u '+%Y-%m-%dT%H:%M:%SZ')
-       -X main.builduser=$(whoami)
-       -X main.buildversion=${TAG}"
+flags="-X main.buildArch=$(go version | cut -f 4 -d' ')
+       -X main.buildCompiler=$(go version | cut -f 3 -d' ')
+       -X main.buildBranch=$(git rev-parse --abbrev-ref HEAD)
+       -X main.buildHash=$(git rev-parse --short HEAD)
+       -X main.buildStamp=$(date -u '+%Y-%m-%dT%H:%M:%SZ')
+       -X main.buildUser=$(whoami)
+       -X main.buildVersion=${TAG}"
 
 # Clean house
 rm -rf target
