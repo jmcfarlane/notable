@@ -50,6 +50,8 @@ func searchIndex(q string) ([]string, error) {
 
 func reIndex(b Backend) error {
 	for _, note := range b.list() {
+		content, _ := getContentByUID(b, note.UID, "")
+		note.Content = content
 		err := indexNote(note)
 		if err != nil {
 			return err
