@@ -23,12 +23,13 @@ import (
 
 // Program version information
 var (
-	buildarch     string
-	buildcompiler string
-	buildhash     string
-	buildstamp    string
-	builduser     string
-	buildversion  string
+	buildArch     string
+	buildBranch   string
+	buildCompiler string
+	buildHash     string
+	buildStamp    string
+	buildUser     string
+	buildVersion  string
 )
 
 // This is the application itself
@@ -141,11 +142,11 @@ func init() {
 
 func main() {
 	if *version {
-		fmt.Printf("Version:\t%s\n", buildversion)
-		fmt.Printf("Build time:\t%s\n", buildstamp)
-		fmt.Printf("Build user:\t%s@%s\n", builduser, buildhash)
-		fmt.Printf("Compiler:\t%s\n", buildcompiler)
-		fmt.Printf("Arch:\t\t%s\n", buildarch)
+		fmt.Printf("Version:\t%s\n", buildVersion)
+		fmt.Printf("Build time:\t%s\n", buildStamp)
+		fmt.Printf("Build:\t\t%s@%s:%s\n", buildUser, buildBranch, buildHash)
+		fmt.Printf("Compiler:\t%s\n", buildCompiler)
+		fmt.Printf("Arch:\t\t%s\n", buildArch)
 		return
 	}
 	if *browser {

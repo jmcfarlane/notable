@@ -2,7 +2,7 @@
 
 * Introduce full text index via [Bleve](http://www.blevesearch.com/).
 * Drop support for <= golang-1.4 as Bleve uses `strings.Compare`.
-
+* Add build branch to `-version` output.
 
 ## v0.0.8 / 2017-03-31
 
