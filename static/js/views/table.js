@@ -82,9 +82,12 @@ function(Backbone,
       if (this.options.passwordModal.$('input').is(':visible')) {
         return;
       }
-      this.collection.find(function(model){
+      var row = this.collection.find(function(model){
         return model.get('selected');
-      }, this).view.onRowClick();
+      }, this);
+      if (row != null) {
+        row.view.onRowClick();
+      }
     },
 
     render: function(collection) {
