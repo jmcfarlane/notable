@@ -15,6 +15,15 @@ function(noteDetailTemplate, tabTemplate, Mousetrap) {
     initialize: function() {
       this._editor = null;
       this._tab = null;
+      this._origContent = null;
+    },
+
+    indicateIfDirty: function() {
+      if (this._editor.getValue() != this._origContent) {
+        $('.editor').css('border', '1px solid orange');
+      } else {
+        $('.editor').css('border', '1px solid rgb(204, 204, 204)')
+      }
     },
 
     render: function(collection) {
@@ -39,6 +48,9 @@ function(noteDetailTemplate, tabTemplate, Mousetrap) {
         .text(note.content)
         .height(document.documentElement.clientHeight - 175);
 
+      // Keep a copy of the original content to enable isDirty
+      this._origContent = note.content;
+
       // Attach the ace editor to the editor element
       this._editor = ace.edit(_.first(this.$el.find('.editor')));
       this._editor.commands.addCommand({
@@ -51,6 +63,9 @@ function(noteDetailTemplate, tabTemplate, Mousetrap) {
       this._editor.commands.removeCommand('gotoline');
       this._editor.focus();
       window._editor = this._editor; // For web driver
+
+      // Inform the user if the note is dirty
+      this._editor.on('change', _.bind(this.indicateIfDirty, this));
 
       // Somehow this seems to result in the right tab saving, but
       // seems like a defect waiting to happen.
@@ -100,6 +115,7 @@ function(noteDetailTemplate, tabTemplate, Mousetrap) {
       if (!this.model.get('subject')) {
         this.$('.subject input').focus();
       }
+      this.indicateIfDirty();
     },
 
     notSaved: function() {
@@ -128,6 +144,8 @@ function(noteDetailTemplate, tabTemplate, Mousetrap) {
           this.options._row.render();
           this.saved();
           callback();
+          this._origContent = this._editor.getValue();
+          this.indicateIfDirty();
         }, this)
       });
       return false;
