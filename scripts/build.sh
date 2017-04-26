@@ -15,7 +15,7 @@ flags="-X main.buildArch=$(go version | cut -f 4 -d' ')
 
 # Clean house
 rm -rf target
-for goos in darwin linux windows; do
+for goos in darwin freebsd linux windows; do
     mkdir -p target/notable-${TAG}.${goos}-amd64
     cp LICENSE target/notable-${TAG}.${goos}-amd64
 done
@@ -29,6 +29,10 @@ GOOS=linux GOARCH=amd64 CGO_ENABLED=${CGO_ENABLED:-0} go build \
 if [ "$DOCKER" == "true" ]; then
     exit 0
 fi
+
+# Freebsd
+GOOS=freebsd GOARCH=amd64 CGO_ENABLED=${CGO_ENABLED:-0} go build \
+    -ldflags "$flags" -o target/notable-${TAG}.freebsd-amd64/notable
 
 # Windows
 GOOS=windows GOARCH=amd64 CGO_ENABLED=${CGO_ENABLED:-0} go build \
@@ -48,6 +52,6 @@ cp target/notable-${TAG}.darwin-amd64/notable \
 
 # Build zip files for hosting on github
 cd target
-for goos in darwin linux windows; do
+for goos in darwin freebsd linux windows; do
     zip -r notable-${TAG}.${goos}-amd64.zip notable-${TAG}.${goos}-amd64
 done

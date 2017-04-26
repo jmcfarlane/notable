@@ -33,7 +33,7 @@ github-release release \
     --pre-release
 
 # Upload zip files
-for goos in darwin linux windows; do
+for goos in darwin freebsd linux windows; do
     github-release upload \
         --user jmcfarlane \
         --repo notable \
