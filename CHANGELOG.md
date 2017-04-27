@@ -1,6 +1,7 @@
 ## v0.0.9 / ...
 
 * Introduce full text index via [Bleve](http://www.blevesearch.com/).
+* Add a visual indication if the body of a note has unsaved changes.
 * Drop support for <= golang-1.4 as Bleve uses `strings.Compare`.
 * Add build branch to `-version` output.
 * Fix unhandled error when using the `enter` key with no note selected.
