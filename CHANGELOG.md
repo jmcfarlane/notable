@@ -1,4 +1,4 @@
-## v0.0.9 / ...
+## v0.0.9 / 2017-04-26
 
 * Introduce full text index via [Bleve](http://www.blevesearch.com/).
 * Add a visual indication if the body of a note has unsaved changes.
