@@ -5,6 +5,7 @@
 * Drop support for <= golang-1.4 as Bleve uses `strings.Compare`.
 * Add build branch to `-version` output.
 * Fix unhandled error when using the `enter` key with no note selected.
+* Add support for FreeBSD.
 
 ## v0.0.8 / 2017-03-31
 

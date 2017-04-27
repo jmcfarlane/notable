@@ -48,5 +48,6 @@ docker run -p 8080:8080 -d -v ~/.notable:/root/.notable jmcfarlane/notable:lates
 - [x] Cross platform:
     - [x] Linux
     - [x] MacOS
+    - [x] FreeBSD
     - [x] Windows (experimental)
 - [x] Keyboard friendly.
