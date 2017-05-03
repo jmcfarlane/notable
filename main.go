@@ -17,6 +17,7 @@ import (
 	"github.com/blevesearch/bleve"
 	"github.com/julienschmidt/httprouter"
 	homedir "github.com/mitchellh/go-homedir"
+	"github.com/pkg/errors"
 
 	log "github.com/Sirupsen/logrus"
 )
@@ -48,12 +49,13 @@ var (
 
 	port = flag.Int("port", 8080, "Interface and port to listen on")
 
-	browser   = flag.Bool("browser", true, "Open a web browser")
-	daemon    = flag.Bool("daemon", true, "Run as a daemon")
-	doReIndex = flag.Bool("reindex", false, "Re-index all notes on startup")
-	restart   = flag.Bool("restart", false, "Restart if already running")
-	useBolt   = flag.Bool("use.bolt", true, "Use the new BoltDB backend")
-	version   = flag.Bool("version", false, "Print program version information")
+	browser     = flag.Bool("browser", true, "Open a web browser")
+	daemon      = flag.Bool("daemon", true, "Run as a daemon")
+	doReIndex   = flag.Bool("reindex", false, "Re-index all notes on startup")
+	restart     = flag.Bool("restart", false, "Restart if already running")
+	useBolt     = flag.Bool("use.bolt", true, "Use the new BoltDB backend")
+	version     = flag.Bool("version", false, "Print program version information")
+	boltTimeout = flag.Duration("bolt.timeout", time.Duration(time.Second*2), "Boltdb open timeout")
 )
 
 // Index the landing page html (the application only has one page.
@@ -128,19 +130,8 @@ func getRouter() *httprouter.Router {
 	return router
 }
 
-func init() {
-	flag.Parse()
-	if *dbPath == "" {
-		*dbPath = filepath.Join(homeDirPath(), ".notable/notes.db")
-	}
-	var err error
-	idx, err = getIndex(*dbPath + ".idx")
-	if err != nil {
-		log.Fatalf("Unable to establish search index err=%v", err)
-	}
-}
-
 func main() {
+	flag.Parse()
 	if *version {
 		fmt.Printf("Version:\t%s\n", buildVersion)
 		fmt.Printf("Build time:\t%s\n", buildStamp)
@@ -152,20 +143,27 @@ func main() {
 	if *browser {
 		err := openBrowser()
 		if err != nil {
-			log.Fatalf("Failed to open a browser err=%v", err)
+			log.Fatal(errors.Wrap(err, "Failed to open a browser"))
 		}
 	}
 	if running() {
 		return
 	}
 	var err error
+	if *dbPath == "" {
+		*dbPath = filepath.Join(homeDirPath(), ".notable/notes.db")
+	}
 	if *useBolt || runtime.GOOS == "darwin" {
 		db, err = openBoltDB(*dbPath)
 	} else {
 		db, err = openSqlite3(*dbPath)
 	}
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(errors.Wrap(err, "Unable to open database"))
+	}
+	idx, err = getIndex(*dbPath + ".idx")
+	if err != nil {
+		log.Fatal(errors.Wrap(err, "Unable to establish search index"))
 	}
 	if *doReIndex {
 		err = reIndex(db)

@@ -25,7 +25,7 @@ func openBoltDB(path string) (*BoltDB, error) {
 		Type:        "BoltDB",
 	}
 	_, fileExisted := createParentDirs(path)
-	engine, err := bolt.Open(path, 0600, nil)
+	engine, err := bolt.Open(path, 0600, &bolt.Options{Timeout: *boltTimeout})
 	if err != nil {
 		return db, err
 	}

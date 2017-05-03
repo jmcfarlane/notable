@@ -1,5 +1,10 @@
 ## v0.0.10 / ...
 
+* Add flag `bolt.timeout` for use with opening BoltDB.
+* Move `init` logic into `main` to fix race conditions on startup.
+* Open BoltDB before Bleve as the former supports a timeout :)
+* Improve error messaging on startup.
+
 ## v0.0.9 / 2017-04-26
 
 * Introduce full text index via [Bleve](http://www.blevesearch.com/).
