@@ -18,8 +18,7 @@ type BoltDB struct {
 	NotesBucket []byte
 }
 
-// NewBoltDB engine instance
-func NewBoltDB(path string) (*BoltDB, error) {
+func openBoltDB(path string) (*BoltDB, error) {
 	db := &BoltDB{
 		NotesBucket: []byte("notes"),
 		Path:        path,
@@ -93,7 +92,7 @@ func (db *BoltDB) migrate() {
 	if !fileExists(oldDBPath) {
 		return
 	}
-	oldDB, err := NewSqlite3(oldDBPath)
+	oldDB, err := openSqlite3(oldDBPath)
 	if err != nil {
 		log.Panic(err)
 	}

@@ -160,9 +160,9 @@ func main() {
 	}
 	var err error
 	if *useBolt || runtime.GOOS == "darwin" {
-		db, err = NewBoltDB(*dbPath)
+		db, err = openBoltDB(*dbPath)
 	} else {
-		db, err = NewSqlite3(*dbPath)
+		db, err = openSqlite3(*dbPath)
 	}
 	if err != nil {
 		log.Fatal(err)

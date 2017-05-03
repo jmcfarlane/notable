@@ -19,8 +19,7 @@ type Sqlite3 struct {
 	Type   string
 }
 
-// NewSqlite3 engine instance
-func NewSqlite3(path string) (*Sqlite3, error) {
+func openSqlite3(path string) (*Sqlite3, error) {
 	db := &Sqlite3{Path: path, Type: "Sqlite3"}
 	_, fileExisted := createParentDirs(path)
 	engine, err := sql.Open("sqlite3", path)

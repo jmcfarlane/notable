@@ -55,10 +55,10 @@ func setup(t *testing.T) Mock {
 	backend := os.Getenv("BACKEND")
 	switch backend {
 	case "sqlite3":
-		db, err = NewSqlite3(file.Name())
+		db, err = openSqlite3(file.Name())
 	default:
 		backend = "boltdb"
-		db, err = NewBoltDB(file.Name())
+		db, err = openBoltDB(file.Name())
 	}
 	idx, err = getIndex(file.Name() + ".idx")
 	fmt.Println("TESTING BACKEND:", backend)
