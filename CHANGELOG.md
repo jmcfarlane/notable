@@ -1,3 +1,5 @@
+## v0.0.10 / ...
+
 ## v0.0.9 / 2017-04-26
 
 * Introduce full text index via [Bleve](http://www.blevesearch.com/).
