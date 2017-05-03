@@ -61,6 +61,7 @@ function(noteDetailTemplate, tabTemplate, Mousetrap) {
         }, this)
       });
       this._editor.commands.removeCommand('gotoline');
+      this._editor.getSession().setUseWrapMode(true);
       this._editor.focus();
       window._editor = this._editor; // For web driver
 
