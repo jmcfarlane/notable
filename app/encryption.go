@@ -1,4 +1,4 @@
-package main
+package app
 
 import (
 	"crypto/aes"
@@ -28,7 +28,7 @@ var (
 )
 
 // Decrypt a string given the provided password
-func decrypt(content string, password string) (string, error) {
+func Decrypt(content string, password string) (string, error) {
 	// Base64 decode the string
 	decoded, err := base64.StdEncoding.DecodeString(content)
 	if err != nil {
@@ -53,7 +53,7 @@ func decrypt(content string, password string) (string, error) {
 }
 
 // Encrypt a string given the provided password
-func encrypt(content string, password string) (string, error) {
+func Encrypt(content string, password string) (string, error) {
 	key := passwordHash(password)
 	block, err := aes.NewCipher(key)
 	if err != nil {
@@ -84,8 +84,8 @@ func passwordHash(password string) []byte {
 	return hasher.Sum(nil)
 }
 
-// Try to guess if a string is encrypted or not
-func smellsEncrypted(content string) bool {
+// SmellsEncrypted - Try to guess if a string is encrypted or not
+func SmellsEncrypted(content string) bool {
 	decrypted := len(decryptedRE.FindAllString(content, -1))
 	encrypted := len(encryptedRE.FindAllString(content, -1))
 	if float64(encrypted)/float64(decrypted) > 0.4 {
