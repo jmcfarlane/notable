@@ -1,10 +1,10 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	log "github.com/Sirupsen/logrus"
 )
 
 // createCmd represents the create command
@@ -14,7 +14,7 @@ var createCmd = &cobra.Command{
 	Long:  `Add a new note to notable server`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// TODO: Work your own magic here
-		fmt.Println("create called")
+		log.Debugf("Creating a note on %s", viper.GetString("server"))
 	},
 }
 

@@ -6,11 +6,14 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	log "github.com/Sirupsen/logrus"
 )
 
 var (
 	cfgFile       string
 	notableServer string
+	printDebug    bool
 )
 
 // RootCmd represents the base command when called without any subcommands
@@ -39,8 +42,10 @@ func init() {
 
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.notable-cli.yaml)")
 	RootCmd.PersistentFlags().StringVar(&notableServer, "server", "http://localhost:8080", "Base url for notable server")
+	RootCmd.PersistentFlags().BoolVar(&printDebug, "debug", false, "Enable to print debug")
 
 	viper.BindPFlag("server", RootCmd.PersistentFlags().Lookup("server"))
+	viper.BindPFlag("debug", RootCmd.PersistentFlags().Lookup("debug"))
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -57,5 +62,9 @@ func initConfig() {
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
+	}
+
+	if viper.GetBool("debug") {
+		log.SetLevel(log.DebugLevel)
 	}
 }
