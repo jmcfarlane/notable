@@ -5,6 +5,7 @@ import (
 	"github.com/spf13/viper"
 
 	log "github.com/Sirupsen/logrus"
+	notable "github.com/jmcfarlane/notable/model"
 )
 
 // createCmd represents the create command
@@ -15,6 +16,13 @@ var createCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		// TODO: Work your own magic here
 		log.Debugf("Creating a note on %s", viper.GetString("server"))
+		log.WithFields(log.Fields{
+			"Subject": viper.GetString("create.subject"),
+			"Tags":    viper.GetString("create.tags"),
+			"Content": viper.GetString("create.content"),
+		}).Debug("Provided values")
+
+		var note model.Note{}
 	},
 }
 
