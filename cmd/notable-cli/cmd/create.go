@@ -1,11 +1,17 @@
 package cmd
 
 import (
+	"bytes"
+	"encoding/json"
+	"net/http"
+
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
+	"fmt"
+
 	log "github.com/Sirupsen/logrus"
-	notable "github.com/jmcfarlane/notable/model"
+	app "github.com/jmcfarlane/notable/app"
 )
 
 // createCmd represents the create command
@@ -22,7 +28,20 @@ var createCmd = &cobra.Command{
 			"Content": viper.GetString("create.content"),
 		}).Debug("Provided values")
 
-		var note model.Note{}
+		var note app.Note
+		note.Content = viper.GetString("create.content")
+		note.Tags = viper.GetString("create.tags")
+		note.Subject = viper.GetString("create.subject")
+
+		data, err := json.MarshalIndent(note, "", "  ")
+		if err != nil {
+			log.Errorf("Error while creating payload: %#v", err)
+		}
+		reader := bytes.NewReader(data)
+		_, err = http.Post(fmt.Sprintf("%s/api/note/create", viper.GetString("server")), "application/json", reader)
+		if err != nil {
+			log.Errorf("Error while creating payload: %#v", err)
+		}
 	},
 }
 
