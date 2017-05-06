@@ -1,0 +1,89 @@
+hash: e8e593415798b078607200020582216188a3f48c2df59638560ef4dfb8a9aa90
+updated: 2017-05-06T12:59:58.789204298+02:00
+imports:
+- name: github.com/blevesearch/bleve
+  version: 97393d027342f43b17da2f02c090a4e728ac929f
+  subpackages:
+  - analysis
+  - analysis/analyzers/standard_analyzer
+  - analysis/datetime_parsers/datetime_optional
+  - analysis/datetime_parsers/flexible_go
+  - analysis/language/en
+  - analysis/token_filters/lower_case_filter
+  - analysis/token_filters/porter
+  - analysis/token_filters/stop_tokens_filter
+  - analysis/tokenizers/unicode
+  - document
+  - index
+  - index/store
+  - index/store/boltdb
+  - index/store/gtreap
+  - index/upside_down
+  - numeric_util
+  - registry
+  - search
+  - search/collectors
+  - search/facets
+  - search/highlight
+  - search/highlight/fragment_formatters/html
+  - search/highlight/fragmenters/simple
+  - search/highlight/highlighters/html
+  - search/highlight/highlighters/simple
+  - search/scorers
+  - search/searchers
+- name: github.com/blevesearch/go-porterstemmer
+  version: 23a2c8e5cf1f380f27722c6d2ae8896431dc7d0e
+  repo: https://github.com/blevesearch/go-porterstemmer
+- name: github.com/blevesearch/segment
+  version: db70c57796cc8c310613541dfade3dce627d09c7
+  repo: https://github.com/blevesearch/segment
+- name: github.com/boltdb/bolt
+  version: 583e8937c61f1af6513608ccc75c97b6abdf4ff9
+- name: github.com/drhodes/golorem
+  version: ecccc744c2d953a1e13cbe5e5fc5d4cbc9b8daeb
+- name: github.com/elazarl/go-bindata-assetfs
+  version: 30f82fa23fd844bd5bb1e5f216db87fd77b5eb43
+- name: github.com/golang/protobuf
+  version: 655cdfa588ea190e901bc5590e65d5621688847c
+  repo: https://github.com/golang/protobuf
+  subpackages:
+  - proto
+- name: github.com/julienschmidt/httprouter
+  version: 8c199fb6259ffc1af525cc3ad52ee60ba8359669
+- name: github.com/mattn/go-sqlite3
+  version: ca5e3819723d8eeaf170ad510e7da1d6d2e94a08
+- name: github.com/mitchellh/go-homedir
+  version: b8bc1bf767474819792c23f32d8286a45736f1c6
+- name: github.com/pkg/errors
+  version: 645ef00459ed84a119197bfb8d8205042c6df63d
+- name: github.com/Sirupsen/logrus
+  version: ba1b36c82c5e05c4f912a88eab0dcd91a171688f
+- name: github.com/steveyen/gtreap
+  version: 0abe01ef9be25c4aedc174758ec2d917314d6d70
+  repo: https://github.com/steveyen/gtreap
+- name: github.com/twinj/uuid
+  version: 89173bcdda19db0eb88aef1e1cb1cb2505561d31
+- name: golang.org/x/net
+  version: e45385e9b226f570b1f086bf287b25d3d4117776
+  repo: https://go.googlesource.com/net
+  subpackages:
+  - context
+- name: golang.org/x/sys
+  version: 9ccfe848b9db8435a24c424abbc07a921adf1df5
+  subpackages:
+  - unix
+testImports:
+- name: github.com/davecgh/go-spew
+  version: 6d212800a42e8ab5c146b8ace3490ee17e5225f9
+  subpackages:
+  - spew
+- name: github.com/pmezard/go-difflib
+  version: d8ed2627bdf02c080bf22230dbb337003b7aba2d
+  subpackages:
+  - difflib
+- name: github.com/prometheus/log
+  version: 9a3136781e1ff7bc42736ba4acb81339b1422551
+- name: github.com/stretchr/testify
+  version: 69483b4bd14f5845b5a1e55bca19e954e827f1d0
+  subpackages:
+  - assert
