@@ -11,7 +11,7 @@ import (
 	"fmt"
 
 	log "github.com/Sirupsen/logrus"
-	app "github.com/jmcfarlane/notable/app"
+	"github.com/jmcfarlane/notable/app"
 )
 
 // createCmd represents the create command
