@@ -3,7 +3,10 @@ package cmd
 import (
 	"bytes"
 	"encoding/json"
+	"io/ioutil"
 	"net/http"
+	"os"
+	"os/exec"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -27,13 +30,24 @@ var createCmd = &cobra.Command{
 			"Tags":     viper.GetString("create.tags"),
 			"Password": "Really?",
 		}).Debug("Provided values")
+
 		if !validateCreateParams() {
 			log.Errorf("Subject has to be set")
 		}
+
+		content, err := runEditor()
+		if err != nil {
+			log.Errorf("Error calling editor: %#v", err)
+		}
+		if "" == content {
+			log.Error("Please provide some content")
+		}
+
 		var note app.Note
 		note.Tags = viper.GetString("create.tags")
 		note.Subject = viper.GetString("create.subject")
 		note.Password = viper.GetString("create.password")
+		note.Content = content
 
 		data, err := json.MarshalIndent(note, "", "  ")
 		if err != nil {
@@ -60,4 +74,24 @@ func init() {
 	viper.BindPFlag("create.subject", createCmd.Flags().Lookup("subject"))
 	viper.BindPFlag("create.tags", createCmd.Flags().Lookup("tags"))
 	viper.BindPFlag("create.password", createCmd.Flags().Lookup("password"))
+}
+
+func runEditor() (string, error) {
+	editor := os.Getenv("EDITOR")
+	file, err := ioutil.TempFile("", "notable-cli")
+	if err != nil {
+		return "", err
+	}
+	cmd := exec.Command(editor, file.Name())
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	err = cmd.Run()
+	if err != nil {
+		return "", err
+	}
+	content, err := ioutil.ReadFile(file.Name())
+	if err != nil {
+		return "", err
+	}
+	return string(content), nil
 }
