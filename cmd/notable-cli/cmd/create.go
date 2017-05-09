@@ -27,7 +27,9 @@ var createCmd = &cobra.Command{
 			"Tags":     viper.GetString("create.tags"),
 			"Password": "Really?",
 		}).Debug("Provided values")
-
+		if !validateCreateParams() {
+			log.Errorf("Subject has to be set")
+		}
 		var note app.Note
 		note.Tags = viper.GetString("create.tags")
 		note.Subject = viper.GetString("create.subject")
@@ -43,6 +45,10 @@ var createCmd = &cobra.Command{
 			log.Errorf("Error while creating payload: %#v", err)
 		}
 	},
+}
+
+func validateCreateParams() bool {
+	return "" != viper.GetString("create.subject")
 }
 
 func init() {
