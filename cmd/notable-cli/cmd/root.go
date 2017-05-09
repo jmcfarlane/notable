@@ -54,10 +54,11 @@ func initConfig() {
 		viper.SetConfigFile(cfgFile)
 	}
 
-	viper.SetConfigName(".notable-cli") // name of config file (without extension)
-	viper.AddConfigPath(".")            // adding home directory as first search path
-	viper.AddConfigPath("$HOME")        // adding home directory as first search path
-	viper.AutomaticEnv()                // read in environment variables that match
+	viper.SetConfigName(".notable-cli")   // name of config file (without extension)
+	viper.AddConfigPath("$HOME/.notable") // adding notable config directory as first search path
+	viper.AddConfigPath(".")              // adding current directory as second search path
+	viper.AddConfigPath("$HOME")          // adding home directory as third search path
+	viper.AutomaticEnv()                  // read in environment variables that match
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
