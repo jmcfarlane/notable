@@ -1,4 +1,4 @@
-package main
+package app
 
 import (
 	"bytes"
@@ -11,8 +11,8 @@ import (
 	log "github.com/Sirupsen/logrus"
 )
 
-// Envelope to communicate details to the frontent
-type apiResponse struct {
+// APIResponse - Envelope to communicate details to the frontent
+type APIResponse struct {
 	Message string `json:"message"`
 	Success bool   `json:"success"`
 }
@@ -32,12 +32,12 @@ type Note struct {
 // Notes is a collection of Note objects
 type Notes []Note
 
-// timeSorter sorts notes lines by last updated
-type timeSorter Notes
+// TimeSorter sorts notes lines by last updated
+type TimeSorter Notes
 
-func (a timeSorter) Len() int           { return len(a) }
-func (a timeSorter) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a timeSorter) Less(i, j int) bool { return a[i].Updated < a[j].Updated }
+func (a TimeSorter) Len() int           { return len(a) }
+func (a TimeSorter) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a TimeSorter) Less(i, j int) bool { return a[i].Updated < a[j].Updated }
 
 // ToJSON converts a (filtered) note into json fields filtered:
 // - Content: For performance reasons
@@ -81,7 +81,7 @@ func now() string {
 }
 
 // Prepare a note for being persisted to storage
-func persistable(note Note) (Note, error) {
+func Persistable(note Note) (Note, error) {
 	note.Updated = now()
 	// Generate a uuid if necessary
 	if note.UID == "" {
@@ -89,7 +89,7 @@ func persistable(note Note) (Note, error) {
 	}
 	// Make sure the contents are encrypted if a password is set
 	if note.Password != "" {
-		encrypted, err := encrypt(note.Content, note.Password)
+		encrypted, err := Encrypt(note.Content, note.Password)
 		if err != nil {
 			return note, err
 		}

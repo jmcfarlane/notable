@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/jmcfarlane/notable/app"
 	"github.com/julienschmidt/httprouter"
 
 	log "github.com/Sirupsen/logrus"
@@ -17,7 +18,7 @@ import (
 // CreateNote creates a new note
 func createNote(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	payload, _ := ioutil.ReadAll(r.Body)
-	note := Note{}
+	note := app.Note{}
 	json.Unmarshal(payload, &note)
 	note, err := db.create(note)
 	if err != nil {
@@ -37,7 +38,7 @@ func pid(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 // Remove a note from storage
 func deleteNote(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	outcome := apiResponse{}
+	outcome := app.APIResponse{}
 	err := db.deleteByUID(ps.ByName("uid"))
 	if err != nil {
 		outcome.Success = false
@@ -53,7 +54,7 @@ func deleteNote(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 func getContent(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	password := r.PostFormValue("password")
 	content, err := getContentByUID(db, ps.ByName("uid"), password)
-	if smellsEncrypted(content) == true {
+	if app.SmellsEncrypted(content) == true {
 		w.WriteHeader(http.StatusForbidden)
 		fmt.Fprintf(w, "Nope, try again")
 		return
@@ -88,7 +89,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 // Persist the updated note to storage
 func updateNote(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	payload, _ := ioutil.ReadAll(r.Body)
-	note := Note{}
+	note := app.Note{}
 	json.Unmarshal(payload, &note)
 	note, err := db.update(note)
 	if err != nil {

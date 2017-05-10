@@ -6,6 +6,7 @@ import (
 	"sort"
 
 	"github.com/boltdb/bolt"
+	"github.com/jmcfarlane/notable/app"
 
 	log "github.com/Sirupsen/logrus"
 )
@@ -49,7 +50,7 @@ func (db *BoltDB) dbFilePath() string {
 	return db.Path
 }
 
-func (db *BoltDB) create(note Note) (Note, error) {
+func (db *BoltDB) create(note app.Note) (app.Note, error) {
 	return db.update(note)
 }
 
@@ -74,8 +75,8 @@ func (db *BoltDB) deleteByUID(uid string) error {
 	return err
 }
 
-func (db *BoltDB) getNoteByUID(uid string, password string) (Note, error) {
-	var note Note
+func (db *BoltDB) getNoteByUID(uid string, password string) (app.Note, error) {
+	var note app.Note
 	err := db.Engine.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(db.NotesBucket)
 		v := b.Get([]byte(uid))
@@ -112,13 +113,13 @@ func (db *BoltDB) migrate() {
 	log.Infof("Migration complete err=%v", err)
 }
 
-func (db *BoltDB) list() Notes {
-	var notes Notes
+func (db *BoltDB) list() app.Notes {
+	var notes app.Notes
 	db.Engine.View(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket(db.NotesBucket)
 		c := bucket.Cursor()
 		for k, v := c.First(); k != nil; k, v = c.Next() {
-			var note Note
+			var note app.Note
 			err := note.FromBytes(v)
 			if err != nil {
 				log.Fatal(err)
@@ -128,12 +129,12 @@ func (db *BoltDB) list() Notes {
 		}
 		return nil
 	})
-	sort.Sort(sort.Reverse(timeSorter(notes)))
+	sort.Sort(sort.Reverse(app.TimeSorter(notes)))
 	return notes
 }
 
-func (db *BoltDB) update(note Note) (Note, error) {
-	note, err := persistable(note)
+func (db *BoltDB) update(note app.Note) (app.Note, error) {
+	note, err := app.Persistable(note)
 	if err != nil {
 		return note, err
 	}

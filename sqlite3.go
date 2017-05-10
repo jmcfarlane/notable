@@ -7,6 +7,7 @@ import (
 
 	// Imported only for it's side effect
 
+	"github.com/jmcfarlane/notable/app"
 	_ "github.com/mattn/go-sqlite3"
 
 	log "github.com/Sirupsen/logrus"
@@ -93,8 +94,8 @@ func (db *Sqlite3) deleteByUID(uid string) error {
 }
 
 // Create a note
-func (db *Sqlite3) create(note Note) (Note, error) {
-	note, err := persistable(note)
+func (db *Sqlite3) create(note app.Note) (app.Note, error) {
+	note, err := app.Persistable(note)
 	if err != nil {
 		panic(err)
 	}
@@ -124,21 +125,21 @@ func (db *Sqlite3) create(note Note) (Note, error) {
 	return note, indexNote(note)
 }
 
-func (db *Sqlite3) getNoteByUID(uid string, password string) (Note, error) {
+func (db *Sqlite3) getNoteByUID(uid string, password string) (app.Note, error) {
 	rows, _ := db.Engine.Query("SELECT content FROM notes WHERE uid=?", uid)
-	var notes Notes
+	var notes app.Notes
 	for rows.Next() {
-		var note Note
+		var note app.Note
 		rows.Scan(&note.Content)
 		notes = append(notes, note)
 	}
 	if len(notes) != 1 {
-		return Note{}, fmt.Errorf("No note found")
+		return app.Note{}, fmt.Errorf("No note found")
 	}
 	return decryptNote(notes[0], password)
 }
 
-func (db *Sqlite3) fetchAll() Notes {
+func (db *Sqlite3) fetchAll() app.Notes {
 	rows, _ := db.Engine.Query(`
 		SELECT
 			content, created, encrypted, subject, tags, uid, updated
@@ -147,9 +148,9 @@ func (db *Sqlite3) fetchAll() Notes {
 		`)
 	defer rows.Close()
 
-	var notes Notes
+	var notes app.Notes
 	for rows.Next() {
-		var note Note
+		var note app.Note
 		rows.Scan(
 			&note.Content,
 			&note.Created,
@@ -163,7 +164,7 @@ func (db *Sqlite3) fetchAll() Notes {
 	return notes
 }
 
-func (db *Sqlite3) list() Notes {
+func (db *Sqlite3) list() app.Notes {
 	rows, _ := db.Engine.Query(`
 		SELECT
 			created, encrypted, subject, tags, uid, updated
@@ -172,9 +173,9 @@ func (db *Sqlite3) list() Notes {
 		ORDER BY updated DESC`)
 	defer rows.Close()
 
-	var notes Notes
+	var notes app.Notes
 	for rows.Next() {
-		var note Note
+		var note app.Note
 		rows.Scan(
 			&note.Created,
 			&note.Encrypted,
@@ -187,8 +188,8 @@ func (db *Sqlite3) list() Notes {
 	return notes
 }
 
-func (db *Sqlite3) update(note Note) (Note, error) {
-	note, err := persistable(note)
+func (db *Sqlite3) update(note app.Note) (app.Note, error) {
+	note, err := app.Persistable(note)
 	if err != nil {
 		panic(err)
 	}
