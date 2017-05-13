@@ -10,6 +10,8 @@ import:
   version: master
 - package: github.com/elazarl/go-bindata-assetfs
   version: master
+  subpackages:
+  - '...'
 - package: github.com/julienschmidt/httprouter
   version: master
 - package: github.com/mattn/go-sqlite3
@@ -20,6 +22,10 @@ import:
   version: master
 - package: github.com/twinj/uuid
   version: master
+- package: github.com/jteeuwen/go-bindata
+  version: master
+  subpackages:
+  - '...'
 testImport:
 - package: github.com/prometheus/log
   version: master

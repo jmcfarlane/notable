@@ -1,5 +1,5 @@
-hash: 3f788dc272cd2b9fce4226eefa80c03f1281ddeb7b193b41a13be5ef93b33d6c
-updated: 2017-05-12T23:58:29.244216789-07:00
+hash: 168427b182eb2fa07dbaec6e5c7b27d87c16ba1c4dc24360e65f6b74bd5ebe39
+updated: 2017-05-13T01:24:37.229858369-07:00
 imports:
 - name: github.com/blevesearch/bleve
   version: 5c9915c6f41b05317744a2ec0340a2f71973025a
@@ -46,6 +46,8 @@ imports:
   version: ecccc744c2d953a1e13cbe5e5fc5d4cbc9b8daeb
 - name: github.com/elazarl/go-bindata-assetfs
   version: 30f82fa23fd844bd5bb1e5f216db87fd77b5eb43
+  subpackages:
+  - '...'
 - name: github.com/fsnotify/fsnotify
   version: 4da3e2cfbabc9f751898f250b49f2439785783a1
 - name: github.com/golang/protobuf
@@ -66,6 +68,10 @@ imports:
   - json/token
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
+- name: github.com/jteeuwen/go-bindata
+  version: a0ff2567cfb70903282db057e799fd826784d41d
+  subpackages:
+  - '...'
 - name: github.com/julienschmidt/httprouter
   version: 975b5c4c7c21c0e3d2764200bf2aa8e34657ae6e
 - name: github.com/magiconair/properties
@@ -131,6 +137,8 @@ testImports:
   - difflib
 - name: github.com/prometheus/log
   version: 9a3136781e1ff7bc42736ba4acb81339b1422551
+- name: github.com/Sirupsen/logrus
+  version: acfabf31db8f45a9174f54a0d48ea4d15627af4d
 - name: github.com/stretchr/testify
   version: 4d4bfba8f1d1027c4fdbe371823030df51419987
   subpackages:
