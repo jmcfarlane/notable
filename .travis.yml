@@ -14,5 +14,6 @@ install:
   - "go env"
 
 script:
+  - "mkdir -p $GOPATH/bin"
   - "./scripts/build.sh"
   - "./scripts/run-tests.sh"
