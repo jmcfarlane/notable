@@ -10,7 +10,7 @@ import (
 	"github.com/jmcfarlane/notable/app"
 	_ "github.com/mattn/go-sqlite3"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 )
 
 // Sqlite3 backend

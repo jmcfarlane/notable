@@ -3,9 +3,10 @@ package main
 import (
 	"os"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/blevesearch/bleve"
 	"github.com/jmcfarlane/notable/app"
+
+	log "github.com/sirupsen/logrus"
 )
 
 func unIndex(uid string) error {

@@ -12,7 +12,7 @@ import (
 	"github.com/jmcfarlane/notable/app"
 	"github.com/julienschmidt/httprouter"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 )
 
 // CreateNote creates a new note

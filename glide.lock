@@ -1,36 +1,39 @@
-hash: e8e593415798b078607200020582216188a3f48c2df59638560ef4dfb8a9aa90
-updated: 2017-05-08T10:54:05.567325348+02:00
+hash: 3f788dc272cd2b9fce4226eefa80c03f1281ddeb7b193b41a13be5ef93b33d6c
+updated: 2017-05-12T23:58:29.244216789-07:00
 imports:
 - name: github.com/blevesearch/bleve
-  version: 97393d027342f43b17da2f02c090a4e728ac929f
+  version: 5c9915c6f41b05317744a2ec0340a2f71973025a
   subpackages:
   - analysis
-  - analysis/analyzers/standard_analyzer
-  - analysis/datetime_parsers/datetime_optional
-  - analysis/datetime_parsers/flexible_go
-  - analysis/language/en
-  - analysis/token_filters/lower_case_filter
-  - analysis/token_filters/porter
-  - analysis/token_filters/stop_tokens_filter
-  - analysis/tokenizers/unicode
+  - analysis/analyzer/standard
+  - analysis/datetime/flexible
+  - analysis/datetime/optional
+  - analysis/lang/en
+  - analysis/token/lowercase
+  - analysis/token/porter
+  - analysis/token/stop
+  - analysis/tokenizer/unicode
   - document
+  - geo
   - index
   - index/store
   - index/store/boltdb
   - index/store/gtreap
-  - index/upside_down
-  - numeric_util
+  - index/upsidedown
+  - mapping
+  - numeric
   - registry
   - search
-  - search/collectors
-  - search/facets
+  - search/collector
+  - search/facet
   - search/highlight
-  - search/highlight/fragment_formatters/html
-  - search/highlight/fragmenters/simple
-  - search/highlight/highlighters/html
-  - search/highlight/highlighters/simple
-  - search/scorers
-  - search/searchers
+  - search/highlight/format/html
+  - search/highlight/fragmenter/simple
+  - search/highlight/highlighter/html
+  - search/highlight/highlighter/simple
+  - search/query
+  - search/scorer
+  - search/searcher
 - name: github.com/blevesearch/go-porterstemmer
   version: 23a2c8e5cf1f380f27722c6d2ae8896431dc7d0e
   repo: https://github.com/blevesearch/go-porterstemmer
@@ -38,7 +41,7 @@ imports:
   version: db70c57796cc8c310613541dfade3dce627d09c7
   repo: https://github.com/blevesearch/segment
 - name: github.com/boltdb/bolt
-  version: 583e8937c61f1af6513608ccc75c97b6abdf4ff9
+  version: e9cf4fae01b5a8ff89d0ec6b32f0d9c9f79aefdd
 - name: github.com/drhodes/golorem
   version: ecccc744c2d953a1e13cbe5e5fc5d4cbc9b8daeb
 - name: github.com/elazarl/go-bindata-assetfs
@@ -64,11 +67,11 @@ imports:
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/julienschmidt/httprouter
-  version: 8c199fb6259ffc1af525cc3ad52ee60ba8359669
+  version: 975b5c4c7c21c0e3d2764200bf2aa8e34657ae6e
 - name: github.com/magiconair/properties
   version: 51463bfca2576e06c62a8504b5c0f06d61312647
 - name: github.com/mattn/go-sqlite3
-  version: ca5e3819723d8eeaf170ad510e7da1d6d2e94a08
+  version: cf7286f069c3ef596efcc87781a4653a2e7607bd
 - name: github.com/mitchellh/go-homedir
   version: b8bc1bf767474819792c23f32d8286a45736f1c6
 - name: github.com/mitchellh/mapstructure
@@ -78,9 +81,9 @@ imports:
 - name: github.com/pelletier/go-toml
   version: 23f644976aa7c724adf4aec911dadf4af17840ab
 - name: github.com/pkg/errors
-  version: 645ef00459ed84a119197bfb8d8205042c6df63d
-- name: github.com/Sirupsen/logrus
-  version: ba1b36c82c5e05c4f912a88eab0dcd91a171688f
+  version: c605e284fe17294bda444b34710735b29d1a9d90
+- name: github.com/sirupsen/logrus
+  version: acfabf31db8f45a9174f54a0d48ea4d15627af4d
 - name: github.com/spf13/afero
   version: 9be650865eab0c12963d8753212f4f9c66cdcf12
   subpackages:
@@ -99,7 +102,7 @@ imports:
   version: 0abe01ef9be25c4aedc174758ec2d917314d6d70
   repo: https://github.com/steveyen/gtreap
 - name: github.com/twinj/uuid
-  version: 89173bcdda19db0eb88aef1e1cb1cb2505561d31
+  version: 7bbe408d339787c56ec15568c947c0959db1b275
 - name: golang.org/x/net
   version: e45385e9b226f570b1f086bf287b25d3d4117776
   repo: https://go.googlesource.com/net
@@ -119,7 +122,7 @@ imports:
   version: cd8b52f8269e0feb286dfeef29f8fe4d5b397e0b
 testImports:
 - name: github.com/davecgh/go-spew
-  version: 6d212800a42e8ab5c146b8ace3490ee17e5225f9
+  version: 04cdfd42973bb9c8589fd6a731800cf222fde1a9
   subpackages:
   - spew
 - name: github.com/pmezard/go-difflib
@@ -129,6 +132,6 @@ testImports:
 - name: github.com/prometheus/log
   version: 9a3136781e1ff7bc42736ba4acb81339b1422551
 - name: github.com/stretchr/testify
-  version: 69483b4bd14f5845b5a1e55bca19e954e827f1d0
+  version: 4d4bfba8f1d1027c4fdbe371823030df51419987
   subpackages:
   - assert

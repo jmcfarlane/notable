@@ -5,6 +5,10 @@
 * Open BoltDB before Bleve as the former supports a timeout :)
 * Improve error messaging on startup.
 * Enable line wrap.
+* Enable vendoring via [Glide](https://glide.sh/).
+* Ensure all released binaries are built with vendored dependencies.
+* Initial work on a command line client [`notable-cli`](https://github.com/jmcfarlane/notable/tree/master/cmd/notable-cli).
+* Fix case incorrect import of [logrus](https://github.com/sirupsen/logrus).
 
 ## v0.0.9 / 2017-04-26
 

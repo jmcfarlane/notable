@@ -9,7 +9,7 @@ import (
 	"strings"
 	"syscall"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 )
 
 // Daemonize (please use something like upstart, daemontools, systemd)

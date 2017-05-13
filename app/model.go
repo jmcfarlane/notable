@@ -8,7 +8,7 @@ import (
 
 	"github.com/twinj/uuid"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 )
 
 // APIResponse - Envelope to communicate details to the frontent
