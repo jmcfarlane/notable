@@ -12,7 +12,6 @@ go:
 install:
   - "go version"
   - "go env"
-  - "go get -t -v ./..."
 
 script:
   - "go build"
