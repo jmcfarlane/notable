@@ -14,5 +14,5 @@ install:
   - "go env"
 
 script:
-  - "go build"
+  - "./scripts/build.sh"
   - "./scripts/run-tests.sh"
