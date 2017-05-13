@@ -8,7 +8,7 @@ import (
 	"github.com/boltdb/bolt"
 	"github.com/jmcfarlane/notable/app"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 )
 
 // BoltDB backend

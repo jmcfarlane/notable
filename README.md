@@ -10,6 +10,8 @@ ships as a static binary.
 
 ![](docs/images/notable.png)
 
+You can view recent changes in the [changelog](CHANGELOG.md).
+
 ## Installation
 
 ### Linux, FreeBSD, MacOS, Windows
@@ -19,10 +21,22 @@ Download and extract the latest
 The zip file contains an executable named `notable`. The MacOS version also
 includes an [app bundle](https://en.wikipedia.org/wiki/Bundle_(macOS)).
 
-### Compile from source
+### Compile from source (using latest dependencies)
 
 ```
 go get -u github.com/jmcfarlane/notable
+notable
+```
+
+### Compile from source (using known good dependencies)
+
+```
+curl -s https://glide.sh/get | sh
+go get -u -d github.com/jmcfarlane/notable
+cd $GOPATH/github.com/jmcfarlane/notable
+glide install
+go generate
+go build
 notable
 ```
 
@@ -98,7 +112,7 @@ focused).
 | [go-sqlite3](https://github.com/mattn/go-sqlite3)             | Datastore (*optional*)    |
 | [httprouter](https://github.com/julienschmidt/httprouter)     | Mux                       |
 | [jQuery](https://jquery.com/)                                 | Dom manipulation          |
-| [logrus](https://github.com/Sirupsen/logrus)                  | Golang logging            |
+| [logrus](https://github.com/sirupsen/logrus)                  | Golang logging            |
 | [Mousetrap](https://craig.is/killing/mice)                    | Keyboard bindings         |
 | [Require.js](http://requirejs.org/)                           | Dependency management     |
 | [text plugin](http://github.com/requirejs/text)               | Text templates            |

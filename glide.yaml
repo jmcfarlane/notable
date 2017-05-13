@@ -1,25 +1,29 @@
 package: github.com/jmcfarlane/notable
 import:
-- package: github.com/Sirupsen/logrus
-  version: ~0.11.5
+- package: github.com/sirupsen/logrus
+  version: master
 - package: github.com/blevesearch/bleve
-  version: ~0.5.0
+  version: master
 - package: github.com/boltdb/bolt
-  version: ~1.3.0
+  version: master
 - package: github.com/drhodes/golorem
+  version: master
 - package: github.com/elazarl/go-bindata-assetfs
+  version: master
 - package: github.com/julienschmidt/httprouter
-  version: ~1.1.0
+  version: master
 - package: github.com/mattn/go-sqlite3
-  version: ~1.2.0
+  version: master
 - package: github.com/mitchellh/go-homedir
+  version: master
 - package: github.com/pkg/errors
-  version: ~0.8.0
+  version: master
 - package: github.com/twinj/uuid
-  version: ~0.10.0
+  version: master
 testImport:
 - package: github.com/prometheus/log
+  version: master
 - package: github.com/stretchr/testify
-  version: ~1.1.4
+  version: master
   subpackages:
   - assert

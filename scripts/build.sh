@@ -20,6 +20,10 @@ for goos in darwin freebsd linux windows; do
     cp LICENSE target/notable-${TAG}.${goos}-amd64
 done
 
+# Pin dependencies to known stable versions
+curl -s https://glide.sh/get | sh
+glide install
+
 # Build static assets
 go generate
 
