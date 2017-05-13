@@ -3,7 +3,6 @@ sudo: false
 language: go
 
 go:
-  - 1.5
   - 1.6
   - 1.7
   - 1.8
@@ -12,8 +11,10 @@ go:
 install:
   - "go version"
   - "go env"
+  - "mkdir -p $GOPATH/bin"
+  - "curl -s https://glide.sh/get | sh"
 
 script:
-  - "mkdir -p $GOPATH/bin"
-  - "./scripts/build.sh"
+  - "glide install"
+  - "go build"
   - "./scripts/run-tests.sh"
