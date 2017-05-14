@@ -29,6 +29,8 @@ import:
 testImport:
 - package: github.com/prometheus/log
   version: master
+- package: github.com/gtank/cryptopasta
+  version: master
 - package: github.com/stretchr/testify
   version: master
   subpackages:
