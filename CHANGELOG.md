@@ -1,4 +1,4 @@
-## v0.0.10 / ...
+## v0.0.10 / 2017-05-15
 
 * Add flag `bolt.timeout` for use with opening BoltDB.
 * Move `init` logic into `main` to fix race conditions on startup.
