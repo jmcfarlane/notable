@@ -40,6 +40,12 @@ function(noteView, notesTableRowTemplate) {
       this.$el.html(_.template(notesTableRowTemplate, {
         note: this.model.toJSON()
       }));
+      if (this.model.get('ahead_of_primary') || (this.model.get('deleted'))) {
+        this.$el.css('color', 'red');
+      }
+      if (this.model.get('deleted')) {
+        this.$el.css('text-decoration', 'line-through');
+      }
       return this;
     },
 

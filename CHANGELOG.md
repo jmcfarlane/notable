@@ -1,3 +1,16 @@
+## v0.1.0 / ...
+
+* Initial (experimental) support for distributed writes.
+    * The idea is you can share your notes directory via a tool like
+      Syncthing, and then run a single primary and as many
+      `-secondary` instances as you like. All computers have write
+      access, and all changes get replicated through the primary back
+      to the secondary nodes. Current replication mechanisms (maybe)
+      known to work:
+        1. [Syncthing](https://syncthing.net/)
+    * Testing has only been performed on Linux
+    * UI is very much incomplete
+
 ## v0.0.10 / 2017-05-15
 
 * Add flag `bolt.timeout` for use with opening BoltDB.

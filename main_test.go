@@ -59,7 +59,7 @@ func setup(t *testing.T) Mock {
 		db, err = openSqlite3(file.Name())
 	default:
 		backend = "boltdb"
-		db, err = openBoltDB(file.Name())
+		db, err = openBoltDB(file.Name(), false)
 	}
 	idx, err = getIndex(file.Name() + ".idx")
 	fmt.Println("TESTING BACKEND:", backend)

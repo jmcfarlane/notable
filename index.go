@@ -21,9 +21,15 @@ func unIndex(uid string) error {
 func getIndex(path string) (bleve.Index, error) {
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		mapping := bleve.NewIndexMapping()
-		return bleve.New(path, mapping)
+		idx, err := bleve.New(path, mapping)
+		if err != nil {
+			return idx, err
+		}
+		idx.Close()
 	}
-	return bleve.Open(path)
+	return bleve.OpenUsing(path, map[string]interface{}{
+		"read_only": *secondary,
+	})
 }
 
 func indexNote(note app.Note) error {
