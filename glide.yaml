@@ -27,8 +27,6 @@ import:
   subpackages:
   - '...'
 testImport:
-- package: github.com/prometheus/log
-  version: master
 - package: github.com/stretchr/testify
   version: master
   subpackages:

@@ -13,8 +13,9 @@ import (
 	"testing"
 
 	"github.com/jmcfarlane/notable/app"
-	"github.com/prometheus/log"
 	"github.com/stretchr/testify/assert"
+
+	log "github.com/sirupsen/logrus"
 )
 
 const (

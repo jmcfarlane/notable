@@ -135,10 +135,6 @@ testImports:
   version: d8ed2627bdf02c080bf22230dbb337003b7aba2d
   subpackages:
   - difflib
-- name: github.com/prometheus/log
-  version: 9a3136781e1ff7bc42736ba4acb81339b1422551
-- name: github.com/Sirupsen/logrus
-  version: acfabf31db8f45a9174f54a0d48ea4d15627af4d
 - name: github.com/stretchr/testify
   version: 4d4bfba8f1d1027c4fdbe371823030df51419987
   subpackages:
