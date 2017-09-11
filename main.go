@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/blevesearch/bleve"
+	"github.com/jmcfarlane/notable/app"
 	"github.com/julienschmidt/httprouter"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/pkg/errors"
@@ -53,6 +54,7 @@ var (
 	daemon      = flag.Bool("daemon", true, "Run as a daemon")
 	doReIndex   = flag.Bool("reindex", false, "Re-index all notes on startup")
 	restart     = flag.Bool("restart", false, "Restart if already running")
+	secondary   = flag.Bool("secondary", false, "Run program as secondary, not primary")
 	useBolt     = flag.Bool("use.bolt", true, "Use the new BoltDB backend")
 	version     = flag.Bool("version", false, "Print program version information")
 	boltTimeout = flag.Duration("bolt.timeout", time.Duration(time.Second*2), "Boltdb open timeout")
@@ -130,6 +132,29 @@ func getRouter() *httprouter.Router {
 	return router
 }
 
+func persistSecondaryUpdate(note app.Note) error {
+	if note.Deleted {
+		return db.deleteByUID(note.UID)
+	}
+	note.AheadOfPrimary = false
+	_, err := db.update(note)
+	return err
+}
+
+func consumeUpdatesFromSecondaries(db Backend, secondaries Secondary) {
+	for _, note := range secondaries.list() {
+		if err := persistSecondaryUpdate(note); err != nil {
+			log.Errorf("Unable to recover note=%v err=%v", note, err)
+			continue
+		}
+		if err := os.Remove(note.SecondaryPath); err != nil {
+			log.Errorf("Unable to delete secondary note=%v err=%v", note, err)
+			continue
+		}
+		log.Infof("Successfully recovered uid=%s", note.UID)
+	}
+}
+
 func main() {
 	flag.Parse()
 	if *version {
@@ -154,7 +179,7 @@ func main() {
 		*dbPath = filepath.Join(homeDirPath(), ".notable/notes.db")
 	}
 	if *useBolt || runtime.GOOS == "darwin" {
-		db, err = openBoltDB(*dbPath)
+		db, err = openBoltDB(*dbPath, *secondary)
 	} else {
 		db, err = openSqlite3(*dbPath)
 	}
@@ -170,6 +195,17 @@ func main() {
 		if err != nil {
 			log.Panic("Re-indexing failed:", err)
 		}
+	}
+	if *secondary {
+		go reloadAsNeeded()
+	} else {
+		secondaries := Secondary{Path: *dbPath}
+		consumeUpdatesFromSecondaries(db, secondaries)
+		go func() {
+			for _ = range time.NewTicker(time.Second * 2).C {
+				consumeUpdatesFromSecondaries(db, secondaries)
+			}
+		}()
 	}
 	defer db.close()
 	log.Infof("Using backend %s", db)

@@ -13,8 +13,9 @@ import (
 	"testing"
 
 	"github.com/jmcfarlane/notable/app"
-	"github.com/prometheus/log"
 	"github.com/stretchr/testify/assert"
+
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -59,7 +60,7 @@ func setup(t *testing.T) Mock {
 		db, err = openSqlite3(file.Name())
 	default:
 		backend = "boltdb"
-		db, err = openBoltDB(file.Name())
+		db, err = openBoltDB(file.Name(), false)
 	}
 	idx, err = getIndex(file.Name() + ".idx")
 	fmt.Println("TESTING BACKEND:", backend)

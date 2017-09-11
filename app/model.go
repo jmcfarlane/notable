@@ -27,10 +27,27 @@ type Note struct {
 	Tags      string `json:"tags"`
 	UID       string `json:"uid"`
 	Updated   string `json:"updated"`
+
+	// Fields largely to support the `-secondary` feature
+	AheadOfPrimary bool      `json:"ahead_of_primary"`
+	Deleted        bool      `json:"deleted"`
+	Time           time.Time `json:"time"`
+
+	// Private fields
+	SecondaryPath string `json:"-"`
 }
 
 // Notes is a collection of Note objects
 type Notes []Note
+
+// Map of notes key'd by uid
+func Map(notes Notes) map[string]Note {
+	var m = make(map[string]Note)
+	for _, note := range notes {
+		m[note.UID] = note
+	}
+	return m
+}
 
 // TimeSorter sorts notes lines by last updated
 type TimeSorter Notes
@@ -55,6 +72,11 @@ func (note Note) ToJSON() (string, error) {
 
 // FromBytes converts encoding.Gob bytes into a Note
 func (note *Note) FromBytes(b []byte) error {
+	// Zero byte file represents a logical delete
+	if len(b) == 0 {
+		note.Deleted = true
+		return nil
+	}
 	buf := bytes.NewBuffer(b)
 	dec := gob.NewDecoder(buf)
 	return dec.Decode(&note)
@@ -74,15 +96,10 @@ func (note Note) ToBytes() ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-// The current timestamp in time.RFC3339 format
-func now() string {
-	t := time.Now()
-	return t.Format(time.RFC3339)
-}
-
-// Prepare a note for being persisted to storage
+// Persistable prepares a note for being persisted to storage
 func Persistable(note Note) (Note, error) {
-	note.Updated = now()
+	note.Time = time.Now()
+	note.Updated = note.Time.Format(time.RFC3339)
 	// Generate a uuid if necessary
 	if note.UID == "" {
 		note.UID = uuid.NewV4().String()
