@@ -1,4 +1,4 @@
-## v0.1.0 / ...
+## v0.1.0 / 2017-09-17
 
 * Initial (experimental) support for distributed writes.
     * The idea is you can share your notes directory via a tool like
