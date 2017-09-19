@@ -109,7 +109,6 @@ focused).
 | [errors](https://github.com/pkg/errors)                       | Golang error primatives   |
 | [go-homedir](https://github.com/mitchellh/go-homedir)         | Home directory detection  |
 | [Golang](https://golang.org/)                                 | Business logic            |
-| [go-sqlite3](https://github.com/mattn/go-sqlite3)             | Datastore (*optional*)    |
 | [httprouter](https://github.com/julienschmidt/httprouter)     | Mux                       |
 | [jQuery](https://jquery.com/)                                 | Dom manipulation          |
 | [logrus](https://github.com/sirupsen/logrus)                  | Golang logging            |

@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -53,17 +52,8 @@ func setup(t *testing.T) Mock {
 		return Mock{}
 	}
 
-	// Set the `db` global to a test backend
-	backend := os.Getenv("BACKEND")
-	switch backend {
-	case "sqlite3":
-		db, err = openSqlite3(file.Name())
-	default:
-		backend = "boltdb"
-		db, err = openBoltDB(file.Name(), false)
-	}
+	db, err = openBoltDB(file.Name(), false)
 	idx, err = getIndex(file.Name() + ".idx")
-	fmt.Println("TESTING BACKEND:", backend)
 	db.createSchema()
 	return Mock{
 		db:     db,
