@@ -10,6 +10,9 @@
         1. [Syncthing](https://syncthing.net/)
     * Testing has only been performed on Linux
     * UI is very much incomplete
+* Remove sqlite
+* Upgrade dependencies
+* Purge the `vendor` folder before a build
 
 ## v0.0.10 / 2017-05-15
 

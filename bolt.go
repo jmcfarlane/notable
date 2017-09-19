@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"path/filepath"
 	"sort"
 
 	"github.com/boltdb/bolt"
@@ -123,28 +122,7 @@ func (db *BoltDB) getNoteByUID(uid string, password string) (app.Note, error) {
 }
 
 func (db *BoltDB) migrate() {
-	oldDBPath := filepath.Join(filepath.Dir(*dbPath), "notes.sqlite3")
-	if !fileExists(oldDBPath) {
-		return
-	}
-	oldDB, err := openSqlite3(oldDBPath)
-	if err != nil {
-		log.Panic(err)
-	}
-	notes := oldDB.fetchAll()
-	err = db.Engine.Update(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket(db.NotesBucket)
-		for _, note := range notes {
-			b, err := note.ToBytes()
-			if err != nil {
-				log.Fatal(err)
-			}
-			bucket.Put([]byte(note.UID), b)
-			fmt.Println("Migrated to BoltDB:", note.Subject, bucket)
-		}
-		return nil
-	})
-	log.Infof("Migration complete err=%v", err)
+	return
 }
 
 func (db *BoltDB) list() app.Notes {

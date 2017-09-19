@@ -14,7 +14,7 @@ flags="-X main.buildArch=$(go version | cut -f 4 -d' ')
        -X main.buildVersion=${TAG}"
 
 # Clean house
-rm -rf target
+rm -rf target vendor
 for goos in darwin freebsd linux windows; do
     mkdir -p target/notable-${TAG}.${goos}-amd64
     cp LICENSE target/notable-${TAG}.${goos}-amd64

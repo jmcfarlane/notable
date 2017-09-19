@@ -55,7 +55,6 @@ var (
 	doReIndex   = flag.Bool("reindex", false, "Re-index all notes on startup")
 	restart     = flag.Bool("restart", false, "Restart if already running")
 	secondary   = flag.Bool("secondary", false, "Run program as secondary, not primary")
-	useBolt     = flag.Bool("use.bolt", true, "Use the new BoltDB backend")
 	version     = flag.Bool("version", false, "Print program version information")
 	boltTimeout = flag.Duration("bolt.timeout", time.Duration(time.Second*2), "Boltdb open timeout")
 )
@@ -178,11 +177,7 @@ func main() {
 	if *dbPath == "" {
 		*dbPath = filepath.Join(homeDirPath(), ".notable/notes.db")
 	}
-	if *useBolt || runtime.GOOS == "darwin" {
-		db, err = openBoltDB(*dbPath, *secondary)
-	} else {
-		db, err = openSqlite3(*dbPath)
-	}
+	db, err = openBoltDB(*dbPath, *secondary)
 	if err != nil {
 		log.Fatal(errors.Wrap(err, "Unable to open database"))
 	}

@@ -1,5 +1,5 @@
-hash: 168427b182eb2fa07dbaec6e5c7b27d87c16ba1c4dc24360e65f6b74bd5ebe39
-updated: 2017-05-13T01:24:37.229858369-07:00
+hash: fea1d9c32c4ec7b6d96ab3b4e4efcea518949e5dda144ec8459af51b8a0b11c0
+updated: 2017-09-18T21:17:35.187709029-07:00
 imports:
 - name: github.com/blevesearch/bleve
   version: 5c9915c6f41b05317744a2ec0340a2f71973025a
@@ -76,8 +76,6 @@ imports:
   version: 975b5c4c7c21c0e3d2764200bf2aa8e34657ae6e
 - name: github.com/magiconair/properties
   version: 51463bfca2576e06c62a8504b5c0f06d61312647
-- name: github.com/mattn/go-sqlite3
-  version: cf7286f069c3ef596efcc87781a4653a2e7607bd
 - name: github.com/mitchellh/go-homedir
   version: b8bc1bf767474819792c23f32d8286a45736f1c6
 - name: github.com/mitchellh/mapstructure
