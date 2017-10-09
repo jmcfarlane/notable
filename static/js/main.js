@@ -48,5 +48,22 @@ require(
       }).render(),
       usageModal: new UsageModalView()
     });
+
+    function adminAttach(adminUrl) {
+      var ws = new WebSocket(adminUrl);
+      ws.onclose = function(){
+          setTimeout(function(){adminAttach(adminUrl)}, 5000);
+      };
+      ws.onmessage = _.bind(function(evt){
+        if (evt.data == "reload") {
+          this.collection.reset();
+          this.$el.html("");
+          this.collection.fetch();
+        } else {
+          debugger;
+        }
+      }, notesView)
+    }
+    adminAttach('ws://' + document.location.href.split("/")[2] + "/admin");
 	}
 );

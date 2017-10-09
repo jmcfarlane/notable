@@ -1,3 +1,11 @@
+## v0.1.1 / ...
+
+* Initial support for automatic client consumption of changes when
+  Notable is being ran in distributed mode. Currently this performs a
+  very basic reload of the notes table, but does not take into
+  consideration any notes currently open for edit. Reloading works on
+  both primary and secondary nodes (via different triggers).
+
 ## v0.1.0 / 2017-09-17
 
 * Initial (experimental) support for distributed writes.
