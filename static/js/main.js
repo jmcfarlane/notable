@@ -58,7 +58,9 @@ require(
         if (evt.data == "reload") {
           this.collection.reset();
           this.$el.html("");
-          this.collection.fetch();
+          setTimeout(_.bind(function() {
+            this.collection.fetch();
+          }, this), 500);
         } else {
           debugger;
         }
