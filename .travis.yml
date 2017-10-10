@@ -12,7 +12,7 @@ install:
   - "go version"
   - "go env"
   - "mkdir -p $GOPATH/bin"
-  - "curl -s https://glide.sh/get | sh"
+  - "go get github.com/Masterminds/glide"
 
 script:
   - "glide install"
