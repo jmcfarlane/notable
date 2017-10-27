@@ -90,7 +90,7 @@ func (db *Secondary) update(note app.Note) (app.Note, error) {
 	return note, err
 }
 
-func reloadAsNeeded() {
+func reloadAsNeeded(m *messenger) {
 	var last time.Time
 	for _ = range time.NewTicker(time.Second * 2).C {
 		fi, err := os.Stat(*dbPath)
@@ -102,6 +102,7 @@ func reloadAsNeeded() {
 		if !last.IsZero() && mtime.After(last) {
 			db, err = openBoltDB(*dbPath, *secondary)
 			log.Infof("Database reloaded due to upstream change err=%v", err)
+			m.send("reload")
 		}
 		last = mtime
 	}

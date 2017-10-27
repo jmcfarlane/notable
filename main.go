@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"strconv"
+	"sync"
 	"time"
 
 	"github.com/blevesearch/bleve"
@@ -35,7 +36,6 @@ var (
 )
 
 // This is the application itself
-var router = getRouter()
 var booted = time.Now()
 var db Backend
 var idx bleve.Index
@@ -115,10 +115,50 @@ func withoutCaching(next http.Handler) http.Handler {
 	})
 }
 
-func getRouter() *httprouter.Router {
+type messenger struct {
+	sync.Mutex
+	clients []chan string
+}
+
+func (m *messenger) add() chan string {
+	reloadChan := make(chan string, 1)
+	m.Lock()
+	defer m.Unlock()
+	m.clients = append(m.clients, reloadChan)
+	return reloadChan
+}
+
+func (m *messenger) close(ch chan string) {
+	m.Lock()
+	defer m.Unlock()
+	for i, client := range m.clients {
+		if client != ch {
+			continue
+		}
+		m.clients = append(m.clients[:i], m.clients[i+1:]...)
+		close(ch)
+	}
+}
+
+func (m *messenger) remove(i int) {
+	m.Lock()
+	defer m.Unlock()
+	m.clients = append(m.clients[:i], m.clients[i+1:]...)
+}
+
+func (m *messenger) send(msg string) {
+	m.Lock()
+	defer m.Unlock()
+	for _, client := range m.clients {
+		client <- msg
+	}
+}
+
+func getRouter(m *messenger) *httprouter.Router {
 	router := httprouter.New()
 	router.GET("/", index)
 	router.GET("/pid", pid)
+	router.GET("/admin", adminHandler(m))
 	router.GET("/api/notes/list", listHandler)
 	router.GET("/api/notes/search", searchHandler)
 	router.GET("/api/version", versionHandler)
@@ -140,7 +180,8 @@ func persistSecondaryUpdate(note app.Note) error {
 	return err
 }
 
-func consumeUpdatesFromSecondaries(db Backend, secondaries Secondary) {
+func consumeUpdatesFromSecondaries(db Backend, secondaries Secondary, m *messenger) {
+	clientReload := false
 	for _, note := range secondaries.list() {
 		if err := persistSecondaryUpdate(note); err != nil {
 			log.Errorf("Unable to recover note=%v err=%v", note, err)
@@ -151,6 +192,10 @@ func consumeUpdatesFromSecondaries(db Backend, secondaries Secondary) {
 			continue
 		}
 		log.Infof("Successfully recovered uid=%s", note.UID)
+		clientReload = true
+	}
+	if clientReload {
+		m.send("reload")
 	}
 }
 
@@ -191,14 +236,15 @@ func main() {
 			log.Panic("Re-indexing failed:", err)
 		}
 	}
+	m := new(messenger)
 	if *secondary {
-		go reloadAsNeeded()
+		go reloadAsNeeded(m)
 	} else {
 		secondaries := Secondary{Path: *dbPath}
-		consumeUpdatesFromSecondaries(db, secondaries)
+		consumeUpdatesFromSecondaries(db, secondaries, m)
 		go func() {
 			for _ = range time.NewTicker(time.Second * 2).C {
-				consumeUpdatesFromSecondaries(db, secondaries)
+				consumeUpdatesFromSecondaries(db, secondaries, m)
 			}
 		}()
 	}
@@ -207,6 +253,6 @@ func main() {
 	if *daemon {
 		daemonize()
 	} else {
-		start(router)
+		start(getRouter(m))
 	}
 }

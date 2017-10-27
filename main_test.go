@@ -57,7 +57,7 @@ func setup(t *testing.T) Mock {
 	db.createSchema()
 	return Mock{
 		db:     db,
-		server: httptest.NewServer(router),
+		server: httptest.NewServer(getRouter(new(messenger))),
 	}
 }
 

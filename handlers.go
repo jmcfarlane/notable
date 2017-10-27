@@ -11,6 +11,7 @@ import (
 
 	"github.com/jmcfarlane/notable/app"
 	"github.com/julienschmidt/httprouter"
+	"golang.org/x/net/websocket"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -64,6 +65,32 @@ func getContent(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		fmt.Fprintf(w, "ERROR")
 	}
 	w.Write([]byte(content))
+}
+
+func adminHandler(m *messenger) httprouter.Handle {
+	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+		websocket.Handler(func(ws *websocket.Conn) {
+			defer ws.Close()
+			ch := m.add()
+			log.Infof("Registered client websocket=%v", ws)
+			go func(m *messenger) {
+				for {
+					var data []byte
+					_, err := ws.Read(data)
+					if err != nil {
+						m.close(ch)
+						return
+					}
+					log.Warnf("Websocket unexpectedly sent data=%s", string(data))
+				}
+			}(m)
+			for msg := range ch {
+				log.Infof("Sending frontend push msg=%s", msg)
+				ws.Write([]byte(msg))
+			}
+			log.Info("Unregistered client websocket")
+		}).ServeHTTP(w, r)
+	}
 }
 
 func listHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
