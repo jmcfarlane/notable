@@ -2,11 +2,6 @@
 
 cd $(dirname $0)/..
 
-source scripts/version.sh
-
-# Perform a build
-./scripts/build.sh
-
 # The date is something like: 2017-01-20
 export DATE="$(head -n1 CHANGELOG.md | grep -E -o '[0-9]{4}-[0-9]{2}-[0-9]{2}')"
 

@@ -12,6 +12,22 @@ ships as a static binary.
 
 You can view recent changes in the [changelog](CHANGELOG.md).
 
+## Features
+
+- [x] Secure: Everything is local to your computer
+- [x] Private: Each note can be encrypted
+- [x] Search as you type (tag, tag prefix, and full text index)
+- [x] Standalone: You can use it on an airplane
+- [x] Keyboard friendly
+- [x] Cross platform:
+	- [x] Linux
+	- [x] MacOS
+	- [x] FreeBSD
+	- [x] Windows (experimental)
+- [x] Distributed writes (*experimental*)
+	- [x] [Keybase](https://keybase.io/)
+	- [x] [Syncthing](https://syncthing.net/)
+
 ## Installation
 
 ### Linux, FreeBSD, MacOS, Windows
@@ -28,16 +44,23 @@ go get -u github.com/jmcfarlane/notable
 notable
 ```
 
+### Understanding the build
+
+Notable uses GNU Make and shell scripts for it's build. You can get
+some detail on what the build supports by it's `help` target:
+
+```
+make help
+```
+
 ### Compile from source (using known good dependencies)
 
 ```
-curl -s https://glide.sh/get | sh
 go get -u -d github.com/jmcfarlane/notable
 cd $GOPATH/github.com/jmcfarlane/notable
-glide install
-go generate
-go build
-notable
+make test vet
+make
+./notable
 ```
 
 ### Run via a [rkt](https://coreos.com/rkt/) container
@@ -55,18 +78,12 @@ sudo rkt run --insecure-options=image --net=host --volume data,kind=host,source=
 docker run -p 8080:8080 -d -v ~/.notable:/root/.notable jmcfarlane/notable:latest
 ```
 
-## Features
+### Build the Docker container and run it locally (ephemeral notes)
 
-- [x] Secure: Everything is local to your computer
-- [x] Private: Each note can be encrypted
-- [x] Search as you type (tag, tag prefix, and full text index)
-- [x] Standalone: You can use it on an airplane
-- [x] Cross platform:
-    - [x] Linux
-    - [x] MacOS
-    - [x] FreeBSD
-    - [x] Windows (experimental)
-- [x] Keyboard friendly
+```
+make docker-runnable
+make docker-run
+```
 
 ## Screenshots
 

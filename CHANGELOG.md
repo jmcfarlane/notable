@@ -1,10 +1,19 @@
 ## v0.1.1 / ...
 
+* Upgrade to Go 1.9.2
 * Initial support for automatic client consumption of changes when
   Notable is being ran in distributed mode. Currently this performs a
   very basic reload of the notes table, but does not take into
   consideration any notes currently open for edit. Reloading works on
   both primary and secondary nodes (via different triggers).
+* Upgrade runnable Docker container from Alpine to `scratch`
+* Produce more release artifacts via Docker (less required on the host)
+* Use `-race` when running tests
+* Fix regression in tests (need to clean up from a stalled CLI effort)
+* Ensure artifact copy from container to host is rootless ;)
+* Update features list to include distributed writes
+* Initial (successful) testing with Keybase!
+
 
 ## v0.1.0 / 2017-09-17
 
