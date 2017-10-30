@@ -1,4 +1,4 @@
-## v0.1.1 / ...
+## v0.1.1 / 2017-10-29
 
 * Upgrade to Go 1.9.2
 * Initial support for automatic client consumption of changes when
