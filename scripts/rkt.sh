@@ -2,8 +2,6 @@
 
 cd $(dirname $0)/..
 
-source scripts/version.sh
-
 cd target/notable-${TAG}.linux-amd64
 acbuild begin
 acbuild set-name github.com/jmcfarlane/notable

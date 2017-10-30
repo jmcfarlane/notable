@@ -6,15 +6,13 @@ go:
   - 1.6
   - 1.7
   - 1.8
+  - 1.9
   - tip
 
 install:
   - "go version"
   - "go env"
   - "mkdir -p $GOPATH/bin"
-  - "go get github.com/Masterminds/glide"
 
 script:
-  - "glide install"
-  - "go build"
-  - "./scripts/run-tests.sh"
+  - "make test vet"

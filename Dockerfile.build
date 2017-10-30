@@ -1,15 +1,17 @@
-FROM golang:1.8.0-alpine
+FROM golang:1.9.2
 
-# Build dependencies
-RUN apk add --update bash curl gcc git musl-dev
+# Build time variables (set inside Makefile)
+ARG CHOWN_GID=unset
+ARG CHOWN_UID=unset
+ARG VERSION=unset
 
+ENV GOPATH /go
+ENV PATH $PATH:/go/bin
 ENV PROJECT /go/src/github.com/jmcfarlane/notable
+ENV VERSION=$VERSION
 
 ADD . $PROJECT
 WORKDIR $PROJECT
 
-RUN go env
-RUN go version
-RUN go get github.com/jteeuwen/go-bindata/...
-RUN go get github.com/elazarl/go-bindata-assetfs/...
-RUN DOCKER=true CGO_ENABLED=1 ./scripts/build.sh
+RUN apt-get update && apt-get -y install imagemagick icnsutils zip
+RUN make build

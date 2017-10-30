@@ -1,9 +1,9 @@
-FROM alpine
+FROM scratch
 MAINTAINER John McFarlane
 
 EXPOSE 8080
 
 # Add the compiled binary
-COPY target/notable-musl /notable
+COPY target/notable-v*.linux-amd64/notable /notable
 
-CMD ["/notable", "-daemon=false", "-browser=false", "-bind=0.0.0.0"]
+ENTRYPOINT ["/notable", "-daemon=false", "-browser=false", "-bind=0.0.0.0"]

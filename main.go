@@ -24,17 +24,6 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// Program version information
-var (
-	buildArch     string
-	buildBranch   string
-	buildCompiler string
-	buildHash     string
-	buildStamp    string
-	buildUser     string
-	buildVersion  string
-)
-
 // This is the application itself
 var booted = time.Now()
 var db Backend
