@@ -9,11 +9,12 @@ systems=(darwin freebsd linux windows)
 for goos in ${systems[@]}; do
     mkdir -p target/notable-${TAG}.${goos}-amd64
     cp LICENSE target/notable-${TAG}.${goos}-amd64
-	go build -ldflags "$FLAGS $buildArch=${goos}-${GOARCH}" \
-		-o target/notable-${TAG}.${goos}-amd64/notable
-	if [ "$goos" == "windows" ]; then
-		mv target/notable-${TAG}.${goos}-amd64/{notable,notable.exe}
-	fi
+    GOOS=$goos CGO_ENABLED=$CGO_ENABLED go build \
+        -ldflags "$FLAGS $buildArch=${goos}-${GOARCH}" \
+        -o target/notable-${TAG}.${goos}-amd64/notable
+    if [ "$goos" == "windows" ]; then
+        mv target/notable-${TAG}.${goos}-amd64/{notable,notable.exe}
+    fi
 done
 
 # Macos: create a macos app bundle
