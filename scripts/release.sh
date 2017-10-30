@@ -47,7 +47,7 @@ github-release upload \
     --file target/notable-${TAG}.linux-amd64.aci
 echo "Uploaded: target/notable-${TAG}.linux-amd64.aci"
 
-# Pubish
+# Publish
 docker login
 docker push jmcfarlane/notable:latest
 docker push jmcfarlane/notable:$TAG
