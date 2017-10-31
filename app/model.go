@@ -34,6 +34,7 @@ type Note struct {
 	Time           time.Time `json:"time"`
 
 	// Private fields
+	CipherType    string `json:"-"`
 	SecondaryPath string `json:"-"`
 }
 
@@ -106,11 +107,12 @@ func Persistable(note Note) (Note, error) {
 	}
 	// Make sure the contents are encrypted if a password is set
 	if note.Password != "" {
-		encrypted, err := CBCEncrypt(note.Content, note.Password)
+		ciperText, cipherType, err := Encrypt(note)
 		if err != nil {
 			return note, err
 		}
-		note.Content = encrypted
+		note.CipherType = cipherType
+		note.Content = ciperText
 		note.Encrypted = true
 	} else {
 		note.Encrypted = false

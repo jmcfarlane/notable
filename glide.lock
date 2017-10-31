@@ -1,5 +1,5 @@
-hash: fea1d9c32c4ec7b6d96ab3b4e4efcea518949e5dda144ec8459af51b8a0b11c0
-updated: 2017-09-18T21:17:35.187709029-07:00
+hash: a3e6845de82fb73249c27f5ee19a657d174a8ec1aaf11072d86b12218b0ef955
+updated: 2017-10-31T03:33:29.669973698-07:00
 imports:
 - name: github.com/blevesearch/bleve
   version: 5c9915c6f41b05317744a2ec0340a2f71973025a
@@ -55,6 +55,8 @@ imports:
   repo: https://github.com/golang/protobuf
   subpackages:
   - proto
+- name: github.com/gtank/cryptopasta
+  version: 1f550f6f2f69009f6ae57347c188e0a67cd4e500
 - name: github.com/hashicorp/hcl
   version: a4b07c25de5ff55ad3b8936cea69a79a3d95a855
   subpackages:
@@ -112,6 +114,7 @@ imports:
   repo: https://go.googlesource.com/net
   subpackages:
   - context
+  - websocket
 - name: golang.org/x/sys
   version: 9ccfe848b9db8435a24c424abbc07a921adf1df5
   subpackages:

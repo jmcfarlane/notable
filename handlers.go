@@ -55,14 +55,10 @@ func deleteNote(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 func getContent(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	password := r.PostFormValue("password")
 	content, err := getContentByUID(db, ps.ByName("uid"), password)
-	if app.SmellsEncrypted(content) == true {
+	if err != nil || app.SmellsEncrypted(content) == true {
 		w.WriteHeader(http.StatusForbidden)
 		fmt.Fprintf(w, "Nope, try again")
 		return
-	}
-	if err != nil {
-		log.Error(err)
-		fmt.Fprintf(w, "ERROR")
 	}
 	w.Write([]byte(content))
 }

@@ -24,6 +24,7 @@ import:
   version: master
   subpackages:
   - '...'
+- package: github.com/gtank/cryptopasta
 testImport:
 - package: github.com/stretchr/testify
   version: master
