@@ -106,7 +106,7 @@ func Persistable(note Note) (Note, error) {
 	}
 	// Make sure the contents are encrypted if a password is set
 	if note.Password != "" {
-		encrypted, err := Encrypt(note.Content, note.Password)
+		encrypted, err := CBCEncrypt(note.Content, note.Password)
 		if err != nil {
 			return note, err
 		}

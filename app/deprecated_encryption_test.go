@@ -21,19 +21,19 @@ var samplePasswords = []struct {
 	{"special_chars", `~!@#$%^&*()_+-={}[]\\|;':\",./<>?`},
 }
 
-func TestDecryptionReturnsOriginal(t *testing.T) {
+func TestCBCDecryptionReturnsOriginal(t *testing.T) {
 	for _, tt := range samplePasswords {
-		encrypted, err := Encrypt(original, tt.Password)
+		encrypted, err := CBCEncrypt(original, tt.Password)
 		assert.Nil(t, err, "Should not be an error calling encrypt")
-		decrypted, err := Decrypt(encrypted, tt.Password)
+		decrypted, err := CBCDecrypt(encrypted, tt.Password)
 		assert.Nil(t, err, "Should not be an error calling decrypt")
 		msg := fmt.Sprintf("Decryption should return the original (%s)", tt.Description)
 		assert.Equal(t, decrypted, original, msg)
 	}
 	password := "my secret password"
-	encrypted, err := Encrypt(original, password)
+	encrypted, err := CBCEncrypt(original, password)
 	assert.Nil(t, err, "Should not be an error calling encrypt")
-	decrypted, err := Decrypt(encrypted, password)
+	decrypted, err := CBCDecrypt(encrypted, password)
 	assert.Nil(t, err, "Should not be an error calling decrypt")
 	assert.Equal(t, decrypted, original, "Decryption should return the original")
 

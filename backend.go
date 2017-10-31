@@ -38,7 +38,7 @@ type Backend interface {
 
 func decryptNote(note app.Note, password string) (app.Note, error) {
 	if password != "" {
-		decrypted, err := app.Decrypt(note.Content, password)
+		decrypted, err := app.CBCDecrypt(note.Content, password)
 		if err != nil {
 			return note, err
 		}
