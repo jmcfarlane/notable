@@ -1,5 +1,3 @@
-// https://git.tcc.li/projects/OE/repos/go-quickstart
-
 package main
 
 import (
