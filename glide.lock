@@ -1,8 +1,8 @@
-hash: fea1d9c32c4ec7b6d96ab3b4e4efcea518949e5dda144ec8459af51b8a0b11c0
-updated: 2017-09-18T21:17:35.187709029-07:00
+hash: 04aa9a11a73503d2ac56d6e493102be399cc9e794837b33b7141dff08b56384b
+updated: 2017-10-31T17:22:31.553892435-07:00
 imports:
 - name: github.com/blevesearch/bleve
-  version: 5c9915c6f41b05317744a2ec0340a2f71973025a
+  version: 6eea5b78da004393b1d06b8c88d1bed9ca0a94b2
   subpackages:
   - analysis
   - analysis/analyzer/standard
@@ -41,7 +41,7 @@ imports:
   version: db70c57796cc8c310613541dfade3dce627d09c7
   repo: https://github.com/blevesearch/segment
 - name: github.com/boltdb/bolt
-  version: e9cf4fae01b5a8ff89d0ec6b32f0d9c9f79aefdd
+  version: fa5367d20c994db73282594be0146ab221657943
 - name: github.com/drhodes/golorem
   version: ecccc744c2d953a1e13cbe5e5fc5d4cbc9b8daeb
 - name: github.com/elazarl/go-bindata-assetfs
@@ -55,6 +55,8 @@ imports:
   repo: https://github.com/golang/protobuf
   subpackages:
   - proto
+- name: github.com/gtank/cryptopasta
+  version: 1f550f6f2f69009f6ae57347c188e0a67cd4e500
 - name: github.com/hashicorp/hcl
   version: a4b07c25de5ff55ad3b8936cea69a79a3d95a855
   subpackages:
@@ -73,7 +75,7 @@ imports:
   subpackages:
   - '...'
 - name: github.com/julienschmidt/httprouter
-  version: 975b5c4c7c21c0e3d2764200bf2aa8e34657ae6e
+  version: e1b9828bc9e5904baec057a154c09ca40fe7fae0
 - name: github.com/magiconair/properties
   version: 51463bfca2576e06c62a8504b5c0f06d61312647
 - name: github.com/mitchellh/go-homedir
@@ -85,9 +87,9 @@ imports:
 - name: github.com/pelletier/go-toml
   version: 23f644976aa7c724adf4aec911dadf4af17840ab
 - name: github.com/pkg/errors
-  version: c605e284fe17294bda444b34710735b29d1a9d90
+  version: f15c970de5b76fac0b59abb32d62c17cc7bed265
 - name: github.com/sirupsen/logrus
-  version: acfabf31db8f45a9174f54a0d48ea4d15627af4d
+  version: 89742aefa4b206dcf400792f3bd35b542998eb3b
 - name: github.com/spf13/afero
   version: 9be650865eab0c12963d8753212f4f9c66cdcf12
   subpackages:
@@ -107,15 +109,23 @@ imports:
   repo: https://github.com/steveyen/gtreap
 - name: github.com/twinj/uuid
   version: 7bbe408d339787c56ec15568c947c0959db1b275
+- name: golang.org/x/crypto
+  version: bd6f299fb381e4c3393d1c4b1f0b94f5e77650c8
+  subpackages:
+  - bcrypt
+  - blowfish
+  - ssh/terminal
 - name: golang.org/x/net
   version: e45385e9b226f570b1f086bf287b25d3d4117776
   repo: https://go.googlesource.com/net
   subpackages:
   - context
+  - websocket
 - name: golang.org/x/sys
   version: 9ccfe848b9db8435a24c424abbc07a921adf1df5
   subpackages:
   - unix
+  - windows
 - name: golang.org/x/text
   version: 5ee49cfe751141f8017047bab800d1f528ee3be1
   repo: https://go.googlesource.com/text
@@ -134,6 +144,6 @@ testImports:
   subpackages:
   - difflib
 - name: github.com/stretchr/testify
-  version: 4d4bfba8f1d1027c4fdbe371823030df51419987
+  version: 2aa2c176b9dab406a6970f6a55f513e8a8c8b18f
   subpackages:
   - assert
