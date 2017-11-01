@@ -25,6 +25,9 @@ import:
   subpackages:
   - '...'
 - package: github.com/gtank/cryptopasta
+- package: golang.org/x/crypto
+  subpackages:
+  - bcrypt
 testImport:
 - package: github.com/stretchr/testify
   version: master
