@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
-if [ ! -x "$(which glide)" ]; then
-	go get github.com/Masterminds/glide
+if [ ! -x "$(which dep)" ]; then
+    go get github.com/golang/dep/cmd/dep
 fi
 
 if [ ! -x "$(which go-bindata)" ]; then

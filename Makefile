@@ -138,7 +138,7 @@ test: vendor generate
 # vendor: Perform vendoring
 vendor: binary-deps
 	@echo ">> Vendoring"
-	if [ ! -d vendor ]; then glide install; fi
+	if [ ! -d vendor ]; then dep ensure; fi
 
 # vet: Run go vet
 .PHONY: vet
