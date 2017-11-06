@@ -3,6 +3,7 @@
 * Fix Docker tags on release (was not updating the docker.io tags)
 * Improve encryption by using AES-GCM [via cryptopasta](https://github.com/gtank/cryptopasta)
 * Migrate to [Dep](https://github.com/golang/dep) for dependency management
+* Drop support for Go <= 1.7 (Dep is worth it ;)
 
 ## v0.1.1 / 2017-10-29
 
