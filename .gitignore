@@ -1,4 +1,5 @@
 cmd/notable-cli/notable-cli
 notable
 target
+_vendor-*
 vendor/
