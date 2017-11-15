@@ -8,8 +8,8 @@ CWD = $(shell pwd)
 DOCKER_BUILD_TAG = github.com/jmcfarlane/notable.build
 DOCKER_PORT = 8080
 DOCKER_TAG = github.com/jmcfarlane/notable
-PKGS = $(shell go list ./... | grep -v /vendor/ | grep -v /templates)
 USER = $(shell whoami)
+export PKGS = $(shell go list ./... | grep -v /vendor/ | grep -v /templates)
 
 # The tag is something like: v1.2.3
 export TAG ?= $(shell head -n1 CHANGELOG.md | grep -E -o 'v[^ ]+')
@@ -132,7 +132,7 @@ target:
 .PHONY: test
 test: vendor generate
 	@echo ">> Running tests"
-	go test -v -cover -race $(PKGS)
+	./scripts/run-tests.sh
 	@echo echo "Success 👍"
 
 # vendor: Perform vendoring
