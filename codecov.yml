@@ -1,0 +1,7 @@
+ignore:
+  # Generated code
+  - "bindata*.go"
+  - "rice-box.go"
+
+  # Documentation
+  - "cmd/lorem-ipsum/*"
