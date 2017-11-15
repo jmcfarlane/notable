@@ -1,4 +1,5 @@
 cmd/notable-cli/notable-cli
+coverage.txt
 notable
 target
 _vendor-*
