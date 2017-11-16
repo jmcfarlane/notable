@@ -17,7 +17,6 @@ var (
 )
 
 const (
-	aesCbc = "AES-CBC"
 	aesGcm = "AES-GCM"
 )
 

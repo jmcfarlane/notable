@@ -3,11 +3,13 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -22,8 +24,9 @@ const (
 )
 
 type Mock struct {
-	db     Backend
-	server *httptest.Server
+	db        Backend
+	secondary Backend
+	server    *httptest.Server
 }
 
 func createTestNote(mock Mock, password string) (Note, Note, int, error) {
@@ -45,36 +48,62 @@ func createTestNote(mock Mock, password string) (Note, Note, int, error) {
 	return expected, got, resp.StatusCode, err
 }
 
+func copyFile(fromPath, toPath string) error {
+	from, err := os.Open(fromPath)
+	if err != nil {
+		return err
+	}
+	defer from.Close()
+	to, err := os.OpenFile(toPath, os.O_RDWR|os.O_CREATE, 0600)
+	if err != nil {
+		return err
+	}
+	defer to.Close()
+	_, err = io.Copy(to, from)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func setup(t *testing.T) Mock {
-	file, err := ioutil.TempFile(os.TempDir(), "notable-testing")
-	if !assert.Nil(t, err, "Error creating temp file") {
+	tempDir, err := ioutil.TempDir(os.TempDir(), "notable-testing")
+	if !assert.Nil(t, err, "Error creating temp dir") {
 		return Mock{}
 	}
+	db, err = openBoltDB(filepath.Join(tempDir, "notes.db"), false)
+	assert.Nil(t, err)
+	idx, err = getIndex(db.dbFilePath() + ".idx")
+	assert.Nil(t, err)
 
-	db, err = openBoltDB(file.Name(), false)
-	idx, err = getIndex(file.Name() + ".idx")
-	db.createSchema()
+	// Because the secondary needs to be on separate filesystem that
+	// has some sync mechanism (dropbox, syncthing, keybase, etc) we
+	// need a copy of the file. Bolt won't allow a secondary readonly
+	// against the _same_ file.
+	secondaryPath := filepath.Join(tempDir, "secondary.db")
+	err = copyFile(db.dbFilePath(), secondaryPath)
+	assert.Nil(t, err)
+
+	// Open the secondary (knowing it's name is different)
+	dbSecondary, err := openBoltDB(secondaryPath, true)
+	assert.Nil(t, err)
+
+	// Now fake the secondary path, so it reads/writes via journal
+	// files named like they would in the wild (prefixed by db.Path)
+	dbSecondary.Secondary.Path = db.dbFilePath()
+
 	return Mock{
-		db:     db,
-		server: httptest.NewServer(getRouter(new(messenger))),
+		db:        db,
+		secondary: dbSecondary,
+		server:    httptest.NewServer(getRouter(new(messenger))),
 	}
 }
 
 func tearDown(mock Mock) {
 	defer mock.server.Close()
 	mock.db.close()
-	os.Remove(mock.db.dbFilePath())
-	log.Warnf("Deleted temp db path=%s", mock.db.dbFilePath())
-}
-
-func TestIndexHandler(t *testing.T) {
-	mock := setup(t)
-	defer tearDown(mock)
-	resp, _ := http.Get(mock.server.URL + "/")
-	body, _ := ioutil.ReadAll(resp.Body)
-	assert.True(t, strings.Contains(string(body), "Notable"))
-	assert.True(t, strings.Contains(string(body), "/lib/requirejs/require.js"))
-	assert.Equal(t, http.StatusOK, resp.StatusCode, "Response code != 200")
+	tempDir := filepath.Dir(mock.db.dbFilePath())
+	log.Warnf("Deleted temp db dir path=%q err=%v", tempDir, os.RemoveAll(tempDir))
 }
 
 func TestNoteCreation(t *testing.T) {

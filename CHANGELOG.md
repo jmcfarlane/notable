@@ -5,6 +5,13 @@
 * Migrate to [Dep](https://github.com/golang/dep) for dependency management
 * Drop support for Go <= 1.7 (Dep is worth it ;)
 * Add integration with https://codecov.io
+* Add `make coverage` build target for detail on test coverage
+* Fix incorrect db path setup used by tests :/
+* Initial tests for secondary nodes
+* Minor clean up of version string calculations (more to come)
+* Reduce dead code
+* Remove unnecessary `db.migrate()` call from tests :/
+* Update dependencies
 
 ## v0.1.1 / 2017-10-29
 

@@ -190,11 +190,7 @@ func consumeUpdatesFromSecondaries(db Backend, secondaries Secondary, m *messeng
 func main() {
 	flag.Parse()
 	if *version {
-		fmt.Printf("Version:\t%s\n", buildVersion)
-		fmt.Printf("Build time:\t%s\n", buildStamp)
-		fmt.Printf("Build:\t\t%s@%s:%s\n", buildUser, buildBranch, buildHash)
-		fmt.Printf("Compiler:\t%s\n", buildCompiler)
-		fmt.Printf("Arch:\t\t%s\n", buildArch)
+		fmt.Println(getVersionInfo())
 		return
 	}
 	if *browser {

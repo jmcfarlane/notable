@@ -30,3 +30,16 @@ func TestDecryptionOfDeprecatedCBC(t *testing.T) {
 	assert.Nil(t, err, "Should not be an error calling decrypt")
 	assert.Equal(t, decrypted, content, "Decryption should return the original")
 }
+
+func TestEncryptNoteWithEmptyPassword(t *testing.T) {
+	note := Note{Content: "", Password: ""}
+	cipherText, cipherType, err := Encrypt(note)
+	assert.NotNil(t, err)
+	assert.Empty(t, cipherText)
+	assert.Empty(t, cipherType)
+}
+
+func TestSmellsEncrypted(t *testing.T) {
+	assert.True(t, SmellsEncrypted(`Y���JQ3�����/��z#�4+4���X��'���N8u`))
+	assert.False(t, SmellsEncrypted(`Hello world`))
+}
