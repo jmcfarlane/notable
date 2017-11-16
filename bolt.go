@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 	"sort"
 
 	"github.com/boltdb/bolt"
@@ -34,7 +36,10 @@ func openBoltDB(path string, secondary bool) (*BoltDB, error) {
 			Path: db.Path,
 		}
 	}
-	_, fileExisted := createParentDirs(path)
+	if err := os.MkdirAll(filepath.Dir(path), 0777); err != nil {
+		return nil, err
+	}
+	dbExisted := pathExists(path)
 	engine, err := bolt.Open(path, 0600, &bolt.Options{
 		ReadOnly: secondary,
 		Timeout:  *boltTimeout,
@@ -43,9 +48,8 @@ func openBoltDB(path string, secondary bool) (*BoltDB, error) {
 		return db, err
 	}
 	db.Engine = engine
-	if !secondary && !fileExisted {
+	if !secondary && !dbExisted {
 		db.createSchema()
-		db.migrate()
 	}
 	return db, nil
 }
@@ -118,10 +122,6 @@ func (db *BoltDB) getNoteByUID(uid string, password string) (Note, error) {
 		return note, err
 	}
 	return decryptNote(note, password)
-}
-
-func (db *BoltDB) migrate() {
-	return
 }
 
 func (db *BoltDB) list() Notes {

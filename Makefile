@@ -82,6 +82,13 @@ clean-vendor:
 	@echo ">> Purging ./vendor"
 	rm -rf ./vendor
 
+# coverage: Display code coverage in html
+.PHONY: coverage
+coverage: test
+	@echo ">> Rendering code coverage"
+	go tool cover -html=coverage.txt
+	@echo echo "Success 👍"
+
 # prepare-release: Prepare all assets for release
 .PHONY: prepare-release
 prepare-release: docker-runnable

@@ -2,23 +2,11 @@ package main
 
 import (
 	"os"
-	"path/filepath"
 )
 
-const connectionErrFmt = "Unable to connect driver=%s path=%s err=%v"
-
-func fileExists(path string) bool {
+func pathExists(path string) bool {
 	_, err := os.Stat(path)
 	return !os.IsNotExist(err)
-}
-
-func createParentDirs(path string) (bool, bool) {
-	d := filepath.Dir(path)
-	if _, err := os.Stat(d); os.IsNotExist(err) {
-		os.MkdirAll(d, 0777)
-		return true, false
-	}
-	return false, fileExists(path)
 }
 
 // Backend system
