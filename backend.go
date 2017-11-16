@@ -3,8 +3,6 @@ package main
 import (
 	"os"
 	"path/filepath"
-
-	"github.com/jmcfarlane/notable/app"
 )
 
 const connectionErrFmt = "Unable to connect driver=%s path=%s err=%v"
@@ -26,19 +24,19 @@ func createParentDirs(path string) (bool, bool) {
 // Backend system
 type Backend interface {
 	close()
-	create(app.Note) (app.Note, error)
+	create(Note) (Note, error)
 	createSchema()
 	dbFilePath() string
 	deleteByUID(string) error
-	getNoteByUID(string, password string) (app.Note, error)
-	list() app.Notes
+	getNoteByUID(string, password string) (Note, error)
+	list() Notes
 	String() string
-	update(app.Note) (app.Note, error)
+	update(Note) (Note, error)
 }
 
-func decryptNote(note app.Note, password string) (app.Note, error) {
+func decryptNote(note Note, password string) (Note, error) {
 	if password != "" {
-		clearText, err := app.Decrypt(note, password)
+		clearText, err := Decrypt(note, password)
 		if err != nil {
 			return note, err
 		}

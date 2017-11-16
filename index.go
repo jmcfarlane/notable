@@ -4,7 +4,6 @@ import (
 	"os"
 
 	"github.com/blevesearch/bleve"
-	"github.com/jmcfarlane/notable/app"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -32,7 +31,7 @@ func getIndex(path string) (bleve.Index, error) {
 	})
 }
 
-func indexNote(note app.Note) error {
+func indexNote(note Note) error {
 	err := idx.Index(note.UID, note)
 	if err != nil {
 		log.Errorf("Indexed uid=%s success=false", note.UID)

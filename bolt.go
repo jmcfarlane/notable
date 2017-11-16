@@ -5,7 +5,6 @@ import (
 	"sort"
 
 	"github.com/boltdb/bolt"
-	"github.com/jmcfarlane/notable/app"
 	"github.com/pkg/errors"
 
 	log "github.com/sirupsen/logrus"
@@ -70,7 +69,7 @@ func (db *BoltDB) dbFilePath() string {
 	return db.Path
 }
 
-func (db *BoltDB) create(note app.Note) (app.Note, error) {
+func (db *BoltDB) create(note Note) (Note, error) {
 	return db.update(note)
 }
 
@@ -98,18 +97,18 @@ func (db *BoltDB) deleteByUID(uid string) error {
 	return err
 }
 
-func (db *BoltDB) getNoteByUID(uid string, password string) (app.Note, error) {
+func (db *BoltDB) getNoteByUID(uid string, password string) (Note, error) {
 	if db.Secondary != nil {
 		notes := db.Secondary.list()
 		// Sort in reverse order, so the FIRST note wins.
-		sort.Sort(sort.Reverse(app.TimeSorter(notes)))
+		sort.Sort(sort.Reverse(TimeSorter(notes)))
 		for _, note := range notes {
 			if note.UID == uid {
 				return decryptNote(note, password)
 			}
 		}
 	}
-	var note app.Note
+	var note Note
 	err := db.Engine.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(db.NotesBucket)
 		v := b.Get([]byte(uid))
@@ -125,14 +124,14 @@ func (db *BoltDB) migrate() {
 	return
 }
 
-func (db *BoltDB) list() app.Notes {
-	var notes app.Notes
-	var updates map[string]app.Note
+func (db *BoltDB) list() Notes {
+	var notes Notes
+	var updates map[string]Note
 	if db.Secondary != nil {
 		updatedNotes := db.Secondary.list()
 		// Sort in ascending order, so the LAST note wins.
-		sort.Sort(app.TimeSorter(updatedNotes))
-		updates = app.Map(updatedNotes)
+		sort.Sort(TimeSorter(updatedNotes))
+		updates = Map(updatedNotes)
 	}
 	db.Engine.View(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket(db.NotesBucket)
@@ -147,7 +146,7 @@ func (db *BoltDB) list() app.Notes {
 				}
 			}
 			// From the primary database
-			var note app.Note
+			var note Note
 			err := note.FromBytes(v)
 			if err != nil {
 				log.Fatal(err)
@@ -159,7 +158,7 @@ func (db *BoltDB) list() app.Notes {
 	})
 
 	// Add any secondary notes not yet seen (at all) by the primary
-	primary := app.Map(notes)
+	primary := Map(notes)
 	for k, note := range updates {
 		if _, ok := primary[k]; !ok {
 			note.Content = ""
@@ -175,12 +174,12 @@ func (db *BoltDB) list() app.Notes {
 		}
 	}
 
-	sort.Sort(sort.Reverse(app.TimeSorter(notes)))
+	sort.Sort(sort.Reverse(TimeSorter(notes)))
 	return notes
 }
 
-func (db *BoltDB) update(note app.Note) (app.Note, error) {
-	note, err := app.Persistable(note)
+func (db *BoltDB) update(note Note) (Note, error) {
+	note, err := Persistable(note)
 	if err != nil {
 		return note, err
 	}
