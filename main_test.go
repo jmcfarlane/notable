@@ -11,7 +11,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/jmcfarlane/notable/app"
 	"github.com/stretchr/testify/assert"
 
 	log "github.com/sirupsen/logrus"
@@ -27,8 +26,8 @@ type Mock struct {
 	server *httptest.Server
 }
 
-func createTestNote(mock Mock, password string) (app.Note, app.Note, int, error) {
-	expected := app.Note{
+func createTestNote(mock Mock, password string) (Note, Note, int, error) {
+	expected := Note{
 		Content:  "note body beer",
 		Password: password,
 		Subject:  "test",
@@ -38,10 +37,10 @@ func createTestNote(mock Mock, password string) (app.Note, app.Note, int, error)
 	json.NewEncoder(b).Encode(expected)
 	resp, err := http.Post(mock.server.URL+"/api/note/create", applicationJSON, b)
 	if err != nil {
-		return expected, app.Note{}, 0, err
+		return expected, Note{}, 0, err
 	}
 	content, err := ioutil.ReadAll(resp.Body)
-	got := app.Note{}
+	got := Note{}
 	json.Unmarshal(content, &got)
 	return expected, got, resp.StatusCode, err
 }
@@ -164,7 +163,7 @@ func TestNoteDeletion(t *testing.T) {
 	resp, err := http.DefaultClient.Do(req)
 	content, err := ioutil.ReadAll(resp.Body)
 	assert.Nil(t, err, "Should be no error reading the response")
-	outcome := app.APIResponse{}
+	outcome := APIResponse{}
 	err = json.Unmarshal(content, &outcome)
 	assert.Nil(t, err, "Should be no error unmarshaling the response")
 	assert.Equal(t, true, outcome.Success)
@@ -172,7 +171,7 @@ func TestNoteDeletion(t *testing.T) {
 	assert.Nil(t, err, "Should be no http error")
 	content, err = ioutil.ReadAll(resp.Body)
 	assert.Nil(t, err, "Should be not be a response error")
-	notes := []app.Note{}
+	notes := []Note{}
 	json.Unmarshal(content, &notes)
 	assert.Equal(t, 0, len(notes), "Should be no notes as the only one was deleted")
 }
@@ -184,7 +183,7 @@ func TestNoteListing(t *testing.T) {
 	resp, err := http.Get(mock.server.URL + "/api/notes/list")
 	content, err := ioutil.ReadAll(resp.Body)
 	assert.Nil(t, err, "Should be no http error")
-	notes := []app.Note{}
+	notes := []Note{}
 	json.Unmarshal(content, &notes)
 	assert.Equal(t, expected.Subject, notes[0].Subject, "Listing miissing our note")
 }

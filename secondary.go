@@ -8,7 +8,6 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/jmcfarlane/notable/app"
 	"github.com/pkg/errors"
 
 	log "github.com/sirupsen/logrus"
@@ -26,7 +25,7 @@ type Secondary struct {
 	Path string
 }
 
-func uidFromSecondary(note app.Note, path string) (string, error) {
+func uidFromSecondary(note Note, path string) (string, error) {
 	if note.UID != "" {
 		return note.UID, nil
 	}
@@ -44,14 +43,14 @@ func (db *Secondary) deleteByUID(uid string) error {
 	return err
 }
 
-func (db *Secondary) list() app.Notes {
-	var notes app.Notes
+func (db *Secondary) list() Notes {
+	var notes Notes
 	secondaryPaths, err := filepath.Glob(fmt.Sprintf("%s.secondary.*.*", db.Path))
 	if err != nil {
 		log.Errorf("Error trying to find secondary files err=%v", err)
 	}
 	for _, path := range secondaryPaths {
-		var note app.Note
+		var note Note
 		v, err := readSecondaryFile(path)
 		if err != nil {
 			log.Errorf("Error trying to reads secondary file err=%v", err)
@@ -75,8 +74,8 @@ func (db *Secondary) list() app.Notes {
 	return notes
 }
 
-func (db *Secondary) update(note app.Note) (app.Note, error) {
-	note, err := app.Persistable(note)
+func (db *Secondary) update(note Note) (Note, error) {
+	note, err := Persistable(note)
 	if err != nil {
 		return note, err
 	}

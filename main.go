@@ -16,7 +16,6 @@ import (
 	"time"
 
 	"github.com/blevesearch/bleve"
-	"github.com/jmcfarlane/notable/app"
 	"github.com/julienschmidt/httprouter"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/pkg/errors"
@@ -160,7 +159,7 @@ func getRouter(m *messenger) *httprouter.Router {
 	return router
 }
 
-func persistSecondaryUpdate(note app.Note) error {
+func persistSecondaryUpdate(note Note) error {
 	if note.Deleted {
 		return db.deleteByUID(note.UID)
 	}
