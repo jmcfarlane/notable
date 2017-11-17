@@ -8,7 +8,7 @@
 * Add `make coverage` build target for detail on test coverage
 * Fix incorrect db path setup used by tests :/
 * Initial tests for secondary nodes
-* Minor clean up of version string calculations (more to come)
+* Minor clean up of version string calculations, add `pid`
 * Reduce dead code
 * Remove unnecessary `db.migrate()` call from tests :/
 * Update dependencies

@@ -18,10 +18,10 @@ export TAG ?= $(shell head -n1 CHANGELOG.md | grep -E -o 'v[^ ]+')
 export VERSION ?= $(shell echo $(TAG) | cut -c2-)
 
 export FLAGS = $(shell echo "\
-	-X main.buildCompiler=$(shell go version | cut -f 3 -d' ') \
 	-X main.buildBranch=$(shell git rev-parse --abbrev-ref HEAD) \
+	-X main.buildCompiler=$(shell go version | cut -f 3 -d' ') \
+	-X main.buildDate=$(shell date -u '+%Y-%m-%dT%H:%M:%SZ') \
 	-X main.buildHash=$(shell git rev-parse --short HEAD) \
-	-X main.buildStamp=$(shell date -u '+%Y-%m-%dT%H:%M:%SZ') \
 	-X main.buildUser=$(USER) \
 	-X main.buildVersion=$(VERSION)")
 
