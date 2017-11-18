@@ -5,6 +5,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io"
 	"net"
 	"net/http"
 	"os"
@@ -27,9 +28,6 @@ import (
 var booted = time.Now()
 var db Backend
 var idx bleve.Index
-
-// Support restarts
-var restartChan = make(chan string, 1)
 
 // Flags
 var (
@@ -70,22 +68,30 @@ func openBrowser() error {
 	return exec.Command(args[0], append(args[1:], url)...).Run()
 }
 
-func start(router *httprouter.Router) {
+func start(router *httprouter.Router, service *messenger) {
 	listener, err := net.Listen("tcp", fmt.Sprintf("%s:%d", *bind, *port))
-	log.Infof("Listening on %s:%v pid=%d", *bind, *port, os.Getpid())
 	if err != nil {
 		log.Fatal(err)
 	}
 	go func(listener net.Listener) {
-		log.Warnf("Restart requested msg=%s", <-restartChan)
+		serviceCh := service.add()
+		msg := <-serviceCh
+		if msg == "" {
+			if err := listener.Close(); err != nil {
+				log.Fatalf("Failed to stop TCP listener: err=%v", err)
+			}
+			log.Info("TCP listener closed, goodbye!")
+			return
+		}
+		log.Warnf("Restart requested msg=%s", msg)
 		listener.Close()
 		cmd := exec.Command(os.Args[0], os.Args[1:]...)
 		cmd.Start()
 		log.Infof("Replacement started pid=%v", cmd.Process.Pid)
 		os.Exit(0)
 	}(listener)
+	log.Infof("Listening on %s:%v pid=%d", *bind, *port, os.Getpid())
 	http.Serve(listener, router)
-	time.Sleep(time.Second * 5)
 }
 
 func homeDirPath() string {
@@ -128,10 +134,11 @@ func (m *messenger) close(ch chan string) {
 	}
 }
 
-func (m *messenger) remove(i int) {
+func (m *messenger) empty() bool {
 	m.Lock()
 	defer m.Unlock()
-	m.clients = append(m.clients[:i], m.clients[i+1:]...)
+	return len(m.clients) == 0
+
 }
 
 func (m *messenger) send(msg string) {
@@ -142,11 +149,11 @@ func (m *messenger) send(msg string) {
 	}
 }
 
-func getRouter(m *messenger) *httprouter.Router {
+func getRouter(frontend, service *messenger) *httprouter.Router {
 	router := httprouter.New()
 	router.GET("/", index)
 	router.GET("/pid", pid)
-	router.GET("/admin", adminHandler(m))
+	router.GET("/admin", adminHandler(frontend))
 	router.GET("/api/notes/list", listHandler)
 	router.GET("/api/notes/search", searchHandler)
 	router.GET("/api/version", versionHandler)
@@ -154,7 +161,8 @@ func getRouter(m *messenger) *httprouter.Router {
 	router.POST("/api/note/create", createNote)
 	router.DELETE("/api/note/:uid", deleteNote)
 	router.PUT("/api/note/:uid", updateNote)
-	router.PUT("/api/restart", restartHandler)
+	router.PUT("/api/restart", restartHandler(service))
+	router.PUT("/api/stop", stopHandler(service))
 	router.NotFound = withoutCaching(http.FileServer(assetFS()))
 	return router
 }
@@ -168,7 +176,7 @@ func persistSecondaryUpdate(note Note) error {
 	return err
 }
 
-func consumeUpdatesFromSecondaries(db Backend, secondaries Secondary, m *messenger) {
+func consumeSecondaries(db Backend, secondaries Secondary, frontend *messenger) {
 	clientReload := false
 	for _, note := range secondaries.list() {
 		if err := persistSecondaryUpdate(note); err != nil {
@@ -183,14 +191,13 @@ func consumeUpdatesFromSecondaries(db Backend, secondaries Secondary, m *messeng
 		clientReload = true
 	}
 	if clientReload {
-		m.send("reload")
+		frontend.send("reload")
 	}
 }
 
-func main() {
-	flag.Parse()
+func run(w io.Writer) {
 	if *version {
-		fmt.Println(getVersionInfo())
+		fmt.Fprintln(w, getVersionInfo())
 		return
 	}
 	if *browser {
@@ -220,15 +227,25 @@ func main() {
 			log.Panic("Re-indexing failed:", err)
 		}
 	}
-	m := new(messenger)
+	backend := new(messenger)
+	frontend := new(messenger)
+	service := new(messenger)
 	if *secondary {
-		go reloadAsNeeded(m)
+		go reloadAsNeeded(frontend, backend)
 	} else {
 		secondaries := Secondary{Path: *dbPath}
-		consumeUpdatesFromSecondaries(db, secondaries, m)
+		consumeSecondaries(db, secondaries, frontend)
 		go func() {
+			stopCh := backend.add()
 			for _ = range time.NewTicker(time.Second * 2).C {
-				consumeUpdatesFromSecondaries(db, secondaries, m)
+				select {
+				case <-stopCh:
+					backend.close(stopCh)
+					log.Info("Consumption of secondary files stopped, goodbye!")
+					return
+				case <-time.After(time.Millisecond):
+					consumeSecondaries(db, secondaries, frontend)
+				}
 			}
 		}()
 	}
@@ -237,6 +254,16 @@ func main() {
 	if *daemon {
 		daemonize()
 	} else {
-		start(getRouter(m))
+		start(getRouter(frontend, service), service)
 	}
+	backend.send("stop")
+	for !backend.empty() {
+		time.Sleep(time.Millisecond * 10)
+	}
+	log.Info("Service fully stopped, goodbye!!")
+}
+
+func main() {
+	flag.Parse()
+	run(os.Stdout)
 }

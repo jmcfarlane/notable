@@ -60,7 +60,7 @@ func TestPrimaryReadAfterSecondaryWrite(t *testing.T) {
 	assert.Nil(t, err)
 
 	// Simulare the recover process the primary would be running
-	consumeUpdatesFromSecondaries(mock.db, Secondary{Path: mock.db.dbFilePath()}, new(messenger))
+	consumeSecondaries(mock.db, Secondary{Path: mock.db.dbFilePath()}, new(messenger))
 
 	// Read through the primmary to see if it finds the changes
 	p, err := db.getNoteByUID(s.UID, "")

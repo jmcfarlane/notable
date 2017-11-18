@@ -89,9 +89,18 @@ func (db *Secondary) update(note Note) (Note, error) {
 	return note, err
 }
 
-func reloadAsNeeded(m *messenger) {
+func reloadAsNeeded(frontend, backend *messenger) {
 	var last time.Time
+	stopCh := backend.add()
 	for _ = range time.NewTicker(time.Second * 2).C {
+		select {
+		case <-stopCh:
+			backend.close(stopCh)
+			log.Info("Database reloader stopped, goodbye!")
+			return
+		case <-time.After(time.Millisecond):
+			// As you were
+		}
 		fi, err := os.Stat(*dbPath)
 		if err != nil {
 			log.Errorf("Unable to stat path=%s err=%v", *dbPath, err)
@@ -101,7 +110,7 @@ func reloadAsNeeded(m *messenger) {
 		if !last.IsZero() && mtime.After(last) {
 			db, err = openBoltDB(*dbPath, *secondary)
 			log.Infof("Database reloaded due to upstream change err=%v", err)
-			m.send("reload")
+			frontend.send("reload")
 		}
 		last = mtime
 	}
