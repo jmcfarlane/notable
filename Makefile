@@ -139,7 +139,7 @@ target:
 .PHONY: test
 test: vendor generate
 	@echo ">> Running tests"
-	go test -race -coverprofile=coverage.txt -covermode=atomic -v
+	go test -race -coverprofile=coverage.txt -covermode=atomic -v -timeout=90s
 	@echo echo "Success 👍"
 
 # vendor: Perform vendoring

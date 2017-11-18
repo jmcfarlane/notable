@@ -12,6 +12,9 @@
 * Reduce dead code
 * Remove unnecessary `db.migrate()` call from tests :/
 * Update dependencies
+* Reduce global state (much more to be done here)
+* Add `/api/stop` handler and make `/api/restart` require `msg`
+* Reduce race conditions (tx `-race`!)
 
 ## v0.1.1 / 2017-10-29
 

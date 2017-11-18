@@ -93,9 +93,24 @@ func listHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	encoder.Encode(db.list())
 }
 
-func restartHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	restartChan <- r.URL.Query().Get("msg")
-	w.Write([]byte("ok"))
+func restartHandler(service *messenger) httprouter.Handle {
+	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+		msg := r.URL.Query().Get("msg")
+		if msg == "" {
+			http.Error(w, "msg required", http.StatusBadRequest)
+			return
+		}
+		service.send(msg)
+		w.Write([]byte("ok"))
+	}
+}
+
+func stopHandler(service *messenger) httprouter.Handle {
+	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+		service.send("")
+		w.WriteHeader(http.StatusGone)
+		w.Write([]byte("goodbye"))
+	}
 }
 
 func searchHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
