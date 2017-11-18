@@ -217,7 +217,7 @@ func run(w io.Writer) {
 	if err != nil {
 		log.Fatal(errors.Wrap(err, "Unable to open database"))
 	}
-	idx, err = getIndex(*dbPath + ".idx")
+	idx, err = getIndex(db.dbFilePath() + ".idx")
 	if err != nil {
 		log.Fatal(errors.Wrap(err, "Unable to establish search index"))
 	}
@@ -231,9 +231,9 @@ func run(w io.Writer) {
 	frontend := new(messenger)
 	service := new(messenger)
 	if *secondary {
-		go reloadAsNeeded(frontend, backend)
+		go reloadAsNeeded(db, frontend, backend)
 	} else {
-		secondaries := Secondary{Path: *dbPath}
+		secondaries := Secondary{Path: db.dbFilePath()}
 		consumeSecondaries(db, secondaries, frontend)
 		go func() {
 			stopCh := backend.add()

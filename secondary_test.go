@@ -67,3 +67,30 @@ func TestPrimaryReadAfterSecondaryWrite(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, s.Content, p.Content)
 }
+
+func TestReloadAsNeeded(t *testing.T) {
+	mock := setup(t)
+	defer tearDown(mock)
+	_, note, _, _ := createTestNote(mock, "")
+	frontend, backend := new(messenger), new(messenger)
+	frontendCh := frontend.add()
+	backendCh := backend.add()
+	go reloadAsNeeded(mock.db, frontend, backend)
+	time.Sleep(time.Second * 3)
+	mock.db.update(note)
+	assert.Equal(t, "reload", <-frontendCh)
+	backend.send("stop")
+	<-backendCh
+}
+
+func TestSecondaryUpdate(t *testing.T) {
+	mock := setup(t)
+	defer tearDown(mock)
+	note := Note{
+		Subject: "subject",
+		Content: "body",
+	}
+	persisted, err := mock.secondary.update(note)
+	assert.Nil(t, err)
+	assert.Equal(t, note.Subject, persisted.Subject)
+}
