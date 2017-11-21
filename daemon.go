@@ -12,19 +12,28 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+func daemonizeCmd(args []string) (string, []string) {
+	name, args := args[0], args[1:]
+	filtered := []string{}
+	for _, arg := range args {
+		if strings.HasPrefix(arg, "-browser") {
+			continue
+		}
+		if strings.HasPrefix(arg, "-daemon") {
+			if arg == "-daemon=false" {
+				panic("Refusing to daemonize as proc asked for foreground")
+			}
+			continue
+		}
+		filtered = append(filtered, arg)
+	}
+	return name, append(filtered, "-browser=false", "-daemon=false")
+}
+
 // Daemonize (please use something like upstart, daemontools, systemd)
 func daemonize() {
-	args := os.Args[1:]
-	i := 0
-	for ; i < len(args); i++ {
-		if strings.HasPrefix(args[i], "-daemon") {
-			args = append(args[:i], args[i+1:]...)
-			break
-		}
-	}
-	args = append(args, "-browser=false")
-	args = append(args, "-daemon=false")
-	cmd := exec.Command(os.Args[0], args...)
+	name, args := daemonizeCmd(os.Args)
+	cmd := exec.Command(name, args...)
 	cmd.Start()
 	log.Infof("Started pid=%v", cmd.Process.Pid)
 	os.Exit(0)
