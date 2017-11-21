@@ -126,18 +126,25 @@ func searchHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 
 // Persist the updated note to storage
 func updateNote(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	payload, _ := ioutil.ReadAll(r.Body)
+	payload, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer r.Body.Close()
 	note := Note{}
-	json.Unmarshal(payload, &note)
-	note, err := db.update(note)
-	if err != nil {
-		fmt.Fprintf(w, err.Error())
+	if err := json.Unmarshal(payload, &note); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
-	noteJSON, err := note.ToJSON()
+	note, err = db.update(note)
 	if err != nil {
-		fmt.Fprintf(w, err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
-	fmt.Fprintf(w, noteJSON)
+	if err = json.NewEncoder(w).Encode(note); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 func versionHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
