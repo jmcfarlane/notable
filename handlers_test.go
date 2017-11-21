@@ -34,9 +34,8 @@ func TestPidHandler(t *testing.T) {
 	assert.Nil(t, err)
 	body, err := ioutil.ReadAll(resp.Body)
 	assert.Nil(t, err)
-	pid, err := strconv.Atoi(string(body))
+	_, err = strconv.Atoi(string(body))
 	assert.Nil(t, err, fmt.Sprintf("Not a valid pid: %s", string(body)))
-	assert.True(t, pid > 1024)
 }
 
 func TestVersionHandler(t *testing.T) {
