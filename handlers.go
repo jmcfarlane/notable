@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -70,13 +71,13 @@ func adminHandler(m *messenger) httprouter.Handle {
 			log.Infof("Registered client websocket=%v", ws)
 			go func(m *messenger) {
 				for {
-					var data []byte
+					data := make([]byte, 16)
 					_, err := ws.Read(data)
 					if err != nil {
 						m.close(ch)
 						return
 					}
-					log.Warnf("Websocket unexpectedly sent data=%s", string(data))
+					log.Warnf("Websocket unexpectedly sent data=%s", string(bytes.Trim(data, "\x00")))
 				}
 			}(m)
 			for msg := range ch {
