@@ -50,6 +50,45 @@ func TestVersionHandler(t *testing.T) {
 	assert.Contains(t, string(body), "Uptime")
 }
 
+func TestSearchHandlerWithSyntaxErrorInQuery(t *testing.T) {
+	mock := setup(t)
+	defer tearDown(mock)
+	resp, err := http.Get(mock.server.URL + "/api/notes/search?q=-=+abc")
+	assert.Nil(t, err)
+	body, err := ioutil.ReadAll(resp.Body)
+	assert.Nil(t, err)
+	assert.Equal(t, "syntax error", strings.TrimSuffix(string(body), "\n"))
+	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
+}
+
+func TestUpdateHandlerWithNonJSONInput(t *testing.T) {
+	mock := setup(t)
+	defer tearDown(mock)
+	client := &http.Client{}
+	p := strings.NewReader("this is not json")
+	req, err := http.NewRequest("PUT", mock.server.URL+"/api/note/abc123", p)
+	resp, err := client.Do(req)
+	assert.Nil(t, err)
+	body, err := ioutil.ReadAll(resp.Body)
+	assert.Nil(t, err)
+	assert.Contains(t, string(body), "invalid character")
+	assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
+}
+
+func TestUpdateHandlerWithInvalidInput(t *testing.T) {
+	mock := setup(t)
+	defer tearDown(mock)
+	client := &http.Client{}
+	p := strings.NewReader(`{"subject": 1234}`)
+	req, err := http.NewRequest("PUT", mock.server.URL+"/api/note/abc123", p)
+	resp, err := client.Do(req)
+	assert.Nil(t, err)
+	body, err := ioutil.ReadAll(resp.Body)
+	assert.Nil(t, err)
+	assert.Contains(t, string(body), "into Go struct field Note.subject of type string")
+	assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
+}
+
 func TestAdminHandler(t *testing.T) {
 	frontend := new(messenger)
 	mux := httprouter.New()
