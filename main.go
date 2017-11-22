@@ -12,7 +12,6 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
-	"strconv"
 	"sync"
 	"time"
 
@@ -54,18 +53,20 @@ func index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	fmt.Fprint(w, string(asset))
 }
 
-func openBrowser() error {
-	var args []string
-	switch runtime.GOOS {
+func browserCmd(goos string) (string, []string) {
+	url := fmt.Sprintf("http://%s:%d", *bind, *port)
+	switch goos {
 	case "darwin":
-		args = []string{"open"}
+		return "open", []string{url}
 	case "windows":
-		args = []string{"cmd", "/c", "start"}
-	default:
-		args = []string{"xdg-open"}
+		return "cmd", []string{"/c", "start", url}
 	}
-	url := "http://" + *bind + ":" + strconv.Itoa(*port)
-	return exec.Command(args[0], append(args[1:], url)...).Run()
+	return "xdg-open", []string{url}
+}
+
+func openBrowser() error {
+	name, args := browserCmd(runtime.GOOS)
+	return exec.Command(name, args...).Run()
 }
 
 func start(router *httprouter.Router, service *messenger) {
@@ -94,8 +95,8 @@ func start(router *httprouter.Router, service *messenger) {
 	http.Serve(listener, router)
 }
 
-func homeDirPath() string {
-	h, err := homedir.Expand("~/")
+func homeDirPath(path string) string {
+	h, err := homedir.Expand(path)
 	if err != nil {
 		log.Panic("Unable to determine user home directory")
 	}
@@ -211,7 +212,7 @@ func run(w io.Writer) {
 	}
 	var err error
 	if *dbPath == "" {
-		*dbPath = filepath.Join(homeDirPath(), ".notable/notes.db")
+		*dbPath = filepath.Join(homeDirPath("~/"), ".notable/notes.db")
 	}
 	db, err = openBoltDB(*dbPath, *secondary)
 	if err != nil {

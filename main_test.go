@@ -4,12 +4,21 @@ import (
 	"bytes"
 	"fmt"
 	"net/http"
+	"os"
+	"path/filepath"
 	"testing"
 	"time"
 
 	"github.com/prometheus/common/log"
 	"github.com/stretchr/testify/assert"
 )
+
+func TestMain(m *testing.M) {
+	// Force the db path to be set to a safe place, we don't wanna
+	// blow away data just cuz we're testing right?
+	*dbPath = filepath.Join(os.TempDir(), "notable-testing/notes.db")
+	os.Exit(m.Run())
+}
 
 func TestMainFlagVersion(t *testing.T) {
 	v := *version
@@ -23,6 +32,18 @@ func TestMainFlagVersion(t *testing.T) {
 	b := new(bytes.Buffer)
 	run(b)
 	assert.Contains(t, b.String(), buildVersion)
+}
+
+func TestRunWhenAlreadyRunning(t *testing.T) {
+	*browser = false
+	b := new(bytes.Buffer)
+	x := b
+	run(b)
+	assert.NotEmpty(t, b)
+	assert.Empty(t, x)
+	a := b
+	run(b)
+	assert.Equal(t, a, b)
 }
 
 func TestMainStartStop(t *testing.T) {
@@ -54,4 +75,36 @@ func TestMainStartStop(t *testing.T) {
 	}()
 	run(new(bytes.Buffer))
 	t.Logf("^^ foreground service unblocked, so PUT to url=%q worked!", url)
+}
+
+func TestHomeDir(t *testing.T) {
+	assert.NotEqual(t, "", homeDirPath("~/"))
+}
+
+func TestHomeDirError(t *testing.T) {
+	assert.Panics(t, func() { homeDirPath("~proc") })
+}
+
+func TestBrowserCmdDarwin(t *testing.T) {
+	name, args := browserCmd("darwin")
+	assert.Equal(t, "open", name)
+	assert.Equal(t, []string{fmt.Sprintf("http://%s:%d", *bind, *port)}, args)
+}
+
+func TestBrowserCmdDefautl(t *testing.T) {
+	name, args := browserCmd("?")
+	assert.Equal(t, "xdg-open", name)
+	assert.Equal(t, []string{fmt.Sprintf("http://%s:%d", *bind, *port)}, args)
+}
+
+func TestBrowserCmdLinux(t *testing.T) {
+	name, args := browserCmd("linux")
+	assert.Equal(t, "xdg-open", name)
+	assert.Equal(t, []string{fmt.Sprintf("http://%s:%d", *bind, *port)}, args)
+}
+
+func TestBrowserCmdWindows(t *testing.T) {
+	name, args := browserCmd("windows")
+	assert.Equal(t, "cmd", name)
+	assert.Equal(t, []string{`/c`, "start", fmt.Sprintf("http://%s:%d", *bind, *port)}, args)
 }
