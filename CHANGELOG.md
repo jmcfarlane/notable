@@ -14,7 +14,9 @@
 * Update dependencies
 * Reduce global state (much more to be done here)
 * Add `/api/stop` handler and make `/api/restart` require `msg`
-* Reduce race conditions (tx `-race`!)
+* Reduce race conditions (credit: `-race`!)
+* Ensure all tests persist to a temporary directory
+* Fix defects related to http `handler` error handling (more to do)
 
 ## v0.1.1 / 2017-10-29
 
