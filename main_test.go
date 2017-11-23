@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"fmt"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
+	"strconv"
 	"testing"
 	"time"
 
@@ -35,15 +37,19 @@ func TestMainFlagVersion(t *testing.T) {
 }
 
 func TestRunWhenAlreadyRunning(t *testing.T) {
-	*browser = false
+	mock := setup(t)
+	defer tearDown(mock)
 	b := new(bytes.Buffer)
-	x := b
+	u, err := url.Parse(mock.server.URL)
+	assert.Nil(t, err)
+	p, err := strconv.Atoi(u.Port())
+	*port = p
+	*browser = false
+	*daemon = false
+	start := time.Now()
 	run(b)
-	assert.NotEmpty(t, b)
-	assert.Empty(t, x)
-	a := b
-	run(b)
-	assert.Equal(t, a, b)
+	assert.True(t, time.Since(start).Seconds() < 0.1)
+	assert.Equal(t, "", b.String())
 }
 
 func TestMainStartStop(t *testing.T) {

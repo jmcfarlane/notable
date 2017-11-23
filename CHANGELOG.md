@@ -17,6 +17,7 @@
 * Reduce race conditions (credit: `-race`!)
 * Ensure all tests persist to a temporary directory
 * Fix defects related to http `handler` error handling (more to do)
+* Fix duplicate args when using `-daemon=true -browser=true`
 
 ## v0.1.1 / 2017-10-29
 
