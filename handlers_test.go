@@ -27,6 +27,17 @@ func TestIndexHandler(t *testing.T) {
 	assert.Equal(t, http.StatusOK, resp.StatusCode, "Response code != 200")
 }
 
+func TestStaticHandler(t *testing.T) {
+	mock := setup(t)
+	defer tearDown(mock)
+	resp, err := http.Get(mock.server.URL + "/js/main.js")
+	assert.Nil(t, err)
+	body, err := ioutil.ReadAll(resp.Body)
+	assert.Nil(t, err)
+	assert.True(t, strings.Contains(string(body), "The notable client side application"))
+	assert.Equal(t, http.StatusOK, resp.StatusCode, "Response code != 200")
+}
+
 func TestPidHandler(t *testing.T) {
 	mock := setup(t)
 	defer tearDown(mock)
