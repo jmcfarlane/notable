@@ -8,6 +8,39 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestUidFromSecondaryInByes(t *testing.T) {
+	note := Note{UID: "abc"}
+	uid, err := uidFromSecondary(note, "")
+	assert.Nil(t, err)
+	assert.Equal(t, "abc", uid)
+}
+
+func TestUidFromSecondaryNotInByes(t *testing.T) {
+	note := Note{}
+	uid, err := uidFromSecondary(note, "/tmp/n.db.secondary.abc.1234567")
+	assert.Nil(t, err)
+	assert.Equal(t, "abc", uid)
+}
+
+func TestUidFromSecondaryNotInByesOrInPath(t *testing.T) {
+	note := Note{}
+	uid, err := uidFromSecondary(note, "/tmp/n.db")
+	assert.NotNil(t, err)
+	assert.Equal(t, "", uid)
+}
+
+func TestSecondaryDeleteByUID(t *testing.T) {
+	mock := setup(t)
+	defer tearDown(mock)
+	note := Note{
+		Subject: fmt.Sprintf("secondary note creation %s", time.Now()),
+	}
+	assert.Nil(t, mock.secondary.deleteByUID(note.UID))
+	notes := mock.secondary.list()
+	assert.Equal(t, 1, len(notes))
+	assert.True(t, notes[0].Deleted)
+}
+
 func TestSecondaryCreateNew(t *testing.T) {
 	mock := setup(t)
 	defer tearDown(mock)

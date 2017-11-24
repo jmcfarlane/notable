@@ -141,6 +141,9 @@ test: vendor generate
 	@echo ">> Running tests"
 	go test -race -coverprofile=coverage.txt -covermode=atomic -v -timeout=90s
 	@echo echo "Success 👍"
+	@echo ">> Making sure test coverage.txt was written"
+	test -f coverage.txt
+	@echo echo "Success 👍"
 
 # vendor: Perform vendoring
 vendor: binary-deps
