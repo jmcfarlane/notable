@@ -138,8 +138,13 @@ target:
 # test: Run go test
 .PHONY: test
 test: vendor generate
+	@echo ">> Purging existing coverage.txt"
+	rm -f coverage.txt
 	@echo ">> Running tests"
 	go test -race -coverprofile=coverage.txt -covermode=atomic -v -timeout=90s
+	@echo echo "Success 👍"
+	@echo ">> Making sure test coverage.txt was written"
+	test -f coverage.txt
 	@echo echo "Success 👍"
 
 # vendor: Perform vendoring

@@ -48,12 +48,13 @@ func (db *Secondary) list() Notes {
 	secondaryPaths, err := filepath.Glob(fmt.Sprintf("%s.secondary.*.*", db.Path))
 	if err != nil {
 		log.Errorf("Error trying to find secondary files err=%v", err)
+		return notes
 	}
 	for _, path := range secondaryPaths {
 		var note Note
 		v, err := readSecondaryFile(path)
 		if err != nil {
-			log.Errorf("Error trying to reads secondary file err=%v", err)
+			log.Errorf("Error trying to read secondary file err=%v", err)
 			continue
 		}
 		err = note.FromBytes(v)
