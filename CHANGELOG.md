@@ -1,3 +1,7 @@
+## v0.1.3 / ...
+
+* Prevent `./scripts/release.sh` from being called directly
+
 ## v0.1.2 / 2017-12-10
 
 * Fix Docker tags on release (was not updating the docker.io tags)
