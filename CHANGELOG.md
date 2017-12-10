@@ -1,4 +1,4 @@
-## v0.1.2 / ...
+## v0.1.2 / 2017-12-10
 
 * Fix Docker tags on release (was not updating the docker.io tags)
 * Improve encryption by using AES-GCM [via cryptopasta](https://github.com/gtank/cryptopasta)
