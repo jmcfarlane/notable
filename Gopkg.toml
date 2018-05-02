@@ -34,11 +34,12 @@
   name = "github.com/drhodes/golorem"
 
 [[constraint]]
+  name = "github.com/GeertJohan/go.rice"
   branch = "master"
-  name = "github.com/elazarl/go-bindata-assetfs"
 
 [[constraint]]
   name = "github.com/gtank/cryptopasta"
+  branch = "master"
 
 [[constraint]]
   branch = "master"
@@ -57,12 +58,6 @@
   name = "github.com/sirupsen/logrus"
 
 [[constraint]]
-  name = "github.com/spf13/cobra"
-
-[[constraint]]
-  name = "github.com/spf13/viper"
-
-[[constraint]]
   branch = "master"
   name = "github.com/stretchr/testify"
 
@@ -72,7 +67,4 @@
 
 [[constraint]]
   name = "golang.org/x/net"
-
-[[constraint]]
   branch = "master"
-  name = "golang.org/x/sys"

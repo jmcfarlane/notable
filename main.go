@@ -1,6 +1,6 @@
 package main
 
-//go:generate go-bindata-assetfs -modtime=1257894000 static/...
+//go:generate rice embed-go
 
 import (
 	"flag"
@@ -17,9 +17,10 @@ import (
 
 	"github.com/blevesearch/bleve"
 	"github.com/julienschmidt/httprouter"
-	homedir "github.com/mitchellh/go-homedir"
 	"github.com/pkg/errors"
 
+	rice "github.com/GeertJohan/go.rice"
+	homedir "github.com/mitchellh/go-homedir"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -27,6 +28,7 @@ import (
 var booted = time.Now()
 var db Backend
 var idx bleve.Index
+var box = rice.MustFindBox("static")
 
 // Flags
 var (
@@ -46,9 +48,9 @@ var (
 
 // Index the landing page html (the application only has one page.
 func index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	asset, err := Asset("static/templates/index.html")
+	asset, err := box.String("templates/index.html")
 	if err != nil {
-		log.Panic("Unable to read file from bindata: ", err)
+		log.Panic("Unable to read file from box: ", err)
 	}
 	fmt.Fprint(w, string(asset))
 }
@@ -164,7 +166,7 @@ func getRouter(frontend, service *messenger) *httprouter.Router {
 	router.PUT("/api/note/:uid", updateNote)
 	router.PUT("/api/restart", restartHandler(service))
 	router.PUT("/api/stop", stopHandler(service))
-	router.NotFound = withoutCaching(http.FileServer(assetFS()))
+	router.NotFound = withoutCaching(http.FileServer(box.HTTPBox()))
 	return router
 }
 
@@ -238,7 +240,7 @@ func run(w io.Writer) {
 		consumeSecondaries(db, secondaries, frontend)
 		go func() {
 			stopCh := backend.add()
-			for _ = range time.NewTicker(time.Second * 2).C {
+			for range time.NewTicker(time.Second * 2).C {
 				select {
 				case <-stopCh:
 					backend.close(stopCh)
