@@ -1,6 +1,7 @@
 ## v0.1.3 / ...
 
 * Prevent `./scripts/release.sh` from being called directly
+* Migrate from bindata to rice
 
 ## v0.1.2 / 2017-12-10
 

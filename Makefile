@@ -131,6 +131,10 @@ generate: binary-deps
 	@echo ">> Running codegen"
 	go generate -v $(PKGS)
 
+# iterate: Build and run with a test db in the foreground
+iterate: all
+	./notable -db /tmp/notable-test.db -daemon=false -browser=false
+
 # target: Create the target directory
 target:
 	mkdir target
