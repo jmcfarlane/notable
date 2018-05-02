@@ -2,6 +2,7 @@
 
 * Prevent `./scripts/release.sh` from being called directly
 * Migrate from bindata to rice
+* Add support for go 1.10
 
 ## v0.1.2 / 2017-12-10
 

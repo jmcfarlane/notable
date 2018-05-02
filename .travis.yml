@@ -3,9 +3,9 @@ sudo: false
 language: go
 
 go:
-  - 1.8
-  - 1.9
-  - tip
+  - "1.8"
+  - "1.9"
+  - "1.10"
 
 install:
   - "go version"
