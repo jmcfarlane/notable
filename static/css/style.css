@@ -37,3 +37,15 @@ td.selector.selected {
   border-left-color: #4d90f0;
 }
 
+.autosave.btn {
+  color: #333;
+  background-color: #fff;
+  border-color: #ccc;
+  font-size: 12px;
+  outline: none !important;
+}
+
+.autosave.btn.active {
+  background-color: #e6e6e6;
+  border-color: #adadad;
+}
