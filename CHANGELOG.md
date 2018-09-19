@@ -1,3 +1,7 @@
+## v0.2.0 / ...
+
+* Be more disciplined about semver ;)
+
 ## v0.1.3 / 2018-09-18
 
 * Prevent `./scripts/release.sh` from being called directly
