@@ -1,5 +1,7 @@
 #!/bin/bash -eu
 
+source /keybase/private/jmcfarlane/env/github.sh
+
 cd $(dirname $0)/..
 
 # The date is something like: 2017-01-20
