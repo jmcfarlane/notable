@@ -1,4 +1,4 @@
-## v0.1.3 / ...
+## v0.1.3 / 2018-09-18
 
 * Prevent `./scripts/release.sh` from being called directly
 * Migrate from bindata to rice
