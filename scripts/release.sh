@@ -40,15 +40,6 @@ for goos in darwin freebsd linux windows; do
     echo "Uploaded: target/notable-${TAG}.${goos}-amd64.zip"
 done
 
-# rkt container
-github-release upload \
-    --user jmcfarlane \
-    --repo notable \
-    --tag $TAG \
-    --name "notable-${TAG}.linux-amd64.aci" \
-    --file target/notable-${TAG}.linux-amd64.aci
-echo "Uploaded: target/notable-${TAG}.linux-amd64.aci"
-
 # Tag for release
 docker tag github.com/jmcfarlane/notable:latest jmcfarlane/notable:latest
 docker tag github.com/jmcfarlane/notable:$TAG jmcfarlane/notable:$TAG

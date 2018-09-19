@@ -92,11 +92,10 @@ coverage: test
 # prepare-release: Prepare all assets for release
 .PHONY: prepare-release
 prepare-release: docker-runnable
-	./scripts/rkt.sh
 	@echo ">> Resulting docker containers"
 	docker images $(DOCKER_TAG)*
 	@echo ">> Resulting Github release artifacts"
-	ls -lsah target/*.{aci,zip}
+	ls -lsah target/*.zip
 
 # publish-release: Publish a release
 .PHONY: publish-release
