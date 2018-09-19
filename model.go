@@ -19,6 +19,7 @@ type APIResponse struct {
 
 // Note represents a single note stored by the application
 type Note struct {
+	Autosave  bool   `json:"autosave"`
 	Content   string `json:"content"`
 	Created   string `json:"created"`
 	Encrypted bool   `json:"encrypted"`

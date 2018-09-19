@@ -28,6 +28,7 @@ You can view recent changes in the [changelog](CHANGELOG.md).
 - [x] Distributed writes (*experimental*)
 	- [x] [Keybase](https://keybase.io/)
 	- [x] [Syncthing](https://syncthing.net/)
+- [x] Autosave (note specific)
 
 ## Installation
 

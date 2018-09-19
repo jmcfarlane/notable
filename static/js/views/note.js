@@ -13,6 +13,7 @@ function(noteDetailTemplate, tabTemplate, Mousetrap) {
   return Backbone.View.extend({
 
     initialize: function() {
+      this._autosaveTimeout = null;
       this._editor = null;
       this._tab = null;
       this._origContent = null;
@@ -21,6 +22,12 @@ function(noteDetailTemplate, tabTemplate, Mousetrap) {
     indicateIfDirty: function() {
       if (this._editor.getValue() != this._origContent) {
         $('.editor').css('border', '1px solid orange');
+        if (this.model.get("autosave") == true) {
+          if (this._autosaveTimeout != null) {
+            clearTimeout(this._autosaveTimeout);
+          }
+          this._autosaveTimeout = setTimeout(_.bind(this.save, this), 2000);
+        }
       } else {
         $('.editor').css('border', '1px solid rgb(204, 204, 204)')
       }
@@ -85,6 +92,16 @@ function(noteDetailTemplate, tabTemplate, Mousetrap) {
       this._tab = this.getTab();
       this._tab.on('shown.bs.tab', _.bind(this.shown, this)).tab('show');
       this.$('.subject input').on('keyup', _.bind(this.onSubjectChange, this));
+
+      // Autosave
+      var $autosave = this.$('.autosave');
+      if (this.model.get('autosave')) {
+        $autosave.click()
+      }
+      $autosave.on('click', _.bind(function() {
+        this.model.set("autosave", !$autosave.hasClass("active"));
+        this.save()
+      }, this));
       return this;
     },
 
