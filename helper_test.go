@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"testing"
 
+	rice "github.com/GeertJohan/go.rice"
 	"github.com/prometheus/common/log"
 	"github.com/stretchr/testify/assert"
 )
@@ -65,6 +66,7 @@ func copyFile(fromPath, toPath string) error {
 }
 
 func setup(t *testing.T) Mock {
+	box = rice.MustFindBox("static")
 	tempDir, err := ioutil.TempDir(os.TempDir(), "notable-testing")
 	if !assert.Nil(t, err, "Error creating temp dir") {
 		return Mock{}

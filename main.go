@@ -28,7 +28,7 @@ import (
 var booted = time.Now()
 var db Backend
 var idx bleve.Index
-var box = rice.MustFindBox("static")
+var box *rice.Box
 
 // Flags
 var (
@@ -268,5 +268,6 @@ func run(w io.Writer) {
 
 func main() {
 	flag.Parse()
+	box = rice.MustFindBox("static")
 	run(os.Stdout)
 }
