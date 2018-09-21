@@ -1,13 +1,14 @@
 ## v0.2.0 / ...
 
 * Be more disciplined about semver ;)
+* Add confirmation prior to deletion [#93]
 
 ## v0.1.3 / 2018-09-18
 
 * Prevent `./scripts/release.sh` from being called directly
 * Migrate from bindata to rice
 * Add support for go 1.10
-* Add note auto save feature (specific and persistable per note)
+* Add note auto save feature (specific and persistable per note) [#92]
 
 ## v0.1.2 / 2017-12-10
 

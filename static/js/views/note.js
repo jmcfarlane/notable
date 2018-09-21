@@ -4,12 +4,13 @@
 define([
   'text!templates/note.html',
   'text!templates/tab.html',
+  'views/confirm',
   'lib/mousetrap.min',
   'backbone',
   'underscore',
   'ace'
 ],
-function(noteDetailTemplate, tabTemplate, Mousetrap) {
+function(noteDetailTemplate, tabTemplate, confirmationModalView, Mousetrap) {
   return Backbone.View.extend({
 
     initialize: function() {
@@ -102,6 +103,11 @@ function(noteDetailTemplate, tabTemplate, Mousetrap) {
         this.model.set("autosave", !$autosave.hasClass("active"));
         this.save()
       }, this));
+
+      // Deletion confirmation
+      this.deletionModal = new confirmationModalView()
+      $('body').append(this.deletionModal.render("Delete", "You sure you want to delete this?").el);
+
       return this;
     },
 
@@ -110,9 +116,11 @@ function(noteDetailTemplate, tabTemplate, Mousetrap) {
     },
 
     onDelete: function() {
-      // TODO: Wrap this in a confirmation modal
-      this.model.destroy();
-      this.close();
+      this.deletionModal.show(_.bind(function(modal) {
+        this.model.destroy();
+        this.close();
+        modal.hide();
+      }, this, this.deletionModal));
       return false;
     },
 
