@@ -87,6 +87,26 @@ func TestEncryptedNoteCreationContentFetchWithWrongPassword(t *testing.T) {
 	assert.NotEqual(t, expected.Content, string(content), "Got content back?")
 }
 
+func TestEncryptedNoteCreationWithUnicode(t *testing.T) {
+	mock := setup(t)
+	defer tearDown(mock)
+	password := "fancy-password"
+	expected := `ŒŒŒŒŒŒŒŒŒŒ`
+	_, note, code, _ := createTestNote(mock, password)
+	assert.Equal(t, http.StatusOK, code, "Response code != 200")
+	note.Content = expected
+	note.Password = password
+	note, err := mock.db.update(note)
+	form := url.Values{}
+	form.Add("password", password)
+	body := strings.NewReader(form.Encode())
+	resp, err := http.Post(mock.server.URL+"/api/note/content/"+note.UID, urlEncoded, body)
+	assert.Nil(t, err, "Should be no http error")
+	content, err := ioutil.ReadAll(resp.Body)
+	assert.Equal(t, http.StatusOK, resp.StatusCode, "No error code expected")
+	assert.Equal(t, expected, string(content), "Not a match?")
+}
+
 func TestNoteDeletion(t *testing.T) {
 	mock := setup(t)
 	defer tearDown(mock)
