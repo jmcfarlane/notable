@@ -2,6 +2,13 @@
 
 * Be more disciplined about semver ;)
 * Add confirmation prior to deletion [#93](https://github.com/jmcfarlane/notable/issues/93)
+* Fix decryption of notes with Unicode characters [#96](https://github.com/jmcfarlane/notable/issues/96)
+    * This **is** backwards compatible with notes saved by Notable
+      prior to v0.1.2. Newer versions automatically migrate notes to a
+      more modern encryption mechanism that fully supports Unicode.
+      Please upgrade :)
+    * Support for this older encryption mechism will be removed in the
+      future
 
 ## v0.1.3 / 2018-09-18
 
