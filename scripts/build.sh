@@ -1,20 +1,33 @@
 #!/bin/bash -eux
 
-export GOARCH=amd64
 export buildArch="-X main.buildArch"
 
+arms=(7)
 systems=(darwin freebsd linux windows)
 
-# Compile binaries for the desired operating systems
-for goos in ${systems[@]}; do
-    mkdir -p target/notable-${TAG}.${goos}-amd64
-    cp LICENSE target/notable-${TAG}.${goos}-amd64
-    GOOS=$goos CGO_ENABLED=$CGO_ENABLED go build \
-        -ldflags "$FLAGS $buildArch=${goos}-${GOARCH}" \
-        -o target/notable-${TAG}.${goos}-amd64/notable
+function build () {
+    arch=$1
+    goos=$2
+    label=$3
+
+    mkdir -p target/notable-${TAG}.${goos}-${label}
+    cp LICENSE target/notable-${TAG}.${goos}-${label}
+    GOARCH=$arch GOOS=$goos CGO_ENABLED=$CGO_ENABLED go build \
+        -ldflags "$FLAGS $buildArch=${goos}-${label}" \
+        -o target/notable-${TAG}.${goos}-${label}/notable
     if [ "$goos" == "windows" ]; then
-        mv target/notable-${TAG}.${goos}-amd64/{notable,notable.exe}
+        mv target/notable-${TAG}.${goos}-${label}/{notable,notable.exe}
     fi
+}
+
+# Compile for amd64
+for goos in ${systems[@]}; do
+    build amd64 $goos amd64
+done
+
+# Compile for arm
+for v in ${arms[@]}; do
+    GOARM=$v build arm linux arm${v}
 done
 
 # Macos: create a macos app bundle
@@ -24,8 +37,15 @@ cp target/notable-${TAG}.darwin-amd64/notable \
 
 # Package up the Github release zip files
 pushd target
+
+# Zip amd64
 for goos in ${systems[@]}; do
 	zip -r notable-${TAG}.${goos}-amd64.zip notable-${TAG}.${goos}-amd64
+done
+
+# Zip arm
+for v in ${arms[@]}; do
+    zip -r notable-${TAG}.linux-arm${v}.zip notable-${TAG}.linux-arm${v}
 done
 popd
 

@@ -9,6 +9,7 @@
       Please upgrade :)
     * Support for this older encryption mechism will be removed in the
       future
+* Add builds for Arm7 [#95](https://github.com/jmcfarlane/notable/issues/95)
 
 ## v0.1.3 / 2018-09-18
 

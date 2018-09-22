@@ -4,6 +4,9 @@ source /keybase/private/jmcfarlane/env/github.sh
 
 cd $(dirname $0)/..
 
+arms=(7)
+systems=(darwin freebsd linux windows)
+
 # The date is something like: 2017-01-20
 export DATE="$(head -n1 CHANGELOG.md | grep -E -o '[0-9]{4}-[0-9]{2}-[0-9]{2}')"
 
@@ -29,8 +32,8 @@ github-release release \
     --description "$DESC" \
     --pre-release
 
-# Upload zip files
-for goos in darwin freebsd linux windows; do
+# Uploads for amd64
+for goos in ${systems[@]}; do
     github-release upload \
         --user jmcfarlane \
         --repo notable \
@@ -38,6 +41,17 @@ for goos in darwin freebsd linux windows; do
         --name "notable-${TAG}.${goos}-amd64.zip" \
         --file target/notable-${TAG}.${goos}-amd64.zip
     echo "Uploaded: target/notable-${TAG}.${goos}-amd64.zip"
+done
+
+# Uploads for arm
+for v in ${arms[@]}; do
+    github-release upload \
+        --user jmcfarlane \
+        --repo notable \
+        --tag $TAG \
+        --name "notable-${TAG}.linux-arm${v}.zip" \
+        --file target/notable-${TAG}.linux-arm${v}.zip
+    echo "Uploaded: target/notable-${TAG}.linux-arm${v}.zip"
 done
 
 # Tag for release
