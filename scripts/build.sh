@@ -2,7 +2,7 @@
 
 export buildArch="-X main.buildArch"
 
-arms=(7)
+arms=(6 7)
 systems=(darwin freebsd linux windows)
 
 function build () {
