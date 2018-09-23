@@ -21,7 +21,7 @@ You can view recent changes in the [changelog](CHANGELOG.md).
 - [x] Standalone: You can use it on an airplane
 - [x] Keyboard friendly
 - [x] Cross platform:
-	- [x] Linux (amd64, arm7)
+	- [x] Linux (amd64, arm6, arm7)
 	- [x] MacOS
 	- [x] FreeBSD
 	- [x] Windows (experimental)

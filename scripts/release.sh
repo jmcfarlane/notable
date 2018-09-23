@@ -4,7 +4,7 @@ source /keybase/private/jmcfarlane/env/github.sh
 
 cd $(dirname $0)/..
 
-arms=(7)
+arms=(6 7)
 systems=(darwin freebsd linux windows)
 
 # The date is something like: 2017-01-20
