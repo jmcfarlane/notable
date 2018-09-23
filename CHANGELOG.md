@@ -1,4 +1,4 @@
-## v0.2.0 / ...
+## v0.2.0 / 2018-09-22
 
 * Be more disciplined about semver ;)
 * Add confirmation prior to deletion [#93](https://github.com/jmcfarlane/notable/issues/93)
