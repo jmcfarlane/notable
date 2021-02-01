@@ -2,9 +2,9 @@
 
 [![Go Report Card](https://goreportcard.com/badge/jmcfarlane/notable)](https://goreportcard.com/report/jmcfarlane/notable)
 [![GitHub release](https://img.shields.io/github/release/jmcfarlane/notable.svg)](https://github.com/jmcfarlane/notable/releases)
-[![Build Status](https://img.shields.io/travis/jmcfarlane/notable/master.svg)](https://github.com/jmcfarlane/notable/tree/master)
-[![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/jmcfarlane/notable/blob/master/LICENSE)
-[![codecov](https://codecov.io/gh/jmcfarlane/notable/branch/master/graph/badge.svg)](https://codecov.io/gh/jmcfarlane/notable)
+[![Build Status](https://img.shields.io/travis/jmcfarlane/notable/main.svg)](https://github.com/jmcfarlane/notable/tree/main)
+[![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/jmcfarlane/notable/blob/main/LICENSE)
+[![codecov](https://codecov.io/gh/jmcfarlane/notable/branch/main/graph/badge.svg)](https://codecov.io/gh/jmcfarlane/notable)
 
 A **very** simple note taking application. It has no dependencies and
 ships as a static binary.

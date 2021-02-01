@@ -1,5 +1,6 @@
 ## v0.3.0 / ...
 
+* Switch default branch to `main` (`master` has been removed)
 * Upgrade Golang to 1.15, set lowest to 1.13
 * Upgrade to go modules
 * Upgrade
@@ -104,7 +105,7 @@
 * Enable line wrap.
 * Enable vendoring via [Glide](https://glide.sh/).
 * Ensure all released binaries are built with vendored dependencies.
-* Initial work on a command line client [`notable-cli`](https://github.com/jmcfarlane/notable/tree/master/cmd/notable-cli).
+* Initial work on a command line client [`notable-cli`](https://github.com/jmcfarlane/notable/tree/main/cmd/notable-cli).
 * Fix case incorrect import of [logrus](https://github.com/sirupsen/logrus).
 
 ## v0.0.9 / 2017-04-26
