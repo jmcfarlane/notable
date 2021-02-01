@@ -1,7 +1,7 @@
 ## v0.3.0 / ...
 
 * Switch default branch to `main` (`master` has been removed)
-* Upgrade Golang to 1.15, set lowest to 1.13
+* Upgrade Golang to 1.15, set lowest to 1.14
 * Upgrade to go modules
 * Upgrade
     1. github.com/blevesearch/bleve
