@@ -1,4 +1,4 @@
-FROM golang:1.9.2
+FROM golang:1.15
 
 # Build time variables (set inside Makefile)
 ARG CHOWN_GID=unset

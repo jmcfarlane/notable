@@ -65,15 +65,6 @@ make
 ./notable
 ```
 
-### Run via a [rkt](https://coreos.com/rkt/) container
-
-Download the latest `.aci` from the [release](https://github.com/jmcfarlane/notable/releases) page. Then run it:
-
-```
-sudo rkt run --insecure-options=image --net=host --volume data,kind=host,source=$HOME/.notable \
-    --mount volume=data,target=/root/.notable notable-v0.0.7.linux-amd64.aci
-```
-
 ### Run via a [Docker](https://www.docker.com/) container
 
 ```
@@ -123,7 +114,7 @@ focused).
 | [Ace](https://ace.c9.io/)                                     | Editor                    |
 | [Backbone.js](http://backbonejs.org/)                         | Javascript framework      |
 | [Bleve](http://www.blevesearch.com/)                          | Full text search          |
-| [BoltDB](https://github.com/boltdb/bolt)                      | Datastore                 |
+| [bboltDB](https://go.etcd.io/bbolt)                           | Datastore                 |
 | [Bootstrap](http://getbootstrap.com/)                         | User interface            |
 | [errors](https://github.com/pkg/errors)                       | Golang error primatives   |
 | [go-homedir](https://github.com/mitchellh/go-homedir)         | Home directory detection  |

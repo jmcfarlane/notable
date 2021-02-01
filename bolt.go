@@ -6,15 +6,15 @@ import (
 	"path/filepath"
 	"sort"
 
-	"github.com/boltdb/bolt"
 	"github.com/pkg/errors"
+	"go.etcd.io/bbolt"
 
 	log "github.com/sirupsen/logrus"
 )
 
 // BoltDB backend
 type BoltDB struct {
-	Engine      *bolt.DB
+	Engine      *bbolt.DB
 	Path        string
 	Type        string
 	NotesBucket []byte
@@ -40,7 +40,7 @@ func openBoltDB(path string, secondary bool) (*BoltDB, error) {
 		return nil, err
 	}
 	dbExisted := pathExists(path)
-	engine, err := bolt.Open(path, 0600, &bolt.Options{
+	engine, err := bbolt.Open(path, 0600, &bbolt.Options{
 		ReadOnly: secondary,
 		Timeout:  *boltTimeout,
 	})
@@ -78,7 +78,7 @@ func (db *BoltDB) create(note Note) (Note, error) {
 }
 
 func (db *BoltDB) createSchema() {
-	err := db.Engine.Update(func(tx *bolt.Tx) error {
+	err := db.Engine.Update(func(tx *bbolt.Tx) error {
 		tx.CreateBucket(db.NotesBucket)
 		return nil
 	})
@@ -94,7 +94,7 @@ func (db *BoltDB) deleteByUID(uid string) error {
 	if err := unIndex(uid); err != nil {
 		return err
 	}
-	err := db.Engine.Update(func(tx *bolt.Tx) error {
+	err := db.Engine.Update(func(tx *bbolt.Tx) error {
 		bucket := tx.Bucket(db.NotesBucket)
 		return bucket.Delete([]byte(uid))
 	})
@@ -113,7 +113,7 @@ func (db *BoltDB) getNoteByUID(uid string, password string) (Note, error) {
 		}
 	}
 	var note Note
-	err := db.Engine.View(func(tx *bolt.Tx) error {
+	err := db.Engine.View(func(tx *bbolt.Tx) error {
 		b := tx.Bucket(db.NotesBucket)
 		v := b.Get([]byte(uid))
 		return note.FromBytes(v)
@@ -133,7 +133,7 @@ func (db *BoltDB) list() Notes {
 		sort.Sort(TimeSorter(updatedNotes))
 		updates = Map(updatedNotes)
 	}
-	db.Engine.View(func(tx *bolt.Tx) error {
+	db.Engine.View(func(tx *bbolt.Tx) error {
 		bucket := tx.Bucket(db.NotesBucket)
 		c := bucket.Cursor()
 		for k, v := c.First(); k != nil; k, v = c.Next() {
@@ -190,7 +190,7 @@ func (db *BoltDB) update(note Note) (Note, error) {
 	if err != nil {
 		return note, errors.Wrap(err, "Aborted prior to persist attempt")
 	}
-	err = db.Engine.Update(func(tx *bolt.Tx) error {
+	err = db.Engine.Update(func(tx *bbolt.Tx) error {
 		bucket := tx.Bucket(db.NotesBucket)
 		bucket.Put([]byte(note.UID), b)
 		return nil
