@@ -1,3 +1,24 @@
+## v0.3.0 / ...
+
+* Upgrade Golang to 1.15, set lowest to 1.13
+* Upgrade to go modules
+* Upgrade
+    1. github.com/blevesearch/bleve
+    1. github.com/boltdb/bolt (need to switch this)
+    1. github.com/GeertJohan/go.rice
+    1. github.com/gtank/cryptopasta
+    1. github.com/julienschmidt/httprouter
+    1. github.com/pkg/errors
+    1. github.com/sirupsen/logrus
+    1. github.com/stretchr/testify
+    1. go.etcd.io/bbolt (previously boltdb/bolt)
+* Export a few variables used in subshells
+* Remove unnecessary phony declarations
+* Remove `-race` on the tests
+* Remove rkt
+* Remove unnecessary chown
+* Add support for builds via podman (linked as docker)
+
 ## v0.2.0 / 2018-09-22
 
 * Be more disciplined about semver ;)
@@ -25,7 +46,7 @@
 * Fix Docker tags on release (was not updating the docker.io tags)
 * Improve encryption by using AES-GCM [via cryptopasta](https://github.com/gtank/cryptopasta)
 * Migrate to [Dep](https://github.com/golang/dep) for dependency management
-* Drop support for Go <= 1.7 (Dep is worth it ;)
+* Drop support for Go &lt;= 1.7 (Dep is worth it ;)
 * Add integration with https://codecov.io
 * Add `make coverage` build target for detail on test coverage
 * Fix incorrect db path setup used by tests :/
