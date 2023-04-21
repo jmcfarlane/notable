@@ -1,8 +1,7 @@
 package main
 
-//go:generate rice embed-go
-
 import (
+	"embed"
 	"flag"
 	"fmt"
 	"io"
@@ -16,10 +15,9 @@ import (
 	"time"
 
 	"github.com/blevesearch/bleve"
-	"github.com/julienschmidt/httprouter"
+	"github.com/go-chi/chi"
 	"github.com/pkg/errors"
 
-	rice "github.com/GeertJohan/go.rice"
 	homedir "github.com/mitchellh/go-homedir"
 	log "github.com/sirupsen/logrus"
 )
@@ -28,7 +26,12 @@ import (
 var booted = time.Now()
 var db Backend
 var idx bleve.Index
-var box *rice.Box
+
+//go:embed static
+var static embed.FS
+
+//go:embed templates
+var tmpls embed.FS
 
 // Flags
 var (
@@ -47,12 +50,18 @@ var (
 )
 
 // Index the landing page html (the application only has one page.
-func index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	asset, err := box.String("templates/index.html")
+func index(w http.ResponseWriter, r *http.Request) {
+	asset, err := tmpls.ReadFile("templates/index.html")
 	if err != nil {
 		log.Panic("Unable to read file from box: ", err)
 	}
 	fmt.Fprint(w, string(asset))
+}
+
+func notFoundHandler(w http.ResponseWriter, req *http.Request) {
+	fmt.Println("Serving:", req.URL, "[404]")
+	w.WriteHeader(http.StatusNotFound)
+	fmt.Fprintf(w, fmt.Sprintf("%d", http.StatusNotFound))
 }
 
 func browserCmd(goos string) (string, []string) {
@@ -71,7 +80,7 @@ func openBrowser() error {
 	return exec.Command(name, args...).Run()
 }
 
-func start(router *httprouter.Router, service *messenger) {
+func start(router *chi.Mux, service *messenger) {
 	listener, err := net.Listen("tcp", fmt.Sprintf("%s:%d", *bind, *port))
 	if err != nil {
 		log.Fatal(err)
@@ -93,7 +102,7 @@ func start(router *httprouter.Router, service *messenger) {
 		log.Infof("Replacement started pid=%v", cmd.Process.Pid)
 		os.Exit(0)
 	}(listener)
-	log.Infof("Listening on %s:%v pid=%d", *bind, *port, os.Getpid())
+	log.Infof("Listening on http://%s:%v pid=%d", *bind, *port, os.Getpid())
 	http.Serve(listener, router)
 }
 
@@ -152,22 +161,23 @@ func (m *messenger) send(msg string) {
 	}
 }
 
-func getRouter(frontend, service *messenger) *httprouter.Router {
-	router := httprouter.New()
-	router.GET("/", index)
-	router.GET("/pid", pid)
-	router.GET("/admin", adminHandler(frontend))
-	router.GET("/api/notes/list", listHandler)
-	router.GET("/api/notes/search", searchHandler)
-	router.GET("/api/version", versionHandler)
-	router.POST("/api/note/content/:uid", getContent)
-	router.POST("/api/note/create", createNote)
-	router.DELETE("/api/note/:uid", deleteNote)
-	router.PUT("/api/note/:uid", updateNote)
-	router.PUT("/api/restart", restartHandler(service))
-	router.PUT("/api/stop", stopHandler(service))
-	router.NotFound = withoutCaching(http.FileServer(box.HTTPBox()))
-	return router
+func getRouter(frontend, service *messenger) *chi.Mux {
+	r := chi.NewRouter()
+	r.Get("/", index)
+	r.Get("/pid", pid)
+	r.Get("/admin", adminHandler(frontend))
+	r.Get("/api/notes/list", listHandler)
+	r.Get("/api/notes/search", searchHandler)
+	r.Get("/api/version", versionHandler)
+	r.Post("/api/note/content/{uid}", getContent)
+	r.Post("/api/note/create", createNote)
+	r.Delete("/api/note/{uid}", deleteNote)
+	r.Put("/api/note/{uid}", updateNote)
+	r.Put("/api/restart", restartHandler(service))
+	r.Put("/api/stop", stopHandler(service))
+	r.Mount("/static/", http.FileServer(http.FS(static)))
+	r.NotFound(notFoundHandler)
+	return r
 }
 
 func persistSecondaryUpdate(note Note) error {
@@ -268,6 +278,5 @@ func run(w io.Writer) {
 
 func main() {
 	flag.Parse()
-	box = rice.MustFindBox("static")
 	run(os.Stdout)
 }

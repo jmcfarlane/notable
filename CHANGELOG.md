@@ -1,4 +1,15 @@
-## v0.3.0 / ...
+## v0.4.0 / ...
+
+* Upgrade golang to 1.20
+* Upgrade to go embed (from rice)
+* Upgrade to chi (from httprouter)
+* Upgrade all go libraries (bleve and bbolt still need updates)
+* Add a build hint about needing png2icns
+* Remove `-x` from `go vet`
+* Fix exported variable creation (massive slowdown)
+* Basically bringing the build back to life :)
+
+## v0.3.0 / skip
 
 * Switch default branch to `main` (`master` has been removed)
 * Upgrade Golang to 1.15, set lowest to 1.14

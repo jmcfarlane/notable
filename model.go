@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/twinj/uuid"
+	"github.com/gofrs/uuid"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -104,7 +104,11 @@ func Persistable(note Note) (Note, error) {
 	note.Updated = note.Time.Format(time.RFC3339)
 	// Generate a uuid if necessary
 	if note.UID == "" {
-		note.UID = uuid.NewV4().String()
+		uid, err := uuid.NewV4()
+		if err != nil {
+			return note, err
+		}
+		note.UID = uid.String()
 	}
 	// Make sure the contents are encrypted if a password is set
 	if note.Password != "" {

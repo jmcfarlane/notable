@@ -12,7 +12,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/julienschmidt/httprouter"
+	"github.com/go-chi/chi"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/websocket"
 )
@@ -30,7 +30,7 @@ func TestIndexHandler(t *testing.T) {
 func TestStaticHandler(t *testing.T) {
 	mock := setup(t)
 	defer tearDown(mock)
-	resp, err := http.Get(mock.server.URL + "/js/main.js")
+	resp, err := http.Get(mock.server.URL + "/static/js/main.js")
 	assert.Nil(t, err)
 	body, err := ioutil.ReadAll(resp.Body)
 	assert.Nil(t, err)
@@ -101,9 +101,9 @@ func TestUpdateHandlerWithInvalidInput(t *testing.T) {
 
 func TestAdminHandler(t *testing.T) {
 	frontend := new(messenger)
-	mux := httprouter.New()
-	mux.GET("/admin", adminHandler(frontend))
-	server := httptest.NewServer(mux)
+	r := chi.NewRouter()
+	r.Get("/admin", adminHandler(frontend))
+	server := httptest.NewServer(r)
 	defer server.Close()
 	msgs := []string{"test", "foo", "bar", "stop"}
 	u, err := url.Parse(server.URL + "/admin")
@@ -128,9 +128,9 @@ func TestAdminHandler(t *testing.T) {
 
 func TestAdminHandlerHandlesWrite(t *testing.T) {
 	frontend := new(messenger)
-	mux := httprouter.New()
-	mux.GET("/admin", adminHandler(frontend))
-	server := httptest.NewServer(mux)
+	r := chi.NewRouter()
+	r.Get("/admin", adminHandler(frontend))
+	server := httptest.NewServer(r)
 	defer server.Close()
 	msgs := []string{"test", "foo", "bar", "stop"}
 	u, err := url.Parse(server.URL + "/admin")
