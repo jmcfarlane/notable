@@ -52,5 +52,6 @@ convert -resize 32x32   $icon_name icon_32x32.png
 convert -resize 128x128 $icon_name icon_128x128.png
 convert -resize 256x256 $icon_name icon_256x256.png
 convert -resize 512x512 $icon_name icon_512x512.png
+echo "> TIP: The next line requires: (sudo dnf install libicns-utils):"
 png2icns icon.icns icon_*.png
 rm -f icon*.png $icon_name

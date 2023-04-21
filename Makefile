@@ -1,15 +1,15 @@
 SHELL = /bin/sh
 
-export BINARY = notable
-export CGO_ENABLED = 0
-export CHOWN_GID = $(shell id -g)
-export CHOWN_UID = $(shell id -u)
-export CWD = $(shell pwd)
-export DOCKER_BUILD_TAG = github.com/jmcfarlane/notable.build
-export DOCKER_PORT = 8080
-export DOCKER_TAG = github.com/jmcfarlane/notable
-export USER = $(shell whoami)
-export PKGS = $(shell go list ./... | grep -v /templates)
+export BINARY := notable
+export CGO_ENABLED := 0
+export CHOWN_GID := $(shell id -g)
+export CHOWN_UID := $(shell id -u)
+export CWD := $(shell pwd)
+export DOCKER_BUILD_TAG := github.com/jmcfarlane/notable.build
+export DOCKER_PORT := 8080
+export DOCKER_TAG := github.com/jmcfarlane/notable
+export USER := $(shell whoami)
+export PKGS := $(shell go list ./... | grep -v /templates)
 
 # The tag is something like: v1.2.3
 export TAG ?= $(shell head -n1 CHANGELOG.md | grep -E -o 'v[^ ]+')
@@ -17,7 +17,7 @@ export TAG ?= $(shell head -n1 CHANGELOG.md | grep -E -o 'v[^ ]+')
 # The tag is something like: 1.2.3
 export VERSION ?= $(shell echo $(TAG) | cut -c2-)
 
-export FLAGS = $(shell echo "\
+export FLAGS := $(shell echo "\
 	-X main.buildBranch=$(shell git rev-parse --abbrev-ref HEAD) \
 	-X main.buildCompiler=$(shell go version | cut -f 3 -d' ') \
 	-X main.buildDate=$(shell date -u '+%Y-%m-%dT%H:%M:%SZ') \
@@ -28,7 +28,7 @@ export FLAGS = $(shell echo "\
 DOCKER_RUN = "docker run --rm -it -p $(DOCKER_PORT):$(DOCKER_PORT) $(DOCKER_TAG)"
 
 # all: Produce binary using active GOPATH (DEFAULT target if unspecified, for local testing only!)
-all: clean generate
+all: clean
 	@echo ">> Building binary, this is not compiled with release flags!"
 	cd . && go build -o $(CWD)/$(BINARY)
 
@@ -38,7 +38,7 @@ help:
 	@grep -E '^# [-a-z./]+:' Makefile | grep -v https:// | sed -e 's|#|   make|g' | sort
 
 # build: Produce artifacts via scripts/build.sh (meant to be invoked by Dockerfile.build)
-build: clean generate test vet
+build: clean test vet
 	@echo ">> Building binary suitable for release"
 	CGO_ENABLED=$(CGO_ENABLED) ./scripts/build.sh
 
@@ -56,11 +56,6 @@ install: vet test
 uninstall:
 	@echo ">> Uninstalling from $(GOPATH)"
 	go clean -i -x $(PKGS)
-
-# binary-deps: Install any binary dependencies via scripts/binary-deps.sh
-binary-deps:
-	@echo ">> Installing binary dependencies"
-	./scripts/binary-deps.sh
 
 # clean: Purge the target directory
 clean:
@@ -103,11 +98,6 @@ docker-runnable: docker-build-export-target
 	docker build --no-cache -t $(DOCKER_TAG) .
 	docker tag $(DOCKER_TAG):latest $(DOCKER_TAG):$(TAG)
 
-# generate: Run go generate for all packages
-generate: binary-deps
-	@echo ">> Running codegen"
-	go generate -v $(PKGS)
-
 # iterate: Build and run with a test db in the foreground
 iterate: all
 	./notable -db /tmp/notable-test.db -daemon=false -browser=false
@@ -117,7 +107,7 @@ target:
 	mkdir target
 
 # test: Run go test
-test: generate
+test:
 	@echo ">> Purging existing coverage.txt"
 	rm -f coverage.txt
 	@echo ">> Running tests"
@@ -128,7 +118,9 @@ test: generate
 	@echo echo "Success 👍"
 
 # vet: Run go vet
-vet: generate
+vet:
 	@echo ">> Running go vet"
-	go vet -x $(PKGS)
+	go vet $(PKGS)
 	@echo echo "Success 👍"
+
+.PHONY: test

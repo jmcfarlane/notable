@@ -10,14 +10,14 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/julienschmidt/httprouter"
 	"golang.org/x/net/websocket"
 
+	"github.com/go-chi/chi"
 	log "github.com/sirupsen/logrus"
 )
 
 // CreateNote creates a new note
-func createNote(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func createNote(w http.ResponseWriter, r *http.Request) {
 	payload, _ := ioutil.ReadAll(r.Body)
 	note := Note{}
 	json.Unmarshal(payload, &note)
@@ -33,14 +33,14 @@ func createNote(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 }
 
 // The current process id
-func pid(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func pid(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, strconv.Itoa(os.Getpid()))
 }
 
 // Remove a note from storage
-func deleteNote(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func deleteNote(w http.ResponseWriter, r *http.Request) {
 	outcome := APIResponse{}
-	err := db.deleteByUID(ps.ByName("uid"))
+	err := db.deleteByUID(chi.URLParam(r, "uid"))
 	if err != nil {
 		outcome.Success = false
 		outcome.Message = err.Error()
@@ -52,9 +52,9 @@ func deleteNote(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 }
 
 // Fetch note content from the database by it's uid.
-func getContent(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func getContent(w http.ResponseWriter, r *http.Request) {
 	password := r.PostFormValue("password")
-	content, err := getContentByUID(db, ps.ByName("uid"), password)
+	content, err := getContentByUID(db, chi.URLParam(r, "uid"), password)
 	if err != nil {
 		w.WriteHeader(http.StatusForbidden)
 		fmt.Fprintf(w, "Nope, try again")
@@ -63,8 +63,8 @@ func getContent(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Write([]byte(content))
 }
 
-func adminHandler(m *messenger) httprouter.Handle {
-	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func adminHandler(m *messenger) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		websocket.Handler(func(ws *websocket.Conn) {
 			defer ws.Close()
 			ch := m.add()
@@ -89,13 +89,13 @@ func adminHandler(m *messenger) httprouter.Handle {
 	}
 }
 
-func listHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func listHandler(w http.ResponseWriter, r *http.Request) {
 	encoder := json.NewEncoder(w)
 	encoder.Encode(db.list())
 }
 
-func restartHandler(service *messenger) httprouter.Handle {
-	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func restartHandler(service *messenger) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		msg := r.URL.Query().Get("msg")
 		if msg == "" {
 			http.Error(w, "msg required", http.StatusBadRequest)
@@ -106,15 +106,15 @@ func restartHandler(service *messenger) httprouter.Handle {
 	}
 }
 
-func stopHandler(service *messenger) httprouter.Handle {
-	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func stopHandler(service *messenger) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		service.send("")
 		w.WriteHeader(http.StatusGone)
 		w.Write([]byte("goodbye"))
 	}
 }
 
-func searchHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func searchHandler(w http.ResponseWriter, r *http.Request) {
 	uids, err := searchIndex(r.URL.Query().Get("q"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -125,7 +125,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params)
 }
 
 // Persist the updated note to storage
-func updateNote(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func updateNote(w http.ResponseWriter, r *http.Request) {
 	payload, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -147,7 +147,7 @@ func updateNote(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	}
 }
 
-func versionHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func versionHandler(w http.ResponseWriter, r *http.Request) {
 	vi := getVersionInfo()
 	vi.Pid = os.Getpid()
 	vi.Uptime = time.Since(booted).String()

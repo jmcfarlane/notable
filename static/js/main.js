@@ -1,6 +1,6 @@
 // Configure require itself
 require.config({
-  baseUrl: '/js',
+  baseUrl: '/static/js',
   shim: {
     underscore: {
       exports: '_'
