@@ -8,7 +8,6 @@ require (
 	github.com/go-chi/chi v1.5.4
 	github.com/gofrs/uuid v4.4.0+incompatible
 	github.com/gtank/cryptopasta v0.0.0-20170601214702-1f550f6f2f69
-	github.com/julienschmidt/httprouter v1.3.0
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/common v0.0.0-20180426121432-d811d2e9bf89
