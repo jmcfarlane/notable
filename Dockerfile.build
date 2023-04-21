@@ -1,4 +1,4 @@
-FROM golang:1.15
+FROM docker.io/library/golang:1.20
 
 # Build time variables (set inside Makefile)
 ARG CHOWN_GID=unset

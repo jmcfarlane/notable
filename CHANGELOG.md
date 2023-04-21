@@ -1,11 +1,13 @@
 ## v0.4.0 / ...
 
 * Upgrade golang to 1.20
+* Upgrade travis to only go back to go 1.18
 * Upgrade to go embed (from rice)
 * Upgrade to chi (from httprouter)
 * Upgrade all go libraries (bleve and bbolt still need updates)
 * Add a build hint about needing png2icns
 * Add tidy to every build
+* Add a dedicated `templates` dir for server side templates
 * Remove `-x` from `go vet`
 * Fix exported variable creation (massive slowdown)
 * Clean up the `Makefile` help a little bit
