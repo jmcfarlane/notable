@@ -23,7 +23,7 @@ func TestIndexHandler(t *testing.T) {
 	resp, _ := http.Get(mock.server.URL + "/")
 	body, _ := ioutil.ReadAll(resp.Body)
 	assert.True(t, strings.Contains(string(body), "Notable"))
-	assert.True(t, strings.Contains(string(body), "/lib/requirejs/require.js"))
+	assert.True(t, strings.Contains(string(body), "/static/lib/requirejs/require.js"))
 	assert.Equal(t, http.StatusOK, resp.StatusCode, "Response code != 200")
 }
 
