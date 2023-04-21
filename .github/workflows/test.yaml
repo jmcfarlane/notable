@@ -38,6 +38,9 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
+      - name: Install dependencies
+        run: sudo apt-get install -y imagemagick icnsutils zip
+
       - name: Go version
         run: go version
 
