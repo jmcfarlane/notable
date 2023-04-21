@@ -5,10 +5,12 @@
 * Upgrade to go embed (from rice)
 * Upgrade to chi (from httprouter)
 * Upgrade all go libraries (bleve and bbolt still need updates)
+* Upgrade to github actions (from travis)
 * Add a build hint about needing png2icns
 * Add tidy to every build
 * Add a dedicated `templates` dir for server side templates
 * Remove `-x` from `go vet`
+* Remove codecov.io
 * Fix exported variable creation (massive slowdown)
 * Clean up the `Makefile` help a little bit
 * Basically bringing the build back to life :)
