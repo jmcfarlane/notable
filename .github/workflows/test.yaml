@@ -20,6 +20,10 @@ jobs:
       - name: Go env
         run: go env
 
+      # https://github.com/actions/checkout
+      - name: checkout repo
+        uses: actions/checkout@v3
+
       - name: Test
         run: make test vet
 
