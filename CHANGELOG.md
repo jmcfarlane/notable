@@ -5,8 +5,10 @@
 * Upgrade to chi (from httprouter)
 * Upgrade all go libraries (bleve and bbolt still need updates)
 * Add a build hint about needing png2icns
+* Add tidy to every build
 * Remove `-x` from `go vet`
 * Fix exported variable creation (massive slowdown)
+* Clean up the `Makefile` help a little bit
 * Basically bringing the build back to life :)
 
 ## v0.3.0 / skip

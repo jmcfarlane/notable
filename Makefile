@@ -27,7 +27,7 @@ export FLAGS := $(shell echo "\
 
 DOCKER_RUN = "docker run --rm -it -p $(DOCKER_PORT):$(DOCKER_PORT) $(DOCKER_TAG)"
 
-# all: Produce binary using active GOPATH (DEFAULT target if unspecified, for local testing only!)
+# all: Produce a binary suitable for local testing only
 all: clean
 	@echo ">> Building binary, this is not compiled with release flags!"
 	cd . && go build -o $(CWD)/$(BINARY)
@@ -37,8 +37,8 @@ help:
 	@echo ">> Help info for supported targets:"
 	@grep -E '^# [-a-z./]+:' Makefile | grep -v https:// | sed -e 's|#|   make|g' | sort
 
-# build: Produce artifacts via scripts/build.sh (meant to be invoked by Dockerfile.build)
-build: clean test vet
+# build: Produce artifacts via scripts/build.sh (meant for OCI builds)
+build: clean tidy test vet
 	@echo ">> Building binary suitable for release"
 	CGO_ENABLED=$(CGO_ENABLED) ./scripts/build.sh
 
@@ -52,7 +52,7 @@ install: vet test
 	@echo ">> Installing into $(GOPATH)"
 	go install -ldflags "$(FLAGS)"
 
-# uninstall: Uninstall everything from this project currently installed in the active GOPATH
+# uninstall: Uninstall everything from this project
 uninstall:
 	@echo ">> Uninstalling from $(GOPATH)"
 	go clean -i -x $(PKGS)
@@ -86,7 +86,7 @@ docker-build: clean target
 	@echo ">> Performing build inside docker"
 	docker build --no-cache --build-arg VERSION=$(VERSION) -t $(DOCKER_BUILD_TAG) -f Dockerfile.build .
 
-# docker-build-export-target: Perform a docker build and export the target directory to the host
+# docker-build-export-target: Perform an OCI build (and export the target dir)
 docker-build-export-target: docker-build
 	@echo ">> Copying target from docker to target"
 	docker run --privileged --rm -v $(CWD):/mount $(DOCKER_BUILD_TAG) /bin/bash -c \
@@ -116,6 +116,10 @@ test:
 	@echo ">> Making sure test coverage.txt was written"
 	test -f coverage.txt
 	@echo echo "Success 👍"
+
+# tidy: Tidy makes sure go.mod matches the source code in the module
+tidy:
+	go mod tidy
 
 # vet: Run go vet
 vet:
