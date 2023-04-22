@@ -24,5 +24,7 @@ func TestReIndex(t *testing.T) {
 	mock := setup(t)
 	defer tearDown(mock)
 	createTestNote(mock, "")
-	assert.Nil(t, reIndex(mock.db))
+	count, err := reIndex(mock.db)
+	assert.Nil(t, err)
+	assert.GreaterOrEqual(t, 1, count, "Expected at least one note re-indexed")
 }

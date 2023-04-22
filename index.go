@@ -55,14 +55,16 @@ func searchIndex(q string) ([]string, error) {
 	return uids, nil
 }
 
-func reIndex(b Backend) error {
-	for _, note := range b.list() {
+func reIndex(b Backend) (int, error) {
+	var total int
+	for i, note := range b.list() {
 		content, _ := getContentByUID(b, note.UID, "")
 		note.Content = content
 		err := indexNote(note)
 		if err != nil {
-			return err
+			return i, err
 		}
+		total++
 	}
-	return nil
+	return total, nil
 }

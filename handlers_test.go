@@ -99,6 +99,19 @@ func TestUpdateHandlerWithInvalidInput(t *testing.T) {
 	assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
 }
 
+func TestReIndexHandler(t *testing.T) {
+	mock := setup(t)
+	defer tearDown(mock)
+	client := &http.Client{}
+	req, err := http.NewRequest("POST", mock.server.URL+"/api/notes/re-index", nil)
+	resp, err := client.Do(req)
+	assert.Nil(t, err)
+	body, err := ioutil.ReadAll(resp.Body)
+	assert.Nil(t, err)
+	assert.Contains(t, string(body), `{"Err":null,"Count":0}`)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+}
+
 func TestAdminHandler(t *testing.T) {
 	frontend := new(messenger)
 	r := chi.NewRouter()

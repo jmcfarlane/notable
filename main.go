@@ -168,6 +168,7 @@ func getRouter(frontend, service *messenger) *chi.Mux {
 	r.Get("/admin", adminHandler(frontend))
 	r.Get("/api/notes/list", listHandler)
 	r.Get("/api/notes/search", searchHandler)
+	r.Post("/api/notes/re-index", reIndexHandler)
 	r.Get("/api/version", versionHandler)
 	r.Post("/api/note/content/{uid}", getContent)
 	r.Post("/api/note/create", createNote)
@@ -235,7 +236,7 @@ func run(w io.Writer) {
 		log.Fatal(errors.Wrap(err, "Unable to establish search index"))
 	}
 	if *doReIndex {
-		err = reIndex(db)
+		_, err = reIndex(db)
 		if err != nil {
 			log.Panic("Re-indexing failed:", err)
 		}
