@@ -14,7 +14,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/blevesearch/bleve"
+	"github.com/blevesearch/bleve/v2"
 	"github.com/go-chi/chi"
 	"github.com/pkg/errors"
 
@@ -264,7 +264,8 @@ func run(w io.Writer) {
 		}()
 	}
 	defer db.close()
-	log.Infof("Using backend %s", db)
+	log.Infof("Using backend=%q index=%q", db, idx.Name())
+
 	if *daemon {
 		daemonize()
 	} else {

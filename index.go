@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/blevesearch/bleve"
+	"github.com/blevesearch/bleve/v2"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -26,9 +26,7 @@ func getIndex(path string) (bleve.Index, error) {
 		}
 		idx.Close()
 	}
-	return bleve.OpenUsing(path, map[string]interface{}{
-		"read_only": *secondary,
-	})
+	return bleve.Open(path)
 }
 
 func indexNote(note Note) error {
@@ -50,7 +48,7 @@ func searchIndex(q string) ([]string, error) {
 	}
 	uids := []string{}
 	for _, hit := range out.Hits {
-		uids = append(uids, string(hit.IndexInternalID))
+		uids = append(uids, string(hit.ID))
 	}
 	return uids, nil
 }
