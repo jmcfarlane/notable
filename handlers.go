@@ -147,6 +147,20 @@ func updateNote(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func reIndexHandler(w http.ResponseWriter, r *http.Request) {
+	i, err := reIndex(db)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+	json.NewEncoder(w).Encode(struct {
+		Err   error
+		Count int
+	}{
+		Err:   err,
+		Count: i,
+	})
+}
+
 func versionHandler(w http.ResponseWriter, r *http.Request) {
 	vi := getVersionInfo()
 	vi.Pid = os.Getpid()
