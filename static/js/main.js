@@ -67,5 +67,29 @@ require(
       }, notesView)
     }
     adminAttach('ws://' + document.location.href.split("/")[2] + "/admin");
-	}
+
+    // Wire up re-index button
+    $("#re-index input").on("click", function() {
+      var btn = $(this);
+      var span = btn.next("span");
+      btn.attr("disabled", true);
+      span.html(`<img width="20" src="/static/img/spinner.gif" />`);
+      $.ajax({
+        url: "/api/notes/re-index",
+        type: "POST",
+        dataType: 'json',
+        success: function(data) {
+          span.text(`Refresh finished! (count=${data.Count})`);
+          setTimeout(function() {
+            span.text("");
+            btn.attr("disabled", false);
+          }, 4000);
+        },
+        error: function(xhr, status, err) {
+          console.log(xhr, status, err)
+          span.text(`Error (err="${err}", msg="${xhr.responseText}", status="${xhr.status}")`);
+        },
+      });
+    });
+  }
 );
