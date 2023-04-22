@@ -176,11 +176,11 @@ func TestNoteFullTextSearchDeletion(t *testing.T) {
 func TestNoteFullTextSearchUpdate(t *testing.T) {
 	mock := setup(t)
 	defer tearDown(mock)
-	_, got, _, _ := createTestNote(mock, "")
-	got.Content = "ipa only pls"
+	_, expected, _, _ := createTestNote(mock, "")
+	expected.Content = "ipa only pls"
 	b := new(bytes.Buffer)
-	json.NewEncoder(b).Encode(got)
-	req, err := http.NewRequest("PUT", mock.server.URL+"/api/note/"+got.UID, b)
+	assert.Nil(t, json.NewEncoder(b).Encode(expected), "Should be no error encoding json")
+	req, err := http.NewRequest("PUT", mock.server.URL+"/api/note/"+expected.UID, b)
 	assert.Nil(t, err, "Should be no error creating the http request")
 	_, err = http.DefaultClient.Do(req)
 	assert.Nil(t, err, "Should be no error requesting a note update")
@@ -190,6 +190,6 @@ func TestNoteFullTextSearchUpdate(t *testing.T) {
 	uids := []string{}
 	json.Unmarshal(content, &uids)
 	if assert.Equal(t, 1, len(uids), "Full text should find 1 note") {
-		assert.Equal(t, got.UID, uids[0], "Full text found the note")
+		assert.Equal(t, expected.UID, uids[0], "Full text found the note")
 	}
 }
