@@ -1,4 +1,4 @@
-## v0.4.0 / ...
+## v0.4.0 / 2023-04-23
 
 * Add ability to re-index via api (a button exists in the `?` modal)
 * Add build hint about needing png2icns
