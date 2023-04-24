@@ -1,17 +1,18 @@
 ## v0.4.0 / ...
 
+* Add ability to re-index via api (a button exists in the `?` modal)
+* Add build hint about needing png2icns
+* Add dedicated `templates` directory for server side templates
+* Add go mod tidy to every build
 * Upgrade golang to 1.20
-* Upgrade travis to only go back to go 1.18
-* Upgrade to go embed (from rice)
+* Upgrade all go libraries
+* Upgrade bleve to the v2 api
 * Upgrade to chi (from httprouter)
-* Upgrade all go libraries (bleve and bbolt still need updates)
 * Upgrade to github actions (from travis)
-* Add a build hint about needing png2icns
-* Add tidy to every build
-* Add a dedicated `templates` dir for server side templates
-* Remove `-x` from `go vet`
-* Remove codecov.io
+* Upgrade to go embed (from rice)
 * Fix exported variable creation (massive slowdown)
+* Remove codecov.io
+* Remove `-x` from `go vet`
 * Clean up the `Makefile` help a little bit
 * Basically bringing the build back to life :)
 
