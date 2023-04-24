@@ -1,7 +1,5 @@
 #!/bin/bash -eu
 
-source /keybase/private/jmcfarlane/env/github.sh
-
 cd $(dirname $0)/..
 
 arms=(6 7)
