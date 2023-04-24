@@ -12,6 +12,7 @@
 * Upgrade to go embed (from rice)
 * Fix exported variable creation (massive slowdown)
 * Remove codecov.io
+* Remove keybase from the release process
 * Remove `-x` from `go vet`
 * Clean up the `Makefile` help a little bit
 * Basically bringing the build back to life :)
