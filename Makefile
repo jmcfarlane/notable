@@ -102,6 +102,9 @@ docker-runnable: docker-build-export-target
 iterate: all
 	./notable -db /tmp/notable-test.db -daemon=false -browser=false
 
+lorem-ipsum:
+	cd cmd/lorem-ipsum && go run main.go
+
 # target: Create the target directory
 target:
 	mkdir target
