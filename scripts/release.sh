@@ -57,6 +57,6 @@ docker tag github.com/jmcfarlane/notable:latest jmcfarlane/notable:latest
 docker tag github.com/jmcfarlane/notable:$TAG jmcfarlane/notable:$TAG
 
 # Publish
-docker login
+docker login docker.io
 docker push jmcfarlane/notable:latest
 docker push jmcfarlane/notable:$TAG

@@ -1,3 +1,7 @@
+## v0.5.0 / ...
+
+* Correct docker login during release (fqdn)
+
 ## v0.4.0 / 2023-04-23
 
 * Add ability to re-index via api (a button exists in the `?` modal)
