@@ -23,18 +23,18 @@ func createNote(w http.ResponseWriter, r *http.Request) {
 	json.Unmarshal(payload, &note)
 	note, err := db.create(note)
 	if err != nil {
-		fmt.Fprintf(w, err.Error())
+		fmt.Fprint(w, err.Error())
 	}
 	noteJSON, err := note.ToJSON()
 	if err != nil {
-		fmt.Fprintf(w, err.Error())
+		fmt.Fprint(w, err.Error())
 	}
-	fmt.Fprintf(w, noteJSON)
+	fmt.Fprint(w, noteJSON)
 }
 
 // The current process id
 func pid(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, strconv.Itoa(os.Getpid()))
+	fmt.Fprint(w, strconv.Itoa(os.Getpid()))
 }
 
 // Remove a note from storage
@@ -48,7 +48,7 @@ func deleteNote(w http.ResponseWriter, r *http.Request) {
 	}
 	outcome.Success = true
 	outcomeJSON, _ := json.Marshal(outcome)
-	fmt.Fprintf(w, string(outcomeJSON))
+	fmt.Fprint(w, string(outcomeJSON))
 }
 
 // Fetch note content from the database by it's uid.

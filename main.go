@@ -61,7 +61,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 func notFoundHandler(w http.ResponseWriter, req *http.Request) {
 	fmt.Println("Serving:", req.URL, "[404]")
 	w.WriteHeader(http.StatusNotFound)
-	fmt.Fprintf(w, fmt.Sprintf("%d", http.StatusNotFound))
+	fmt.Fprintf(w, "%d", http.StatusNotFound)
 }
 
 func browserCmd(goos string) (string, []string) {
