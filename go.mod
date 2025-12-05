@@ -1,6 +1,6 @@
 module github.com/jmcfarlane/notable
 
-go 1.20
+go 1.23.0
 
 require (
 	github.com/blevesearch/bleve/v2 v2.3.7
@@ -11,7 +11,7 @@ require (
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/common v0.0.0-20180426121432-d811d2e9bf89
-	github.com/sirupsen/logrus v1.9.0
+	github.com/sirupsen/logrus v1.9.1
 	github.com/stretchr/testify v1.8.1
 	go.etcd.io/bbolt v1.3.7
 	golang.org/x/net v0.38.0
